@@ -110,6 +110,7 @@ border-bottom:1px solid var(--line);padding:12px 16px 11px;padding-top:calc(12px
 .chip.rir{background:rgba(216,67,26,.14);border-color:rgba(216,67,26,.38);color:#ff7a52;}
 .lastperf{background:var(--panel2);border-top:1px solid var(--line);padding:8px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--dim);}
 .lastperf b{color:var(--amber2);}
+.cue{font-size:11.5px;color:var(--dim);font-style:italic;padding:9px 12px 0;line-height:1.45;border-top:1px solid var(--line);}
 .varsel{display:flex;gap:6px;padding:10px 12px 11px;}
 .varbtn{flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:8px 7px;cursor:pointer;text-align:left;position:relative;}
 .varbtn .vk{font-family:'Barlow Condensed',sans-serif;font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);}
@@ -295,15 +296,140 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 
 <!-- INFO -->
 <div class="view" id="view-info">
-  <div class="card info reality"><h4>Önce Dürüst Konuşma</h4><p>Boyka fiziği <b>çok yıllı bir projedir</b>. Sonucu getiren aylarca süren tutarlılık ve progresif yüklenmedir. Ayda en iyi ihtimalle ~0.25–0.5 kg kas.</p><p><b>Çizgili sırt ve belirgin karın</b> antrenmanla değil <b>yağ oranıyla</b> ortaya çıkar. Antrenman kası büyütür; çizgiyi mutfak açar.</p></div>
-  <div class="card info"><h4>Neden 60 Dakika Yeter</h4><p>Kas büyümesini belirleyen şey alt bölge başına ayrı hareket değil, <b>kas başına haftalık toplam zorlu set</b>, <b>yetersizliğe yakınlık</b> ve <b>gerilmiş pozisyonda yük</b>. Bileşik hareketler birden fazla alt bölgeyi birlikte alır.</p><p>Iversen, Schoenfeld ve ark. (2021): haftalık hacim sıklıktan önemli; bileşikler önce; ısınma hareket-spesifik. Süperset aynı kazanımla süreyi ~%36 kısaltır.</p></div>
-  <div class="card info"><h4>Ağır mı, Çok Tekrar mı?</h4><p>Setler yetersizliğe yakınsa <b>ağır ve hafif yük benzer büyüme</b> verir. Bu yüzden aralık <b>hareketin mekaniğine</b> göre seçildi: makine bileşik 6–10, dambıl bileşik 8–12, izolasyon 12–20.</p><p><b>RIR</b> = yedekte kalan tekrar. 0 = tam tükenme. Bileşiklerde 1–2, izolasyonlarda 0–2.</p></div>
-  <div class="card info"><h4>Bel Koruma</h4><p>Omurgaya dikey yük, beli bükerek yük veya belden dengeleme yok. Çıkarılanlar: Barbell Squat, Deadlift/RDL, Barbell Row, ayakta pres, Bulgarian Split Squat, Walking Lunge, Ab Wheel, Hanging Leg Raise.</p><ul><li>Hack Squat / Leg Press: sırt yastığa yapışık, bel kalkmasın</li><li>Hip Thrust: tepede beli kavislendirme</li><li>Shrug: dambıllar yanda, öne eğilme yok</li><li>Dead Bug / Pallof Press: bel sağlığı için atlama</li><li>Keskin bel ağrısı = o hareketi bırak, makineye geç</li></ul></div>
-  <div class="card info"><h4>Esnek Akış</h4><p>Gidemediğin gün <b>"Gidemedim"</b> — sıra kaymaz, sıradaki antrenman sonraki güne taşınır; istersen hangi güne taşınacağını sen seçersin.</p><p><b>"Farklı Çalış"</b> ile o gün başka antrenman seçersin; sonraki günler o seçimden devam eder. Geçmiş kayıtların asla etkilenmez.</p></div>
-  <div class="card info"><h4>Tarihçe Nasıl Tutulur</h4><p>Her hareket satırında iki gerçek hareket var (dambıl / makine). Hangisini seçersen kayıt <b>o hareketin</b> tarihçesine gider. Aynı hareketi başka gün veya başka programda yapsan da tarihçe kaldığı yerden devam eder.</p></div>
-  <div class="card info"><h4>Kendi Programın</h4><p>Program sekmesinde bir programı <b>Kopyala</b> → adını, ritmini, günlerini, hareketlerini değiştir → kaydet → <b>Aktif Yap</b>. Yeni hareket eklerken kütüphaneden seçersen tarihçe otomatik birleşir.</p></div>
-  <div class="card info"><h4>Progresif Yüklenme</h4><ul><li>Tüm setlerde üst tekrara ulaşınca yük ekle</li><li>İzolasyon +1–2.5 kg · Makine bileşik +2.5–5 kg</li><li>Tek taraflı: zayıf taraftan başla</li><li>Her 6–8 haftada deload (yükü ~%10 azalt)</li></ul></div>
-  <div class="card info"><h4>iPhone'a Kurulum</h4><ul><li>Adresi <b>Safari</b>'de aç</li><li>Paylaş ikonu → <b>Ana Ekrana Ekle</b></li><li>Artık simgeden tam ekran ve internetsiz açılır</li></ul></div>
+  <div class="card info reality"><h4>Önce Dürüst Konuşma</h4>
+    <p>Kas kazanımı <b>yıllar ölçeğinde</b> bir projedir. Ayda en iyi ihtimalle ~0.25–0.5 kg yeni kas. Sonucu getiren aylarca süren tutarlılık ve progresif yüklenmedir.</p>
+    <p><b>Çizgili sırt ve belirgin karın</b> antrenmanla değil <b>yağ oranıyla</b> ortaya çıkar. Antrenman altındaki kası büyütür; çizgiyi mutfak açar.</p>
+    <p>Bu program mevcut en güncel kanıta dayanıyor ama meta-analizlerin çoğu 8–12 haftalık çalışmalardır ve popülasyon ortalaması bireysel yanıtı öngörmez. Asıl optimizasyon <b>senin kayıtlarında</b> olacak.</p></div>
+
+  <div class="card info"><h4>Bel Koruma — Mutlak Kural</h4>
+    <p>Omurgaya eksenel yük bindiren, beli bükerek yükleyen veya belden dengeleme isteyen hiçbir hareket yok.</p>
+    <p><b>Çıkarılanlar:</b> Barbell Squat, Deadlift, Romanian Deadlift, Barbell Bent-Over Row, ayakta Barbell Overhead Press, Good Morning, Ab Wheel, Hanging Leg Raise, ayakta Calf Machine, Russian Twist.</p>
+    <ul><li>Hack Squat / Leg Press: sırt yastığa tam yapışık, bel kalkmasın</li>
+    <li>Leg Press: altta kalça yastıktan kalkıp bel yuvarlanmadan dur</li>
+    <li>Hip Thrust: tepede beli kavislendirme, kaburgayı aşağıda tut</li>
+    <li>Shrug: dambıllar yanda, öne eğilme yok</li>
+    <li>Dead Bug / Pallof Press: bel sağlığı literatüründe en desteklenen kor hareketleri — atlama</li>
+    <li>Keskin bel ağrısı = o hareketi bırak, makine alternatifine geç</li></ul></div>
+
+  <div class="card info"><h4>Program Yapısı — Üst Öncelikli</h4>
+    <p><b>5 Gün:</b> İtiş 1 → Çekiş 1 → dinlen → <b>Alt</b> → İtiş 2 → Çekiş 2 → dinlen<br>
+    <b>4 Gün:</b> İtiş → Çekiş → dinlen → <b>Alt</b> → Üst Tam → dinlen → dinlen<br>
+    <b>3 Gün:</b> Üst A → dinlen → <b>Alt</b> → dinlen → Üst B → dinlen → dinlen</p>
+    <p>Her üst kas <b>2×</b> (yan ve arka omuz 3–4×), bacak <b>1×</b>. Toparlanma: itiş→itiş ve çekiş→çekiş arası 96 saat; ardışık günler farklı kas gruplarında.</p></div>
+
+  <div class="card info reality"><h4>Bacak Tavizi — Bilinçli Karar</h4>
+    <p>Haftada tek bacak günü, quad'ı ~10, hamstringi ~6, baldırı ~5 doğrudan sette bırakır. Pelland'ın doz-yanıtı pozitif olduğu için bu, <b>bacak gelişiminin belirgin şekilde yavaşlaması</b> demektir — koruma ve yavaş ilerleme bandı, maksimum büyüme değil.</p>
+    <p>Bu bir hata değil, <b>öncelik tercihidir</b>: üst vücut hacmi buna karşılık yüksek tutuldu (göğüs 18, kanat 12, yan omuz 13 doğrudan set).</p>
+    <p><b>Telafi edilmesi gereken:</b> bacak günleri yağ yakımında ciddi enerji harcaması sağlıyordu. Bu kayıp NEAT ve kardiyoyla kapatılmalı — kardiyo bölümüne bak.</p>
+    <p>Bacak gelişimini hızlandırmak istersen ilk adım ikinci bir bacak günü değil, mevcut bacak gününde <b>quad ve hamstring setlerini 1–2 artırmaktır</b>.</p></div>
+
+  <div class="card info"><h4>Hacim — Fraksiyonel Sayım</h4>
+    <p>Pelland ve ark. (Sports Medicine, 2026; 67 çalışma, 2058 kişi): doğrudan ve dolaylı setleri ayırmak <b>temel</b>. Dolaylı set <b>0.5</b> sayılır.</p>
+    <p>Doz-yanıt pozitif ama <b>azalan getirili</b>: hacim arttıkça kazanım artıyor, ancak ~31 fraksiyonel set/hafta üzerinde saptanabilir üstünlük yok.</p>
+    <p>Bu yüzden biceps/triceps gibi ağır dolaylı yük alan kaslarda doğrudan set 10–12'de tutuldu (fraksiyonel toplam yine ~18); yan/arka omuz gibi dolaylı yük almayan kaslar doğrudan setle beslendi.</p></div>
+
+  <div class="card info"><h4>Frekans — Yaygın Yanılgı</h4>
+    <p>Aynı çalışma: yüksek frekans <b>kuvveti bağımsız artırıyor, hipertrofiyi artırmıyor</b>.</p>
+    <p>Yani "haftada 2× çalıştır" kuralının gerekçesi frekansın kendisi değil. Gerçek gerekçe <b>seans başına hacmin azalan getirisi</b> (Remmert 2025): aynı haftalık hacmi tek seansa yığmak yerine bölmek daha verimli.</p></div>
+
+  <div class="card info"><h4>RIR — Ne Kadar Zorlamalı?</h4>
+    <p><b>RIR = yedekte kalan tekrar.</b> 0 = tam tükenme, 2 = "2 tekrar daha yapabilirdim".</p>
+    <p>Robinson ve ark. (Sports Medicine, 2024): yetersizliğe yaklaşmak <b>hipertrofiyi artırıyor, kuvveti etkilemiyor</b>. Ama Refalo ve ark. (2024) antrenmanlılarda tam yetersizlik ile 1–2 RIR'ın <b>benzer</b> hipertrofi verdiğini buldu.</p>
+    <p>Bu yüzden: <b>ağır bileşiklerde RIR 1–2</b> (teknik ve eklem riski marjinal kazançtan maliyetli), <b>makine/kablo izolasyonlarında RIR 0–1</b> (hareket yolu sabit, güvenle itilir). Her seti tüketmek gereksiz.</p></div>
+
+  <div class="card info"><h4>Ağır mı, Çok Tekrar mı?</h4>
+    <p>Setler yetersizliğe yakınsa hipertrofi ~5–30 tekrar arasında benzer. Bu yüzden tekrar aralığı <b>kasa göre değil, hareketin mekaniğine göre</b> seçildi:</p>
+    <ul><li>Stabil makine bileşik: 6–10 (güvenle ağır gidilir)</li>
+    <li>Dambıl bileşik: 8–12 (stabilite payı gerekir)</li>
+    <li>Kablo/makine izolasyon: 10–20 (ağır yük hedef kastan uzaklaştırır)</li>
+    <li>Baldır / karın: 10–20</li></ul></div>
+
+  <div class="card info"><h4>Dinlenme Süreleri</h4>
+    <p>Singer, Schoenfeld ve ark. (2024, Bayesyen meta-analiz): 60 sn üzeri dinlenmenin <b>küçük bir hipertrofik faydası</b> var; ancak <b>90 sn üzerinde kayda değer fark saptanmadı</b>.</p>
+    <p>Programda 90 sn üstü süreler <b>hipertrofi iddiasıyla değil</b>, sonraki setin performansını (dolayısıyla hacim yükünü) korumak için kullanıldı. Bu pratik bir gerekçedir, bilimsel kesinlik değil.</p></div>
+
+  <div class="card info"><h4>Uzun Kas Pozisyonu</h4>
+    <p><b>Kanıtı güçlü olan:</b> Uzun kas uzunluğunda çalışmak kısa uzunluğa üstün. Hareket seçimi buna göre yapıldı (incline curl, overhead extension, seated leg curl, derin gerinmeli fly).</p>
+    <p><b>Kanıtı karışık olan:</b> Gerilmiş kısmi tekrarların tam ROM'a üstünlüğü. Wolf ve ark. (PeerJ 2025) antrenmanlılarda <b>ikisini benzer</b> buldu. Bu yüzden varsayılan <b>tam ROM</b>; gerilmiş kısmi tekrar yalnızca baldırda rutin (Kassiano 2023 kanıtı orada en güçlü) ve yan omuzda opsiyonel.</p></div>
+
+  <div class="card info"><h4>Hareket Sırası</h4>
+    <p>Sıra: ağır bileşik → ikincil bileşik → öncelikli izolasyon → gerilmiş-pozisyon izolasyonu → küçük kaslar.</p>
+    <p><b>Bilinçli istisna:</b> Üst C seansında lateral raise (izolasyon) ilk sırada — öncelikli kas ve yorgunken kalitesi belirgin düşüyor. "Compound her zaman önce" dogması burada kırıldı.</p></div>
+
+  <div class="card info"><h4>Progresif Yüklenme (Çift İlerleme)</h4>
+    <ul><li>Aralığın alt sınırıyla başla, her seans tekrar eklemeye çalış</li>
+    <li>Tüm setlerde üst sınıra ulaşıp RIR korunuyorsa yükü artır</li>
+    <li>İzolasyon +1–2.5 kg · Dambıl bileşik +2 kg · Makine üst +2.5–5 kg · Makine alt +5–10 kg</li>
+    <li>Yan/arka omuzda öncelik tekrar ve kalite; yük 3 hafta temiz kalınca artar</li>
+    <li>Tek taraflı: zayıf taraftan başla, güçlü tarafta sayıyı aşma</li>
+    <li>Pull-Up: önce tekrar biriktir, 3×10 temiz olunca ağırlık ekle</li></ul></div>
+
+  <div class="card info"><h4>Deload — Takvime Değil Belirtiye Bağlı</h4>
+    <p>"Her 6 haftada deload" yaygın ama kanıtı zayıf. Yorgunluk birikimi bireyseldir.</p>
+    <p><b>2 veya daha fazlası varsa deload yap:</b></p>
+    <ul><li>2–3 seans üst üste ilerleme yok veya geriliyor</li>
+    <li>Isınma setleri normalden ağır geliyor</li>
+    <li>Kas ağrısı 72 saati aşıp sonraki seansa taşıyor</li>
+    <li>Uyku kalitesi bozuldu</li>
+    <li>Eklem/tendon ağrısı antrenman dışında da var</li>
+    <li>Antrenmana isteksizlik belirgin arttı</li></ul>
+    <p><b>Protokol (1 hafta):</b> set sayısı <b>yarıya</b>, yük <b>%90</b>, RIR <b>3–4</b>, hareketler aynı, kardiyo yarıya. Hacim azaltmak yoğunluk azaltmaktan daha etkilidir.</p></div>
+
+  <div class="card info"><h4>Kardiyo ve Yağ Kaybı</h4>
+    <p>Wilson ve ark. (2012): <b>koşu</b> hem hipertrofi hem kuvvette düşüş yarattı, <b>bisiklet yaratmadı</b>. Modalite, frekans ve süre belirleyici.</p>
+    <ul><li>Üst vücut günü: seans sonrası 15–20 dk Zone 2 (bisiklet / eğimli yürüyüş)</li>
+    <li>Alt vücut günü: en fazla 10 dk hafif veya hiç</li>
+    <li>Dinlenme günü: 30–40 dk yürüyüş (opsiyonel)</li>
+    <li>HIIT: haftada en fazla 1, bacak gününden ≥24 sa uzak, bisiklette</li>
+    <li>Haftalık toplam yapılandırılmış kardiyo: 60–120 dk</li>
+    <li>Aynı gün: <b>ağırlık önce, kardiyo sonra</b>; ayrı seansta 6+ saat ara</li></ul>
+    <p><b>Asıl kaldıraç NEAT:</b> 8.000–10.000 adım/gün. Plato olursa önce adımı artır, kardiyoyu değil.</p>
+    <p><b>Tek bacak günü telafisi:</b> Bacak antrenmanı azaldığı için haftalık enerji harcaman düştü. Bunu kapatmak için adım hedefini <b>10.000–12.000</b>'e çıkar ve haftalık kardiyoyu <b>90–120 dk</b> bandının üst ucunda tut. Bacak günü kardiyo için uygun değil; itiş/çekiş günlerinin sonuna ve boş günlere dağıt.</p></div>
+
+  <div class="card info"><h4>Beslenme</h4>
+    <ul><li><b>Protein:</b> 1.6–2.2 g/kg — açıktayken üst banda çık. 95 kg için 165–210 g</li>
+    <li><b>Kalori:</b> yağ oranı yüksekse %15–20 açık; orta ise %10 açık</li>
+    <li><b>Haftalık kayıp hedefi:</b> vücut ağırlığının %0.5–0.7'si</li>
+    <li><b>Yağ:</b> 0.7–1.0 g/kg (altına inme)</li>
+    <li><b>Karbonhidrat:</b> kalan kalori — açıkta ilk kesilecek makro yağ olmalı</li>
+    <li><b>Kreatin monohidrat:</b> 5 g/gün, her gün, saat fark etmez</li>
+    <li><b>Uyku 7–9 saat:</b> öneri değil, programın parçası. 6 saatin altındaki haftalarda hacim artırma</li></ul></div>
+
+  <div class="card info"><h4>Takip ve Karar Kuralları</h4>
+    <ul><li>Kilo 2 hafta sabit + bel sabit → kalori −150/200 <b>veya</b> adım +2.000</li>
+    <li>Kilo düşüyor ama performans da düşüyor → açığı azalt, protein üst banda</li>
+    <li>Kilo ve bel düşüyor, performans korunuyor → <b>hiçbir şey değiştirme</b></li>
+    <li>Bir kas 3–4 hafta ilerlemiyor + toparlanma iyi → haftada 1–2 set ekle (tavan ~20–22 fraksiyonel)</li>
+    <li>Bir kas ilerlemiyor + toparlanma kötü → set ekleme, deload yap</li>
+    <li>Bir harekette 3 seans ilerleme yok, diğerleri iyi → o hareketi aynı işlevli başkasıyla değiştir</li>
+    <li>Uyku 3 gece &lt;6 saat → o hafta hacim artırma, RIR +1</li></ul></div>
+
+  <div class="card info"><h4>Esnek Akış</h4>
+    <p>Gidemediğin gün <b>"Gidemedim"</b> — sıra kaymaz; sıradaki antrenmanı otomatik bir sonraki güne bırakabilir ya da belirli bir güne taşıyabilirsin.</p>
+    <p><b>"Farklı Çalış"</b> ile o gün başka antrenman seçersin; sonraki günler o seçimden itibaren orijinal sırayla devam eder. <b>Geçmiş kayıtların asla etkilenmez.</b></p></div>
+
+  <div class="card info"><h4>Tarihçe Nasıl Tutulur</h4>
+    <p>Her satırda iki gerçek hareket var (dambıl / makine). Hangisini seçersen kayıt <b>o hareketin</b> tarihçesine gider. Aynı hareketi başka gün veya başka programda yapsan da tarihçe kaldığı yerden devam eder.</p></div>
+
+  <div class="card info"><h4>Kendi Programın</h4>
+    <p>Program sekmesinde bir programı <b>Kopyala</b> → ad, ritim, gün sırası, hareketler, set/tekrar/RIR/dinlenme hepsini değiştir → <b>Aktif Yap</b>. Kütüphaneden hareket seçersen tarihçe otomatik birleşir.</p></div>
+
+  <div class="card info"><h4>iPhone'a Kurulum</h4>
+    <ul><li>Adresi <b>Safari</b>'de aç (Files'tan açma — iOS JavaScript'i engelliyor)</li>
+    <li>Paylaş ikonu → <b>Ana Ekrana Ekle</b></li>
+    <li>Artık simgeden tam ekran ve internetsiz açılır</li>
+    <li>Ara sıra Program sekmesinden <b>Yedek Al</b> — iOS uzun süre açılmayan uygulamanın verisini silebilir</li></ul></div>
+
+  <div class="card info"><h4>Kaynaklar</h4>
+    <ul><li>Pelland ve ark. Sports Medicine 2026;56(2):481–505 — hacim/frekans doz-yanıt</li>
+    <li>Remmert ve ark. 2025 — seans başına hacim</li>
+    <li>Robinson ve ark. Sports Medicine 2024;54(9):2209–2231 — RIR doz-yanıt</li>
+    <li>Refalo ve ark. J Sports Sci 2024 — failure vs RIR (antrenmanlı)</li>
+    <li>Singer ve ark. Front Sports Act Living 2024 — dinlenme aralığı</li>
+    <li>Wolf ve ark. PeerJ 2025;13:e18904 — gerilmiş kısmi tekrar</li>
+    <li>Kassiano ve ark. JSCR 2023 — baldır kısmi ROM</li>
+    <li>Wilson ve ark. JSCR 2012;26(8):2293–2307 — eşzamanlı antrenman</li>
+    <li>Iversen ve ark. Sports Medicine 2021 — zaman verimliliği</li></ul></div>
 </div>
 
 <!-- SETUP MODAL -->
@@ -451,60 +577,143 @@ var LIB=[
  ["Dumbbell Seated Calf Raise","Seated Calf Raise","Soleus"],
  ["Weighted Crunch","Cable Crunch","Üst karın"],
  ["Reverse Crunch","Captain's Chair Knee Raise","Alt karın"],
- ["Dead Bug","Pallof Press","Kor, oblik, bel sağlığı"]
+ ["Dead Bug","Pallof Press","Kor, oblik, bel sağlığı"],
+ ["Decline Dumbbell Press","Decline Chest Press Machine","Alt göğüs"],
+ ["Dumbbell Front Raise","Cable Front Raise","Ön omuz izolasyon"],
+ ["Dumbbell Reverse Curl","Cable Reverse Curl","Brachioradialis / ön kol"],
+ ["Lying Dumbbell Triceps Extension","Reverse-Grip Pushdown","Triceps orta baş"],
+ ["Dumbbell Wrist Curl","Wrist Curl Machine","Ön kol fleksör"],
+ ["Dumbbell Glute Kickback","Cable Glute Kickback","Gluteus izolasyon"],
+ ["Side Plank","Cable Woodchop","Oblik (hafif, bel dostu)"],
+ ["Incline Dumbbell Press (Nötr)","Machine High Row","Alternatif varyasyon"]
 ];
-function L(free,sets,reps,rir,rest){ // build exercise from library by free name
-  for(var i=0;i<LIB.length;i++) if(LIB[i][0]===free) return {free:LIB[i][0],mac:LIB[i][1],t:LIB[i][2],sets:sets,reps:reps,rir:rir,rest:rest};
-  return {free:free,mac:free,t:"",sets:sets,reps:reps,rir:rir,rest:rest};
+function L(free,sets,reps,rir,rest,cue){
+  for(var i=0;i<LIB.length;i++) if(LIB[i][0]===free) return {free:LIB[i][0],mac:LIB[i][1],t:LIB[i][2],sets:sets,reps:reps,rir:rir,rest:rest,cue:cue||""};
+  return {free:free,mac:free,t:"",sets:sets,reps:reps,rir:rir,rest:rest,cue:cue||""};
 }
-/* ═══════════ BUILT-IN PROGRAMS ═══════════ */
-var EX_U1=[L("Incline Dumbbell Press",3,"6–10","1–2",120),L("Pull-Up",3,"6–10","1–2",120),L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",90),
- L("Chest-Supported Dumbbell Row",3,"8–12","1–2",90),L("Dumbbell Lateral Raise",3,"12–20","0–1",60),L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60),
- L("Incline Dumbbell Curl",3,"10–15","0–2",60),L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",60)];
-var EX_L1=[L("Goblet Squat",3,"8–12","1–2",90),L("Stability Ball Leg Curl",3,"10–15","0–2",75),L("Dumbbell Hip Thrust",3,"10–15","1–2",75),
- L("Reverse Nordic Curl",3,"12–20","0–1",60),L("Side-Lying Leg Raise",2,"15–20","0–1",45),L("Dumbbell Standing Calf Raise",3,"12–20","0–1",45),
- L("Weighted Crunch",3,"12–20","0–1",45),L("Dead Bug",3,"10–15 / taraf","1–2",45)];
-var EX_U2=[L("Flat Dumbbell Press",3,"8–12","1–2",90),L("Close-Grip Dumbbell Press",3,"8–12","1–2",90),L("Incline Dumbbell Fly",3,"12–15","0–2",60),
- L("Dumbbell Lateral Raise",4,"12–20","0–1",60),L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60),L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",60),
- L("Dumbbell Kickback",3,"12–15","0–2",60),L("Flat Dumbbell Fly",2,"12–15","0–2",60)];
-var EX_L2=[L("Dumbbell Step-Up",3,"8–12","1–2",90),L("Dumbbell Lying Leg Curl",3,"10–15","0–2",75),L("Dumbbell Hip Thrust",3,"10–15","1–2",75),
- L("Reverse Nordic Curl",2,"12–20","0–1",60),L("Side-Lying Leg Raise",2,"15–20","0–1",45),L("Dumbbell Seated Calf Raise",3,"12–20","0–1",45),
- L("Reverse Crunch",3,"12–20","0–1",45),L("Dead Bug",3,"10–15 / taraf","1–2",45)];
-var EX_U3=[L("Pull-Up",3,"6–10","1–2",120),L("One-Arm Dumbbell Row",3,"8–12","1–2",90),L("Dumbbell Pullover",3,"12–15","0–2",60),
- L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60),L("Dumbbell Shrug",3,"12–15","0–2",60),L("Dumbbell Lateral Raise",3,"12–20","0–1",60),
- L("Dumbbell Preacher Curl",3,"10–12","0–2",60),L("Dumbbell Hammer Curl",3,"12–15","0–2",60)];
-var EX_UB=[L("Pull-Up",3,"6–10","1–2",120),L("Close-Grip Dumbbell Press",3,"8–12","1–2",90),L("One-Arm Dumbbell Row",3,"8–12","1–2",90),
- L("Incline Dumbbell Fly",3,"12–15","0–2",60),L("Dumbbell Lateral Raise",3,"12–20","0–1",60),L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60),
- L("Dumbbell Preacher Curl",3,"10–12","0–2",60),L("Dumbbell Kickback",3,"12–15","0–2",60),L("Dumbbell Shrug",2,"12–15","0–2",60)];
-var EX_F1=[L("Goblet Squat",3,"8–12","1–2",90),L("Incline Dumbbell Press",3,"6–10","1–2",90),L("Pull-Up",3,"6–10","1–2",90),
- L("Stability Ball Leg Curl",3,"10–15","0–2",60),L("Dumbbell Lateral Raise",3,"12–20","0–1",60),L("Dumbbell Rear Delt Fly",2,"15–20","0–1",60),
- L("Incline Dumbbell Curl",2,"10–15","0–2",60),L("Overhead Dumbbell Triceps Extension",2,"10–15","0–2",60),L("Weighted Crunch",2,"12–20","0–1",45)];
-var EX_F2=[L("Dumbbell Step-Up",3,"8–12","1–2",90),L("Chest-Supported Dumbbell Row",3,"8–12","1–2",90),L("Flat Dumbbell Press",3,"8–12","1–2",90),
- L("Dumbbell Hip Thrust",3,"10–15","1–2",75),L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",75),L("Prone Dumbbell Y-Raise",2,"15–20","0–1",60),
- L("Dumbbell Hammer Curl",2,"12–15","0–2",60),L("Dumbbell Kickback",2,"12–15","0–2",60),L("Dead Bug",2,"10–15 / taraf","1–2",45)];
-var EX_F3=[L("Goblet Squat",3,"10–15","1–2",75),L("Pull-Up",3,"8–12","1–2",90),L("Close-Grip Dumbbell Press",3,"8–12","1–2",90),
- L("Dumbbell Lying Leg Curl",2,"10–15","0–2",60),L("Incline Dumbbell Fly",2,"12–15","0–2",60),L("Dumbbell Lateral Raise",3,"12–20","0–1",60),
- L("Dumbbell Preacher Curl",2,"10–12","0–2",60),L("Dumbbell Standing Calf Raise",2,"12–20","0–1",45),L("Reverse Crunch",2,"12–20","0–1",45)];
+/* ═══════════ BUILT-IN PROGRAMS (v5 — üst vücut öncelikli, tek bacak günü) ═══════════ */
+/* 5 GÜN: Üst İtiş 1 → Üst Çekiş 1 → (dinlen) → Alt → Üst İtiş 2 → Üst Çekiş 2 → (dinlen) */
+var EX_P1=[
+ L("Incline Dumbbell Press",4,"6–10","1–2",150,"30° eğim. Derin iniş, üstte kilitleme yok. 45°+ işi ön omza kaydırır."),
+ L("Flat Dumbbell Press",3,"8–12","1–2",120,"Göğüste tam gerinme, dirsek ~45°. Makinede yetersizliğe güvenle it."),
+ L("Flat Dumbbell Fly",3,"10–15","0–2",90,"Presin veremediği maksimum gerinme. Kablo/pec deck direnç profili daha iyi."),
+ L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"Öncelikli kas. Momentum yok; kablo vücudun arkasından geçsin."),
+ L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Ense arkasına derin indir — uzun baş yalnızca burada tam gerilir."),
+ L("Dumbbell Kickback",3,"12–15","0–2",75,"Dirsek gövdeye sabit, altta 1 sn sık. At nalı görünümü bu baştan."),
+ L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Preslerden uyarı almaz. Dirsek hafif bükülü sabit, tepede 1 sn."),
+ L("Weighted Crunch",3,"10–15","0–1",60,"Karın haftada 4× — belirgin karın için hem kas hem yağ oranı gerekir.")];
+var EX_P2=[
+ L("Pull-Up",4,"6–10","1–2",150,"Üstte kolu tam uzat — lat en uzun hali. Yarım tekrar yok."),
+ L("Chest-Supported Dumbbell Row",4,"8–12","1–2",120,"Göğüs destekli — bel yükü sıfır. Uzanışta bırak, çekişte omuz bıçağını sık."),
+ L("Dumbbell Pullover",3,"10–15","0–2",90,"Dirsek neredeyse düz — biceps devre dışı, lat tek başına çalışır."),
+ L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60,"Face pull: kulak hizasına çek, dirsek yüksek. Dik duruş için en değerli hareket."),
+ L("Incline Dumbbell Curl",3,"8–12","0–2",90,"Kol gövdenin gerisinde sarkar — uzun baş yalnızca bu pozisyonda gerilir."),
+ L("Dumbbell Hammer Curl",3,"12–15","0–2",75,"Nötr tutuş. Brachialis biceps altında — büyüdükçe kolu kalınlaştırır."),
+ L("Dumbbell Shrug",3,"10–15","0–2",90,"Tam dikey çek, tepede 1 sn. Öne eğilme yok."),
+ L("Dumbbell Lateral Raise",2,"12–20","0–1",75,"Haftanın 2. yan omuz dozu.")];
+var EX_LEG=[
+ L("Goblet Squat",4,"6–10","1–2",180,"Hack squat: sırt yastığa tam yapışık. Bel kalkarsa derinliği azalt."),
+ L("Stability Ball Leg Curl",4,"8–12","0–2",120,"Oturarak versiyon hamstringi daha uzun konumda yükler — tercih et."),
+ L("Dumbbell Step-Up",3,"10–15","1–2",120,"Leg press: alt noktada kalça yastıktan kalkmadan dur."),
+ L("Dumbbell Hip Thrust",3,"8–12","1–2",120,"Tepede 1 sn sık, kaburgayı aşağıda tut. Beli kavislendirme."),
+ L("Reverse Nordic Curl",3,"12–20","0–1",75,"Leg extension: tepede 1 sn. Rektus femorisi diğerlerinin alamadığı açıda alır."),
+ L("Dumbbell Lying Leg Curl",2,"12–15","0–2",90,"Farklı diz/kalça açısı — hamstringin ikinci uyaranı."),
+ L("Side-Lying Leg Raise",2,"15–20","0–1",60,"Gluteus medius — kalça stabilitesi, dolaylı bel sağlığı."),
+ L("Dumbbell Standing Calf Raise",3,"10–15","0–1",75,"Altta 2 sn derin gerinme. Ayakta makine eksenel yük — leg press versiyonu kullan."),
+ L("Dumbbell Seated Calf Raise",2,"12–20","0–1",60,"Diz bükülü = soleus, gastroknemiusdan ayrı kas."),
+ L("Reverse Crunch",3,"12–20","0–1",60,"Kalçayı yukarı kıvır — sadece bacak sallamak karnı çalıştırmaz.")];
+var EX_P3=[
+ L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"ÖNCELİK — taze haldeyken ilk sırada. Compound-önce dogması bilinçli kırıldı."),
+ L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",120,"Sırt destekli, eksenel yük yok. Ön deltoidin tek doğrudan işi."),
+ L("Incline Dumbbell Fly",3,"10–15","0–2",90,"Açılışta göğsü tam ger, kapanışta orta hattı geç."),
+ L("Close-Grip Dumbbell Press",3,"8–12","1–2",120,"Dip machine: alt göğüs + triceps tüm başlar. İki iş tek harekette."),
+ L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Haftanın 2. uzun baş dozu."),
+ L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"3. arka omuz dozu — dik duruş ve omuz dengesi."),
+ L("Incline Dumbbell Press",2,"8–12","1–2",120,"2. üst göğüs dozu, orta tekrar."),
+ L("Dead Bug",2,"10–15 / taraf","1–2",60,"Anti-rotasyon — bel sağlığı için atlanmaz.")];
+var EX_P4=[
+ L("One-Arm Dumbbell Row",4,"8–12","1–2",120,"Zayıf (sol) taraftan başla, güçlü tarafta aynı sayıyı aşma."),
+ L("Pull-Up",3,"8–12","1–2",120,"Nötr tutuş omuza daha dostu. 2. kanat dozu."),
+ L("Dumbbell Pullover",2,"10–15","0–2",90,"Kanat izolasyonu, gerilmiş pozisyon."),
+ L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Arka omuz — haftada 4 doz, dolaylı yük almayan kas."),
+ L("Dumbbell Preacher Curl",3,"10–15","0–2",75,"Kol önde sabit → kısa baş vurgusu. Altta tam uzat."),
+ L("Dumbbell Reverse Curl",2,"12–15","0–2",75,"Brachioradialis / ön kol. Ters tutuş, hafif yük."),
+ L("Dumbbell Lateral Raise",3,"12–20","0–1",75,"Haftanın 4. yan omuz dozu — öncelikli kas, hızlı toparlanır."),
+ L("Dumbbell Shrug",2,"10–15","0–2",90,"Üst trapez 2. doz."),
+ L("Weighted Crunch",2,"10–15","0–1",60,"Karın.")];
+/* 4 GÜN: Üst İtiş → Üst Çekiş → (dinlen) → Alt → Üst Tam → (dinlen) → (dinlen) */
+var EX_4P1=[
+ L("Incline Dumbbell Press",4,"6–10","1–2",150,"30° eğim, derin iniş. Haftanın en ağır göğüs işi."),
+ L("Flat Dumbbell Press",3,"8–12","1–2",120,"Göğüste gerinme, dirsek ~45°."),
+ L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"Öncelikli kas."),
+ L("Flat Dumbbell Fly",3,"10–15","0–2",90,"Maksimum gerinme pozisyonu."),
+ L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",120,"Sırt destekli, eksenel yük yok."),
+ L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Ense arkasına derin — uzun baş."),
+ L("Dumbbell Kickback",3,"12–15","0–2",75,"Dirsek sabit, altta sık."),
+ L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Doğrudan çalışma şart."),
+ L("Weighted Crunch",2,"10–15","0–1",60,"Karın.")];
+var EX_4P2=[
+ L("Pull-Up",4,"6–10","1–2",150,"Üstte tam uzanma — latın en uzun hali."),
+ L("Chest-Supported Dumbbell Row",4,"8–12","1–2",120,"Bel yükü sıfır. Omuz bıçağını sık."),
+ L("Dumbbell Pullover",3,"10–15","0–2",90,"Biceps devre dışı — lat tek başına."),
+ L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60,"Dik duruş — dirsek yüksek."),
+ L("Incline Dumbbell Curl",3,"8–12","0–2",90,"Kol geride sarkar — uzun baş."),
+ L("Dumbbell Hammer Curl",3,"12–15","0–2",75,"Brachialis — kolu kalınlaştırır."),
+ L("Dumbbell Shrug",3,"10–15","0–2",90,"Tam dikey, öne eğilme yok."),
+ L("Dumbbell Lateral Raise",2,"12–20","0–1",75,"2. yan omuz dozu."),
+ L("Reverse Crunch",2,"12–20","0–1",60,"Alt karın.")];
+var EX_4P3=[
+ L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"ÖNCELİK — taze haldeyken ilk sırada."),
+ L("Incline Dumbbell Fly",3,"10–15","0–2",90,"2. üst göğüs dozu, gerinme odaklı."),
+ L("One-Arm Dumbbell Row",3,"8–12","1–2",120,"Zayıf taraftan başla — asimetri düzeltme."),
+ L("Close-Grip Dumbbell Press",3,"8–12","1–2",120,"Alt göğüs + triceps tüm başlar."),
+ L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"3. arka omuz dozu."),
+ L("Dumbbell Preacher Curl",3,"10–15","0–2",75,"Kısa baş — kol önde sabit."),
+ L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"2. uzun baş dozu."),
+ L("Pull-Up",2,"8–12","1–2",120,"2. kanat dozu."),
+ L("Dead Bug",2,"10–15 / taraf","1–2",60,"Kor stabilite — bel sağlığı.")];
+/* 3 GÜN: Üst A → (dinlen) → Alt → (dinlen) → Üst B → (dinlen) → (dinlen) */
+var EX_3P1=[
+ L("Incline Dumbbell Press",4,"6–10","1–2",150,"30° eğim. Haftanın en ağır göğüs işi, taze haldeyken."),
+ L("Pull-Up",4,"6–10","1–2",150,"Üstte tam uzanma — latın en uzun hali."),
+ L("Flat Dumbbell Press",3,"8–12","1–2",120,"Göğüste gerinme."),
+ L("Chest-Supported Dumbbell Row",3,"8–12","1–2",120,"Göğüs destekli — bel yükü sıfır."),
+ L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"Öncelikli kas — 4 set."),
+ L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Presten uyarı almaz."),
+ L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Uzun baş — kolun en büyük kütlesi."),
+ L("Incline Dumbbell Curl",3,"8–12","0–2",90,"Kol geride — uzun baş gerilir."),
+ L("Weighted Crunch",3,"10–15","0–1",60,"Karın.")];
+var EX_3P2=[
+ L("Pull-Up",4,"6–10","1–2",150,"Nötr tutuş. Kanat genişliği."),
+ L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",120,"Sırt destekli, eksenel yük yok."),
+ L("One-Arm Dumbbell Row",4,"8–12","1–2",120,"Zayıf taraftan başla."),
+ L("Incline Dumbbell Fly",3,"10–15","0–2",90,"Üst göğüs gerinme."),
+ L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"2. yan omuz dozu."),
+ L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60,"Dik duruş."),
+ L("Dumbbell Preacher Curl",3,"10–15","0–2",75,"Kısa baş."),
+ L("Dumbbell Kickback",3,"12–15","0–2",75,"Triceps yan baş."),
+ L("Dumbbell Shrug",2,"10–15","0–2",90,"Üst trapez."),
+ L("Reverse Crunch",2,"12–20","0–1",60,"Alt karın.")];
 function S(short,name,focus,ex){ return {short:short,name:name,focus:focus,ex:JSON.parse(JSON.stringify(ex))}; }
 var BUILTIN={
- p5:{id:"p5",name:"5 Gün",desc:"Üst-Tam → Alt-A → Üst-İtiş → Alt-B → Üst-Çekiş · Her kas 2×, omuz 3×",builtin:true,
-   rhythm:["T","T","R","T","T","T","R"],seq:["U1","L1","U2","L2","U3"],
-   sessions:{U1:S("Üst-Tam","HAFTANIN AĞIR GÜNÜ","Tüm üst vücut. Ağır bileşikler taze haldeyken.",EX_U1),
-     L1:S("Alt-A","BACAK · KALÇA · KARIN","Quad ağırlıklı, kısa dinlenme, yağ yakım.",EX_L1),
-     U2:S("Üst-İtiş","GÖĞÜS · OMUZ · TRICEPS","Göğüs üst/orta/alt, omuz, triceps tüm başlar.",EX_U2),
-     L2:S("Alt-B","ARKA ZİNCİR · KARIN","Hamstring, kalça, karın alt.",EX_L2),
-     U3:S("Üst-Çekiş","SIRT · ARKA OMUZ · BICEPS","Sırt tüm bölgeler, biceps tüm kısımlar, trapez.",EX_U3)}},
- p4:{id:"p4",name:"4 Gün",desc:"Üst-A → Alt-A → Üst-B → Alt-B · Her kas 2×",builtin:true,
-   rhythm:["T","T","R","T","T","R","R"],seq:["UA","LA","UB","LB"],
-   sessions:{UA:S("Üst-A","İTİŞ AĞIRLIKLI TAM ÜST","Tüm üst vücut, itiş önce.",EX_U1),
-     LA:S("Alt-A","BACAK · KALÇA · KARIN","Quad ağırlıklı, kısa dinlenme.",EX_L1),
-     UB:S("Üst-B","ÇEKİŞ AĞIRLIKLI TAM ÜST","Tüm üst vücut, çekiş önce; A'da olmayanları tamamlar.",EX_UB),
-     LB:S("Alt-B","ARKA ZİNCİR · KARIN","Hamstring, kalça, karın alt.",EX_L2)}},
- p3:{id:"p3",name:"3 Gün",desc:"Tüm Vücut A → B → C · Her kas 3×, alt bölgeler dönüşümlü",builtin:true,
-   rhythm:["T","R","T","R","T","R","R"],seq:["F1","F2","F3"],
-   sessions:{F1:S("Tüm-A","TÜM VÜCUT A","Üst göğüs + dikey çekiş + quad ağır.",EX_F1),
-     F2:S("Tüm-B","TÜM VÜCUT B","Yatay çekiş + orta göğüs + kalça ağır.",EX_F2),
-     F3:S("Tüm-C","TÜM VÜCUT C","Kanat + alt göğüs/triceps + yüksek tekrar quad.",EX_F3)}}
+ p5:{id:"p5",name:"5 Gün",desc:"İtiş → Çekiş → Alt → İtiş 2 → Çekiş 2 · Üst 2×, alt 1× · ~127 set/hafta",builtin:true,
+   rhythm:["T","T","R","T","T","T","R"],seq:["P1","P2","LEG","P3","P4"],
+   sessions:{P1:S("İtiş 1","GÖĞÜS · TRICEPS · OMUZ","Göğüs öncelikli itiş. Haftanın en ağır göğüs işi taze haldeyken.",EX_P1),
+     P2:S("Çekiş 1","KANAT · BICEPS · TRAPEZ","Kanat genişlik + kalınlık + izolasyon, biceps uzun baş.",EX_P2),
+     LEG:S("Alt","BACAK · KALÇA · KARIN","Haftanın tek bacak günü — tüm alt bölgeler tek seansta, kısa dinlenme.",EX_LEG),
+     P3:S("İtiş 2","OMUZ · GÖĞÜS · TRICEPS","Omuz öncelikli itiş. Yan omuz taze haldeyken ilk sırada.",EX_P3),
+     P4:S("Çekiş 2","SIRT KALINLIK · KOL","Tek kol sırt, arka omuz, biceps kısa baş ve ön kol.",EX_P4)}},
+ p4:{id:"p4",name:"4 Gün",desc:"İtiş → Çekiş → Alt → Üst Tam · Üst 2×, alt 1× · ~104 set/hafta",builtin:true,
+   rhythm:["T","T","R","T","T","R","R"],seq:["P1","P2","LEG","P3"],
+   sessions:{P1:S("İtiş","GÖĞÜS · OMUZ · TRICEPS","İtiş öncelikli. Göğüs ve omuz ağır bileşiklerle.",EX_4P1),
+     P2:S("Çekiş","KANAT · BICEPS · TRAPEZ","Çekiş öncelikli. Kanat ve biceps tüm kısımlar.",EX_4P2),
+     LEG:S("Alt","BACAK · KALÇA · KARIN","Haftanın tek bacak günü — tüm alt bölgeler.",EX_LEG),
+     P3:S("Üst Tam","OMUZ ÖNCELİK · DENGE","Yan omuz taze haldeyken; itiş ve çekişin ikinci dozu.",EX_4P3)}},
+ p3:{id:"p3",name:"3 Gün",desc:"Üst A → Alt → Üst B · Üst 2×, alt 1× · ~76 set/hafta",builtin:true,
+   rhythm:["T","R","T","R","T","R","R"],seq:["U1","LEG","U2"],
+   sessions:{U1:S("Üst A","TAM ÜST — İTİŞ ÖNCE","Tüm üst vücut. İtiş bileşikleri taze haldeyken.",EX_3P1),
+     LEG:S("Alt","BACAK · KALÇA · KARIN","Haftanın tek bacak günü — tüm alt bölgeler.",EX_LEG),
+     U2:S("Üst B","TAM ÜST — ÇEKİŞ ÖNCE","Tüm üst vücut. Çekiş bileşikleri taze haldeyken.",EX_3P2)}}
 };
 var MONTHS=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 var DOWN=["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"];
@@ -528,6 +737,19 @@ try{DB=JSON.parse(STORE.get('boyka8')||'{}')||{};}catch(e){DB={};}
   if(!DB.media) DB.media={};              // exName -> {type,data}
   if(!DB.programs) DB.programs={};        // custom programs
   if(DB.configured===undefined) DB.configured=false;
+  // Geçiş: program içeriği yenilendiğinde çözülemeyen override'ları temizle
+  if(DB.progVersion!==5){
+    var cleaned=0;
+    for(var ok in DB.overrides){
+      var ov=DB.overrides[ok];
+      if(ov!=='OFF'){
+        var pp=String(ov).split('|'), pr=BUILTIN[pp[0]]||(DB.programs&&DB.programs[pp[0]]);
+        if(!pr||!pr.sessions||!pr.sessions[pp[1]]){ delete DB.overrides[ok]; cleaned++; }
+      }
+    }
+    DB.progVersion=5;
+    try{ STORE.set('boyka8',JSON.stringify(DB)); }catch(e){}
+  }
 })();
 var _cacheVer=0;
 function save(){ _cacheVer++; if(!STORE.set('boyka8',JSON.stringify(DB))) toast('Depolama dolu olabilir'); }
@@ -650,7 +872,7 @@ function cardHTML(k,sk,e,i){
   var lp=lastPerformance(name,k), lpH='';
   if(lp){ var pd=pdkey(lp.dk); lpH='<div class="lastperf">Geçen sefer ('+pd.getDate()+' '+MONTHS[pd.getMonth()].slice(0,3)+'): '+lp.sets.map(function(x){return '<b>'+(x.w||'–')+'×'+(x.r||'–')+'</b>';}).join(' · ')+'</div>'; }
   return '<div class="ex'+(done?' done':'')+'" id="card-'+i+'"><div class="ex-main"><div class="ex-photo" onclick="openMedia('+i+')">'+ph+'</div><div class="ex-body"><div class="ex-num">#'+(i+1)+(e.t?' · '+e.t:'')+'</div><div class="ex-name">'+name+'</div>'+
-    '<div class="ex-chips"><span class="chip set">'+e.sets+' × '+e.reps+'</span><span class="chip rir">RIR '+e.rir+'</span><span class="chip">'+e.rest+' sn</span></div></div></div>'+lpH+
+    '<div class="ex-chips"><span class="chip set">'+e.sets+' × '+e.reps+'</span><span class="chip rir">RIR '+e.rir+'</span><span class="chip">'+e.rest+' sn</span></div></div></div>'+lpH+(e.cue?'<div class="cue">💡 '+e.cue+'</div>':'')+
     '<div class="varsel"><div class="varbtn'+(vr==='free'?' on':'')+'" onclick="setVar('+i+',\'free\')"><div class="vk">Dambıl / Serbest</div><div class="vv">'+e.free+'</div></div><div class="varbtn'+(vr==='mac'?' on':'')+'" onclick="setVar('+i+',\'mac\')"><div class="vk">Makine / Kablo</div><div class="vv">'+e.mac+'</div></div></div>'+
     '<div class="ex-foot"><button onclick="openLog('+i+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Setleri Gir</button><button class="mid'+(done?' dn':'')+'" onclick="toggleDone('+i+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>'+(done?'Bitti':'Bitir')+'</button></div></div>';
 }
