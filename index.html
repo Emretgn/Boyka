@@ -225,6 +225,19 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .msinput label small{display:block;font-family:'Barlow Condensed',sans-serif;font-size:10.5px;color:var(--dim);letter-spacing:.05em;}
 .msinput input{background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:11px 9px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;width:100%;}
 .msinput input:focus{outline:none;border-color:var(--amber);}
+.msprofil{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px 12px 4px;margin-bottom:13px;}
+.msph{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber2);margin-bottom:9px;}
+.msgh{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:15px 0 8px;padding-top:11px;border-top:1px solid var(--line);}
+.msgh b{color:var(--amber2);font-weight:600;}
+.bfcard{background:linear-gradient(135deg,#2a1c08,#1a1209);border:1px solid rgba(245,166,35,.35);border-radius:15px;padding:15px;margin-bottom:12px;}
+.bfcard .bfv{font-family:'Anton',sans-serif;font-size:38px;color:var(--amber);line-height:1;}
+.bfcard .bfu{font-size:17px;color:var(--amber2);}
+.bfcard .bfm{font-family:'Barlow Condensed',sans-serif;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-top:5px;}
+.bfcard .bfn{font-size:12px;color:var(--mut);line-height:1.45;margin-top:9px;}
+.bfsplit{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;}
+.bfsplit div{background:rgba(0,0,0,.28);border-radius:10px;padding:9px 11px;}
+.bfsplit b{display:block;font-family:'Anton',sans-serif;font-size:19px;color:var(--ink);}
+.bfsplit span{font-family:'Barlow Condensed',sans-serif;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
 .statbox{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px;}
 .statbox .sv{font-family:'Anton',sans-serif;font-size:21px;color:var(--amber2);line-height:1.1;word-break:break-word;}
 .statbox .sl{font-family:'Barlow Condensed',sans-serif;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-top:4px;}
@@ -432,6 +445,26 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
       <tr><td class="n">1–2</td><td>Çok düşük ya da hiç zorlanma</td></tr>
     </table>
     <p style="margin-top:10px">RPE girmek zorunlu değil ama <b>girmezsen uygulama sana kilo artışı öneremez</b> — ilerleme kararı tamamen bu sayıya dayanıyor.</p></div>
+
+  <div class="card info"><h4>Vücut Yağ Oranı Nasıl Hesaplanıyor</h4>
+    <p>Ölçüler sekmesine veri girdikçe yağ oranın otomatik hesaplanıyor. Uygulama elindeki veriye göre <b>en doğru yöntemi kendisi seçiyor</b>. Doğruluk sıralaması Merrill ve ark. (2020, <i>Obesity Science &amp; Practice</i> 6(2):189–195) çalışmasının DXA altın standardına karşı ölçtüğü hata paylarına dayanıyor.</p>
+    <table class="rpetab"><tr><th>Yöntem</th><th>Gereken</th><th>Hata (RMSE)</th></tr>
+      <tr><td>Jackson-Pollock 3 bölge</td><td>Kaliper + boy + doğum yılı</td><td class="n">%15,6</td></tr>
+      <tr><td>ABD Donanması</td><td>Boy + boyun + göbek</td><td class="n">%17,3</td></tr>
+      <tr><td>RFM</td><td>Boy + bel</td><td class="n">%19,4</td></tr>
+      <tr><td>Durnin-Womersley</td><td>Kaliper 4 bölge</td><td class="n">%29,7</td></tr>
+    </table>
+    <p style="margin-top:10px"><b>Jackson-Pollock 3 bölge</b> — göğüs, karın ve uyluktan kaliperle deri kıvrımı ölçülür. Vücut yoğunluğu hesaplanır, Siri denklemiyle yağ oranına çevrilir:</p>
+    <p style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 11px">Yoğunluk = 1,10938 − 0,0008267×T + 0,0000016×T² − 0,0002574×yaş<br>Yağ% = 495 / Yoğunluk − 450<br><span style="color:var(--dim)">T = üç kıvrımın toplamı (mm)</span></p>
+    <p><b>ABD Donanması</b> (Hodgdon &amp; Beckett 1984) — kaliper gerektirmeyen en iyi yöntem. Sadece mezura yeter:</p>
+    <p style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 11px">Yağ% = 495 / (1,0324 − 0,19077×log₁₀(göbek−boyun) + 0,15456×log₁₀(boy)) − 450</p>
+    <p><b>RFM</b> (Woolcott &amp; Bergman 2018) — en az veriyle çalışan yedek yöntem: <code>Yağ% = 64 − (20 × boy / bel)</code></p>
+    <p>Yağ oranı elle girersen (akıllı tartı, InBody vb.) o değer hesabı ezer.</p></div>
+
+  <div class="card info reality"><h4>Yağ Oranı Rakamına Dikkat</h4>
+    <p>Hiçbir formül DXA veya hidrostatik tartım kadar doğru değil — en iyisinde bile <b>yaklaşık ±4 puanlık</b> bir sapma payı var. Yani %18 çıkan bir sonuç gerçekte %14 ile %22 arasında olabilir.</p>
+    <p><b>Mutlak rakama değil, kendi eğrine bak.</b> Aynı yöntemle, aynı koşulda (sabah, aç karnına, aynı mezura gerginliği) ölçtüğün sürece <b>değişimin yönü</b> güvenilirdir. Bel 4 cm inip yağsız kütlen sabit kaldıysa yağ kaybediyorsundur — ekrandaki yüzde %21 mi %17 mi, o kadar önemli değil.</p>
+    <p>Donanma yöntemi <b>kaslı kişilerde düşük tahmin</b> eder (boyun kalınsa), RFM ise genelde <b>yüksek tahmin</b> eder. Yöntem değiştirirsen eğri kırılır — mümkünse hep aynı yöntemde kal.</p></div>
 
   <div class="card info"><h4>Kilo Nasıl İlerliyor</h4>
     <p>Sabit bir "önerilen kilo" listesi yok. Her hareketin kartında <b>o hareketi en son ne zaman yaptıysan</b> oradaki kilolar, tekrarlar ve RPE duruyor — hangi gün, hangi program olduğu fark etmez, eşleştirme <b>hareket adına</b> göre yapılır.</p>
@@ -695,6 +728,11 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 <div class="modal-bg" id="measureModal"><div class="modal">
   <h3>Beden Ölçüsü</h3><div class="msub">Boş bıraktıkların kaydedilmez — sadece ölçtüklerini gir</div>
   <div class="field"><label>Tarih</label><input type="date" id="msDate"></div>
+  <div class="msprofil">
+    <div class="msph">Sabit Bilgiler — yağ oranı hesabı için gerekli</div>
+    <div class="msinput"><label>Boy<small>cm</small></label><input type="number" inputmode="decimal" step="0.5" id="ms-boy" onfocus="scrollIn(this)"></div>
+    <div class="msinput"><label>Doğum Yılı<small>yıl</small></label><input type="number" inputmode="numeric" id="ms-dogum" placeholder="1988" onfocus="scrollIn(this)"></div>
+  </div>
   <div id="msFields"></div>
   <div class="modal-actions"><button class="btn ghost" onclick="hide('measureModal')">Vazgeç</button><button class="btn prim" onclick="saveMeasure()">Kaydet</button></div>
   <button class="actbtn" style="margin-top:8px" id="msDelBtn" onclick="deleteMeasure()">Bu tarihteki ölçümü sil</button>
@@ -1058,6 +1096,7 @@ try{DB=JSON.parse(STORE.get('boyka8')||'{}')||{};}catch(e){DB={};}
   if(!DB.exnote) DB.exnote={};            // exName||dateKey -> kısa not
   if(typeof DB.nutrition!=='string') DB.nutrition=NUT_DEFAULT;   // beslenme planı — kullanıcı düzenleyebilir
   if(!DB.body) DB.body={};                // dateKey -> {kilo,bel,gogus,...} beden ölçüleri
+  if(!DB.profile) DB.profile={};          // {boy:cm, dogum:yıl} — yağ oranı hesabı için sabit veriler
   if(!DB.done) DB.done={};                // dateKey||sessKey||idx -> 1
   if(!DB.daydone) DB.daydone={};
   if(!DB.logs) DB.logs={};                // exName||dateKey -> [{w,r,d}]
@@ -1819,12 +1858,66 @@ var BM=[
  ['kolL','Sol Kol (kasılı)','cm',1],['kolR','Sağ Kol (kasılı)','cm',1],
  ['onkolL','Sol Önkol','cm',0],['onkolR','Sağ Önkol','cm',0],
  ['uylukL','Sol Uyluk','cm',0],['uylukR','Sağ Uyluk','cm',0],
- ['baldirL','Sol Baldır','cm',0],['baldirR','Sağ Baldır','cm',0]
+ ['baldirL','Sol Baldır','cm',0],['baldirR','Sağ Baldır','cm',0],
+ ['kat_gogus','Göğüs Kıvrımı','mm',0,'kat'],['kat_karin','Karın Kıvrımı','mm',0,'kat'],['kat_uyluk','Uyluk Kıvrımı','mm',0,'kat']
 ];
+
+/* ═══════════ VÜCUT YAĞ ORANI — otomatik hesap ═══════════
+   Yöntemler, DXA'ya karşı doğruluk sırasına göre denenir (Merrill ve ark. 2020,
+   Obesity Science & Practice 6(2):189-195 — RMSE: Jackson kıvrım %15,6 ·
+   ABD Donanması %17,3 · RFM %19,4 · Durnin %29,7).                        */
+function yasHesapla(dk){
+  var d=parseInt(DB.profile.dogum,10); if(!d||d<1900) return 0;
+  var y; try{ y=pdkey(dk).getFullYear(); }catch(e){ y=new Date().getFullYear(); }
+  var a=y-d; return (a>5&&a<110)?a:0;
+}
+function log10(x){ return Math.log(x)/Math.LN10; }
+function bodyFat(dk){
+  var m=DB.body[dk]; if(!m) return null;
+  var boy=parseFloat(DB.profile.boy)||0, yas=yasHesapla(dk);
+
+  /* 1 — Jackson & Pollock 3 bölge (göğüs + karın + uyluk). Kaliper ister, en doğrusu. */
+  var g=parseFloat(m.kat_gogus)||0, k=parseFloat(m.kat_karin)||0, u=parseFloat(m.kat_uyluk)||0;
+  if(g>0&&k>0&&u>0&&yas>0){
+    var S=g+k+u;
+    var BD=1.10938 - 0.0008267*S + 0.0000016*S*S - 0.0002574*yas;
+    var v=495/BD-450;
+    if(v>2&&v<70) return {v:v, y:'Jackson-Pollock 3 bölge', k:'kaliper', n:'En doğru yöntem (DXA\'ya karşı RMSE %15,6)'};
+  }
+  /* 2 — ABD Donanması (Hodgdon-Beckett). Sadece mezura; göbek çevresi ve boyun. */
+  var boyun=parseFloat(m.boyun)||0, bel=parseFloat(m.gobek)||parseFloat(m.bel)||0;
+  if(boy>0&&boyun>0&&bel>boyun){
+    var v2=495/(1.0324 - 0.19077*log10(bel-boyun) + 0.15456*log10(boy)) - 450;
+    if(v2>2&&v2<70) return {v:v2, y:'ABD Donanması', k:'mezura', n:'Kaliper gerektirmeyen en iyi yöntem (RMSE %17,3). Kaslı kişilerde bir miktar düşük tahmin eder.'};
+  }
+  /* 3 — RFM (Woolcott & Bergman 2018). Sadece boy ve bel. */
+  var b3=parseFloat(m.bel)||parseFloat(m.gobek)||0;
+  if(boy>0&&b3>0){
+    var v3=64-(20*boy/b3);
+    if(v3>2&&v3<70) return {v:v3, y:'RFM', k:'mezura', n:'Boyun ölçüsünü de girersen daha doğru yönteme (Donanma) geçer.'};
+  }
+  return null;
+}
+/* O tarihteki geçerli yağ oranı: elle girilmişse o, yoksa hesaplanan */
+function yagOf(dk){
+  var m=DB.body[dk]; if(!m) return null;
+  var el=parseFloat(m.yag);
+  if(!isNaN(el)&&el>0) return {v:el, y:'elle girildi', k:'elle', n:''};
+  return bodyFat(dk);
+}
 var LOWBEST={kilo:1,yag:1,bel:1,gobek:1,kalca:1};
 var bodySel=null;
 function bodyDates(){ var a=[]; for(var k in DB.body) a.push(k); a.sort(function(x,y){ return pdkey(x)-pdkey(y); }); return a; }
-function bodySeries(f){ var o=[]; bodyDates().forEach(function(dk){ var v=parseFloat(DB.body[dk][f]); if(!isNaN(v)) o.push({dk:dk,v:v}); }); return o; }
+function bodySeries(f){
+  var o=[];
+  bodyDates().forEach(function(dk){
+    var v;
+    if(f==='yag'){ var b=yagOf(dk); v=b?Math.round(b.v*10)/10:NaN; }
+    else v=parseFloat(DB.body[dk][f]);
+    if(!isNaN(v)) o.push({dk:dk,v:v});
+  });
+  return o;
+}
 
 function renderBody(){
   var ds=bodyDates(), host=document.getElementById('bodySummary');
@@ -1834,13 +1927,29 @@ function renderBody(){
     document.getElementById('bodyChartWrap').innerHTML=''; return;
   }
   var last=ds[ds.length-1], prev=ds.length>1?ds[ds.length-2]:null, first=ds[0];
-  var h='<div class="card"><h4>Son Ölçüm · '+fmtDate(pdkey(last))+'</h4>';
+  /* ── vücut yağ oranı kartı ── */
+  var bf=yagOf(last), bfH='';
+  if(bf){
+    var kg=parseFloat(DB.body[last].kilo)||0;
+    var yagKg=kg?kg*bf.v/100:0, yagsiz=kg?kg-yagKg:0;
+    var oncBf=prev?yagOf(prev):null, fark=oncBf?(Math.round((bf.v-oncBf.v)*10)/10):null;
+    bfH='<div class="bfcard" onclick="pickBody(\'yag\')"><div><span class="bfv">'+(Math.round(bf.v*10)/10)+'</span><span class="bfu">%</span>'+
+      (fark!==null?' <span style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:600;color:'+(fark<0?'var(--good)':(fark>0?'var(--blood)':'var(--dim)'))+'">'+(fark>0?'+':'')+fark+'</span>':'')+
+      '</div><div class="bfm">Vücut Yağ Oranı · '+bf.y+' · grafiği için dokun</div>'+
+      (kg?('<div class="bfsplit"><div><b>'+(Math.round(yagKg*10)/10)+' kg</b><span>Yağ Kütlesi</span></div>'+
+           '<div><b>'+(Math.round(yagsiz*10)/10)+' kg</b><span>Yağsız Kütle</span></div></div>'):'')+
+      (bf.n?('<div class="bfn">'+bf.n+'</div>'):'')+'</div>';
+  } else if(!DB.profile.boy){
+    bfH='<div class="card info"><h4>Yağ Oranı Hesaplanamıyor</h4><p><b>Boyunu</b> girersen vücut yağ oranın otomatik hesaplanır. Boy + bel yeterli; <b>boyun çevresini</b> de eklersen daha doğru yönteme geçer, <b>kaliper</b> ölçümü girersen en doğrusuna.</p></div>';
+  }
+  var h=bfH+'<div class="card"><h4>Son Ölçüm · '+fmtDate(pdkey(last))+'</h4>';
   var vt=null, L=DB.body[last];
   if(L.omuz&&L.bel){ vt=Math.round(parseFloat(L.omuz)/parseFloat(L.bel)*100)/100; }
   if(vt) h+='<div class="statgrid" style="margin-bottom:10px"><div class="statbox"><div class="sv">'+vt+'</div><div class="sl">Omuz / Bel Oranı (V)</div></div>'+
        '<div class="statbox"><div class="sv">'+ds.length+'</div><div class="sl">Toplam Ölçüm</div></div></div>';
   h+='</div>';
   BM.forEach(function(f){
+    if(f[0]==='yag') return;   // yağ oranı yukarıdaki kartta gösteriliyor
     var cur=parseFloat(L[f[0]]); if(isNaN(cur)) return;
     var p=prev?parseFloat(DB.body[prev][f[0]]):NaN;
     var fi=parseFloat(DB.body[first][f[0]]);
@@ -1871,12 +1980,16 @@ function openMeasure(){
   var t=new Date();
   document.getElementById('msDate').value=isoDate(t);
   var dk=dkey(t), cur=DB.body[dk]||{};
-  var h='';
+  var h='', katBasladi=false;
   BM.forEach(function(f){
+    if(f[4]==='kat'&&!katBasladi){ katBasladi=true;
+      h+='<div class="msgh"><b>Kaliper Ölçümleri</b> — isteğe bağlı, girersen yağ oranı en doğru yöntemle hesaplanır</div>'; }
     h+='<div class="msinput"><label>'+f[1]+'<small>'+f[2]+'</small></label>'+
        '<input type="number" inputmode="decimal" step="0.1" id="ms-'+f[0]+'" value="'+(cur[f[0]]!==undefined?cur[f[0]]:'')+'" onfocus="scrollIn(this)"></div>';
   });
   document.getElementById('msFields').innerHTML=h;
+  document.getElementById('ms-boy').value=DB.profile.boy||'';
+  document.getElementById('ms-dogum').value=DB.profile.dogum||'';
   document.getElementById('msDelBtn').style.display=DB.body[dk]?'block':'none';
   document.getElementById('msDate').onchange=function(){ loadMeasure(); };
   show('measureModal');
@@ -1895,7 +2008,12 @@ function saveMeasure(){
     var t=String(el.value).trim().replace(',','.');
     if(t!==''){ var n=parseFloat(t); if(!isNaN(n)&&n>0){ o[f[0]]=Math.round(n*10)/10; any=true; } }
   });
-  if(!any){ toast('En az bir ölçü gir'); return; }
+  /* sabit bilgiler ölçümden bağımsız saklanır */
+  var bo=parseFloat(String(document.getElementById('ms-boy').value).replace(',','.'));
+  var dg=parseInt(document.getElementById('ms-dogum').value,10);
+  if(!isNaN(bo)&&bo>80&&bo<260) DB.profile.boy=Math.round(bo*10)/10;
+  if(!isNaN(dg)&&dg>1900&&dg<2030) DB.profile.dogum=dg;
+  if(!any){ if(DB.profile.boy||DB.profile.dogum){ save(); hide('measureModal'); renderBody(); toast('Sabit bilgiler kaydedildi'); return; } toast('En az bir ölçü gir'); return; }
   DB.body[dk]=o; save(); hide('measureModal'); renderBody(); toast('Ölçüm kaydedildi');
 }
 function deleteMeasure(){
@@ -1946,9 +2064,9 @@ function nutSave(){ DB.nutrition=document.getElementById('nutEdit').value; save(
 function nutReset(){ if(!confirm('Koçun orijinal beslenme planına dönülsün mü? Kendi değişikliklerin silinir.')) return; DB.nutrition=NUT_DEFAULT; save(); document.getElementById('nutRead').style.display='block'; renderNut(); toast('Koçun planına dönüldü'); }
 
 /* ═══════════ BACKUP / RESET ═══════════ */
-function openBackup(){ var slim={}; ['startDate','activeProgram','weekPrograms','overrides','done','daydone','logs','rpe','exnote','nutrition','body','programs','configured','progVersion'].forEach(function(f){slim[f]=DB[f];}); document.getElementById('backupBox').value=JSON.stringify(slim); show('backupModal'); }
+function openBackup(){ var slim={}; ['startDate','activeProgram','weekPrograms','overrides','done','daydone','logs','rpe','exnote','nutrition','body','profile','programs','configured','progVersion'].forEach(function(f){slim[f]=DB[f];}); document.getElementById('backupBox').value=JSON.stringify(slim); show('backupModal'); }
 function copyBackup(){ var ta=document.getElementById('backupBox'); ta.select(); ta.setSelectionRange(0,999999); try{ if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value); else document.execCommand('copy'); toast('Kopyalandı'); }catch(e){toast('Manuel seçip kopyala');} }
-function restoreBackup(){ var v=document.getElementById('backupBox').value.trim(); if(!v){toast('Boş');return;} try{ var o=JSON.parse(v); if(!o||typeof o!=='object') throw 0; if(!confirm('Mevcut veriler bu yedekle değiştirilecek. Devam?')) return; ['startDate','activeProgram','weekPrograms','overrides','done','daydone','logs','rpe','exnote','nutrition','body','programs','configured','progVersion'].forEach(function(f){if(o[f]!==undefined)DB[f]=o[f];}); save(); hide('backupModal'); showView('cal'); toast('Geri yüklendi'); }catch(e){toast('Yedek metni geçersiz');} }
+function restoreBackup(){ var v=document.getElementById('backupBox').value.trim(); if(!v){toast('Boş');return;} try{ var o=JSON.parse(v); if(!o||typeof o!=='object') throw 0; if(!confirm('Mevcut veriler bu yedekle değiştirilecek. Devam?')) return; ['startDate','activeProgram','weekPrograms','overrides','done','daydone','logs','rpe','exnote','nutrition','body','profile','programs','configured','progVersion'].forEach(function(f){if(o[f]!==undefined)DB[f]=o[f];}); save(); hide('backupModal'); showView('cal'); toast('Geri yüklendi'); }catch(e){toast('Yedek metni geçersiz');} }
 function resetAll(){ if(confirm('Tüm ilerleme, kayıt ve medya silinecek. Özel programların korunur. Emin misin?')&&confirm('Son onay: geri alınamaz.')){ DB.done={};DB.daydone={};DB.logs={};DB.rpe={};DB.exnote={};DB.media={};DB.overrides={};DB.weekPrograms={}; save(); showView('cal'); toast('Sıfırlandı'); } }
 
 /* ═══════════ VIEWS / UTIL ═══════════ */
