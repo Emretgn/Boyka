@@ -108,16 +108,38 @@ border-bottom:1px solid var(--line);padding:12px 16px 11px;padding-top:calc(12px
 .chip{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11.5px;padding:3px 7px;border-radius:6px;text-transform:uppercase;background:var(--panel2);border:1px solid var(--line);color:var(--mut);}
 .chip.set{background:var(--amber);color:#1a1205;border-color:var(--amber);}
 .chip.rir{background:rgba(216,67,26,.14);border-color:rgba(216,67,26,.38);color:#ff7a52;}
+.chip.rpe{background:rgba(216,67,26,.14);border-color:rgba(216,67,26,.38);color:#ff7a52;}
 .lastperf{background:var(--panel2);border-top:1px solid var(--line);padding:8px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--dim);}
 .lastperf b{color:var(--amber2);}
 .cue{font-size:11.5px;color:var(--dim);font-style:italic;padding:9px 12px 0;line-height:1.45;border-top:1px solid var(--line);}
-.varsel{display:flex;gap:6px;padding:10px 12px 11px;}
-.varbtn{flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:8px 7px;cursor:pointer;text-align:left;position:relative;}
-.varbtn .vk{font-family:'Barlow Condensed',sans-serif;font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);}
-.varbtn .vv{font-size:12px;color:var(--ink);margin-top:2px;line-height:1.25;font-weight:500;}
-.varbtn.on{border-color:var(--amber);background:linear-gradient(180deg,#241d0e,var(--panel2));}
-.varbtn.on .vk{color:var(--amber);}
-.varbtn.on::after{content:"✓";position:absolute;top:6px;right:7px;color:var(--amber);font-size:10px;font-weight:700;}
+/* SON KEZ kutusu — hareketin en son yapıldığı veriler (günden bağımsız) */
+.lastbox{margin:0 12px 11px;border:1px solid var(--line);background:var(--panel2);border-radius:10px;overflow:hidden;}
+.lastbox.fresh{border-color:rgba(245,166,35,.42);}
+.lb-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 10px 5px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+.lb-h .ago{color:var(--amber2);letter-spacing:.02em;}
+.lb-sets{display:flex;flex-wrap:wrap;gap:5px;padding:0 10px 8px;}
+.lb-set{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12.5px;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 7px;color:var(--ink);}
+.lb-set b{color:var(--amber2);}
+.lb-meta{padding:0 10px 8px;font-family:'Barlow Condensed',sans-serif;font-size:11.5px;color:var(--dim);}
+.lb-meta b{color:var(--mut);}
+.lb-t{display:flex;align-items:center;gap:7px;padding:7px 10px;border-top:1px solid var(--line);font-family:'Barlow Condensed',sans-serif;font-size:12px;line-height:1.3;}
+.lb-t .tg{font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-radius:5px;padding:2px 6px;white-space:nowrap;}
+.lb-t.up .tg{background:rgba(54,194,117,.17);color:var(--good);}
+.lb-t.hold .tg{background:rgba(245,166,35,.15);color:var(--amber2);}
+.lb-t.down .tg{background:rgba(216,67,26,.15);color:#ff7a52;}
+.lb-t .tx{color:var(--mut);}
+.lb-t .tx b{color:var(--ink);}
+.lb-none{padding:8px 10px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--dim);}
+.lb-none b{color:var(--amber2);}
+/* log modal: geçen sefer satırı + rpe/e1rm */
+.copyprev{width:100%;margin:-4px 0 13px;background:var(--panel2);border:1px dashed rgba(245,166,35,.45);color:var(--amber2);border-radius:10px;padding:9px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
+.copyprev:active{background:rgba(245,166,35,.12);}
+.rperow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+.rperow .field{margin:0;}
+.e1box{margin-top:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;display:flex;justify-content:space-between;align-items:baseline;font-family:'Barlow Condensed',sans-serif;}
+.e1box .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+.e1box .v{font-family:'Anton',sans-serif;font-size:19px;color:var(--amber2);}
+.e1box .d{font-size:11px;color:var(--dim);}
 .ex-foot{display:flex;border-top:1px solid var(--line);}
 .ex-foot button{flex:1;background:none;border:none;color:var(--mut);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;padding:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
 .ex-foot button.mid{border-left:1px solid var(--line);}
@@ -222,9 +244,27 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .rhy button.t{background:rgba(31,122,77,.25);border-color:var(--gym);color:#5fd39a;}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 /* nav */
-.nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:linear-gradient(180deg,rgba(14,15,18,.88),var(--bg));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:7px 6px calc(7px + env(safe-area-inset-bottom));}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:linear-gradient(180deg,rgba(14,15,18,.88),var(--bg));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 3px calc(7px + env(safe-area-inset-bottom));}
 .nav button{background:none;border:none;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;}
-.nav button svg{width:21px;height:21px;} .nav button.on{color:var(--amber);}
+.nav button svg{width:20px;height:20px;} .nav button.on{color:var(--amber);}
+/* ═══ BESLENME ═══ */
+.meal{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;}
+.meal-h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 13px;background:var(--panel2);border-bottom:1px solid var(--line);}
+.meal-h .mn{font-family:'Anton',sans-serif;font-size:15px;letter-spacing:.02em;color:var(--amber2);}
+.meal-h .mt{font-family:'Barlow Condensed',sans-serif;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);}
+.meal ul{margin:0;padding:10px 13px 11px 29px;}
+.meal li{font-size:13.5px;line-height:1.55;color:var(--ink);margin-bottom:3px;}
+.meal li:last-child{margin-bottom:0;}
+.meal .mnote{padding:0 13px 11px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--amber2);}
+.kcal{background:linear-gradient(135deg,#8c1d10,#c1440e);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px;}
+.kcal .kv{font-family:'Anton',sans-serif;font-size:27px;color:#fff;line-height:1;}
+.kcal .kl{font-family:'Barlow Condensed',sans-serif;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:4px;}
+#nutEdit{width:100%;min-height:360px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.6;resize:vertical;-webkit-appearance:none;}
+#nutEdit:focus{outline:none;border-color:var(--amber);}
+.rpetab{width:100%;border-collapse:collapse;margin-top:8px;}
+.rpetab th{background:var(--panel2);font-family:'Barlow Condensed',sans-serif;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding:7px 8px;text-align:left;border:1px solid var(--line);}
+.rpetab td{padding:6px 8px;border:1px solid var(--line);font-size:13px;color:var(--ink);}
+.rpetab td.n{font-family:'Anton',sans-serif;color:var(--amber2);width:62px;text-align:center;}
 .toast{position:fixed;bottom:calc(94px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(16px);background:var(--good);color:#04130a;font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:11px 19px;border-radius:24px;letter-spacing:.05em;text-transform:uppercase;font-size:12.5px;opacity:0;transition:.24s;z-index:300;pointer-events:none;max-width:88%;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .hidden{display:none!important;}
@@ -295,11 +335,84 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 </div>
 
 <!-- INFO -->
+<div class="view" id="view-nut">
+  <div class="card info"><h4>Beslenme Planı</h4><p>Koçunun verdiği plan. <b>İstediğin gibi değiştirebilirsin</b> — aşağıdaki düzenle düğmesiyle yazdığın hâli kalıcı olarak saklanır, yedeğe de dahil olur.</p></div>
+  <div id="nutRead"></div>
+  <div id="nutEditWrap" style="display:none">
+    <div class="card info"><h4>Düzenleme Biçimi</h4>
+      <p><code># Öğün adı</code> başlık · düz satır madde · <code>&gt; </code> ile başlayan satır not · <code>! </code> ile başlayan satır kalori kutusu · boş satır ayırıcı.</p></div>
+    <textarea id="nutEdit" spellcheck="false"></textarea>
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn ghost" onclick="nutCancel()">Vazgeç</button>
+      <button class="btn prim" onclick="nutSave()">Kaydet</button>
+    </div>
+    <button class="actbtn" style="margin-top:10px" onclick="nutReset()">Koçun orijinal planına dön</button>
+  </div>
+</div>
+
 <div class="view" id="view-info">
+  <div class="card info"><h4>RPE Skalası — Direnç Antrenmanına Özgü</h4>
+    <p>Her hareketin <b>son setinden sonra</b> uygulamaya RPE giriyorsun. RPE, o sette <b>kaç tekrar daha yapabilirdin</b> sorusunun cevabıdır (RIR = yedekte kalan tekrar).</p>
+    <table class="rpetab"><tr><th>RPE</th><th>RIR / Tanım</th></tr>
+      <tr><td class="n">10</td><td>Maksimal zorlanma — bir tekrar daha yok</td></tr>
+      <tr><td class="n">9.5</td><td>RIR = 0, fakat yük az miktarda arttırılabilir</td></tr>
+      <tr><td class="n">9</td><td>RIR = 1</td></tr>
+      <tr><td class="n">8.5</td><td>RIR 1, belki de 2</td></tr>
+      <tr><td class="n">8</td><td>RIR = 2</td></tr>
+      <tr><td class="n">7.5</td><td>RIR 2, belki de 3</td></tr>
+      <tr><td class="n">7</td><td>RIR = 3</td></tr>
+      <tr><td class="n">5–6</td><td>RIR = 4–6</td></tr>
+      <tr><td class="n">3–4</td><td>Düşük zorlanma</td></tr>
+      <tr><td class="n">1–2</td><td>Çok düşük ya da hiç zorlanma</td></tr>
+    </table>
+    <p style="margin-top:10px">RPE girmek zorunlu değil ama <b>girmezsen uygulama sana kilo artışı öneremez</b> — ilerleme kararı tamamen bu sayıya dayanıyor.</p></div>
+
+  <div class="card info"><h4>Kilo Nasıl İlerliyor</h4>
+    <p>Sabit bir "önerilen kilo" listesi yok. Her hareketin kartında <b>o hareketi en son ne zaman yaptıysan</b> oradaki kilolar, tekrarlar ve RPE duruyor — hangi gün, hangi program olduğu fark etmez, eşleştirme <b>hareket adına</b> göre yapılır.</p>
+    <ul>
+      <li><b>Son set RPE, hedefin 1.5+ altındaysa</b> → kiloyu ~%5 arttır (en az 2,5 kg)</li>
+      <li><b>0.5–1.5 altındaysa</b> → 2,5 kg ekle ya da aynı kiloda 1–2 tekrar fazla</li>
+      <li><b>Hedefteyse</b> → aynı kilo, bir tekrar fazla hedefle</li>
+      <li><b>Hedefin üstündeyse</b> → sabit kal, teknik üzerine çalış</li>
+      <li><b>RPE 10 (tükenme)</b> → ~%5 azalt, temiz setler yap</li>
+    </ul>
+    <p>Kartta bu karar <b>hazır yazılı</b> gelir. Uygulamada “Setleri Gir” ekranındaki <b>↻ Son seferin kilolarını doldur</b> düğmesi geçen seferin değerlerini tek dokunuşta getirir; üstüne eklemen yeterli.</p></div>
+
+  <div class="card info"><h4>Tahmini 1RM (e1RM) — Gerçek İlerleme Ölçütü</h4>
+    <p>Ham kilo yanıltır: 40 kg × 8 tekrar ile 45 kg × 5 tekrar hangisi daha iyi? e1RM ikisini tek sayıya çevirir.</p>
+    <p style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 11px">e1RM = kg × (1 + (tekrar + RIR) / 30)<br>RIR = 10 − RPE</p>
+    <p>RPE girildiğinde setin <b>gerçek</b> zorluğu hesaba katılır; girilmezse formül düz Epley'e düşer ve değeri olduğundan düşük gösterir. İstatistik sekmesindeki <b>Tah. 1RM</b> grafiği ve "Yeni rekor" bildirimi bu sayıya bakar.</p></div>
+
+  <div class="card info"><h4>Gidemediğin Gün Ne Oluyor</h4>
+    <p>“Gidemedim” dediğinde o günden sonraki <b>tüm program olduğu gibi ileri kayar</b> — antrenman sırası da, dinlenme günleri de aynı düzende peşinden gelir. Hiçbir antrenman atlanmaz, ritim bozulmaz.</p>
+    <p>Belirli bir gün seçersen aradaki günler izin olur ve program o günden itibaren aynı ritimle devam eder. <b>Geçmiş kayıtların hiçbir durumda etkilenmez.</b></p>
+    <p>“Farklı Çalış” ise kaydırmaz — o güne başka bir antrenman koyar, sıra oradan devam eder.</p></div>
+
+  <div class="card info reality"><h4>Bel Konusunda Dürüst Uyarı</h4>
+    <p>Koçunun programında <b>bele yük bindiren üç hareket</b> var: <b>Hyper Extension</b>, <b>Barbell Row (Overhand Grip)</b>, <b>Dumbbell RDL</b>. Karın bloğundaki <b>Lying Leg Raise</b> de bel yerden kalkarsa zorlar.</p>
+    <p>Programı koçunun yazdığı gibi yansıttım, bu hareketleri silmedim — ama kartlarında ⚠ uyarısı duruyor. Bel hassasiyetin devam ediyorsa:</p>
+    <ul>
+      <li><b>Hyper Extension</b> → atla veya ROM'u yarıya indir, hiç ağırlık tutma</li>
+      <li><b>Barbell Row</b> → Chest Supported Row ile değiştir (aynı kas, bel yükü yok)</li>
+      <li><b>Dumbbell RDL</b> → Seated / Lying Leg Curl ile değiştir</li>
+      <li><b>Lying Leg Raise</b> → bel kalkıyorsa dizleri bük, ROM'u kısalt</li>
+    </ul>
+    <p>Değiştirmek istersen: <b>Program</b> sekmesi → programı kopyala → hareketi düzenle. Orijinal program bozulmaz.</p>
+    <p><b>Keskin bel ağrısı = o hareketi hemen bırak.</b> Hiçbir program bir sakatlığa değmez.</p></div>
+
+  <div class="card info"><h4>Program Düzeni</h4>
+    <p>Koçun programı 4 antrenman: <b>Push-1 → Pull-1 → Push-2 → Pull-2</b>, ritim <b>2 çalış · 1 dinlen · 2 çalış · 2 dinlen</b>. Başlangıç <b>6 Ekim 2026, Salı</b>.</p>
+    <ul>
+      <li><b>Push günleri:</b> göğüs, omuz, biceps + quadriceps</li>
+      <li><b>Pull günleri:</b> sırt, triceps, hamstring</li>
+      <li><b>Karın:</b> Push-1 ve Pull-2 sonunda — Plate Crunch, Lying Leg Raise, Side Plank, Plank</li>
+    </ul>
+    <p>Alt vücut haftaya dağıtılmış durumda: Leg Extension, Hack Squat, Seated/Lying Leg Curl. Üst vücut önceliğin korunuyor.</p></div>
+
   <div class="card info reality"><h4>Önce Dürüst Konuşma</h4>
     <p>Kas kazanımı <b>yıllar ölçeğinde</b> bir projedir. Ayda en iyi ihtimalle ~0.25–0.5 kg yeni kas. Sonucu getiren aylarca süren tutarlılık ve progresif yüklenmedir.</p>
-    <p><b>Çizgili sırt ve belirgin karın</b> antrenmanla değil <b>yağ oranıyla</b> ortaya çıkar. Antrenman altındaki kası büyütür; çizgiyi mutfak açar.</p>
-    <p>Bu program mevcut en güncel kanıta dayanıyor ama meta-analizlerin çoğu 8–12 haftalık çalışmalardır ve popülasyon ortalaması bireysel yanıtı öngörmez. Asıl optimizasyon <b>senin kayıtlarında</b> olacak.</p></div>
+    <p><b>Çizgili sırt ve belirgin karın</b> antrenmanla değil <b>yağ oranıyla</b> ortaya çıkar. Antrenman altındaki kası büyütür; çizgiyi mutfak açar — beslenme sekmesi bu yüzden var.</p>
+    <p>Asıl optimizasyon <b>senin kayıtlarında</b> olacak: her set, her RPE, her e1RM.</p></div>
 
   <div class="card info"><h4>Bel Koruma — Mutlak Kural</h4>
     <p>Omurgaya eksenel yük bindiren, beli bükerek yükleyen veya belden dengeleme isteyen hiçbir hareket yok.</p>
@@ -450,11 +563,11 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 <!-- OFF MODAL -->
 <div class="modal-bg" id="offModal"><div class="modal">
   <h3>Bugün Gidemedim</h3><div class="msub" id="offSub"></div>
-  <div class="note">Bu gün izin olur, sıra kaymaz. Sıradaki antrenmanı <b>otomatik</b> bir sonraki antrenman gününe bırakabilir ya da <b>belirli bir güne</b> taşıyabilirsin. Sonraki günler oradan orijinal sırayla devam eder. Geçmiş kayıtların etkilenmez.</div>
+  <div class="note">Bu gün izin olur ve <b>tüm program olduğu gibi ileri kayar</b> — antrenman sırası da, dinlenme günleri de bozulmaz. <b>Otomatik</b> dersen bir gün, <b>belirli bir gün</b> seçersen o güne kadar kayar. Geçmiş kayıtların etkilenmez.</div>
   <div class="opt-list">
-    <div class="opt" onclick="doOff(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><div><div class="o-t">Otomatik kaydır</div><div class="o-s">Sıradaki antrenman bir sonraki antrenman gününe</div></div></div>
+    <div class="opt" onclick="doOff(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><div><div class="o-t">Bir gün ileri kaydır</div><div class="o-s">Bugünün antrenmanı yarına, kalan her şey aynı düzende peşinden</div></div></div>
   </div>
-  <div class="field" style="margin-top:12px"><label>Veya şu güne taşı</label><input type="date" id="offMoveDate"><div class="fhint">Aradaki günler izin olur; seçtiğin gün bugünün antrenmanı olur.</div></div>
+  <div class="field" style="margin-top:12px"><label>Veya şu güne taşı</label><input type="date" id="offMoveDate"><div class="fhint">Aradaki günler izin olur; seçtiğin gün bugünün antrenmanı olur ve program oradan aynı ritimle devam eder.</div></div>
   <div class="modal-actions"><button class="btn ghost" onclick="hide('offModal')">Vazgeç</button><button class="btn prim" onclick="doOffMove()">Taşı</button></div>
 </div></div>
 
@@ -470,8 +583,14 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 <div class="modal-bg" id="logModal"><div class="modal">
   <h3 id="logTitle">Hareket</h3><div class="msub" id="logSub"></div>
   <div class="prevbox hidden" id="prevBox"></div>
-  <div class="setlabels"><div></div><div>Ağırlık (kg)</div><div>Tekrar</div><div>✓</div></div>
+  <button class="copyprev hidden" id="copyPrevBtn" onclick="copyPrev()">↻ Son seferin kilolarını doldur</button>
+  <div class="setlabels"><div></div><div id="setLabW">Ağırlık (kg)</div><div id="setLabR">Tekrar</div><div>✓</div></div>
   <div id="setRows"></div>
+  <div class="rperow">
+    <div class="field"><label>Son Set RPE (1–10)</label><input type="number" inputmode="decimal" step="0.5" min="1" max="10" id="logRpe" placeholder="örn: 8" oninput="updE1()"></div>
+    <div class="field"><label>Not (isteğe bağlı)</label><input type="text" id="logNote" placeholder="örn: sol omuz sıkıştı"></div>
+  </div>
+  <div class="e1box" id="e1Box"><span class="k">Tahmini 1RM</span><span class="d">kilo + tekrar gir</span></div>
   <div class="modal-actions"><button class="btn ghost" onclick="hide('logModal')">Kapat</button><button class="btn prim" onclick="saveLog()">Kaydet</button></div>
 </div></div>
 
@@ -491,19 +610,18 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 <div class="modal-bg" id="exEditModal"><div class="modal">
   <h3 id="exEditTitle">Hareket</h3><div class="msub">Kütüphaneden seç veya kendin yaz</div>
   <div class="field"><label>Kütüphaneden Seç</label><select class="selbox" id="exLib" onchange="pickLib()"><option value="">— seç —</option></select></div>
-  <div class="two">
-    <div class="field"><label>Dambıl / Serbest</label><input type="text" id="exFree" placeholder="Dumbbell ..."></div>
-    <div class="field"><label>Makine / Kablo</label><input type="text" id="exMac" placeholder="... Machine"></div>
-  </div>
+  <div class="field"><label>Hareket Adı</label><input type="text" id="exName" placeholder="Incline Dumbbell Press"></div>
   <div class="field"><label>Hedef Bölge</label><input type="text" id="exT" placeholder="Örn: Üst göğüs, ön omuz"></div>
   <div class="two">
     <div class="field"><label>Set</label><input type="number" id="exSets" inputmode="numeric" value="3"></div>
-    <div class="field"><label>Tekrar</label><input type="text" id="exReps" placeholder="8–12"></div>
+    <div class="field"><label>Tekrar</label><input type="text" id="exReps" placeholder="10"></div>
   </div>
   <div class="two">
-    <div class="field"><label>RIR</label><input type="text" id="exRir" placeholder="1–2"></div>
+    <div class="field"><label>Hedef RPE (1–10)</label><input type="text" id="exRpe" placeholder="8"></div>
     <div class="field"><label>Dinlenme (sn)</label><input type="number" id="exRest" inputmode="numeric" value="90"></div>
   </div>
+  <div class="field"><label>Başlangıç Önerisi (kg) — sadece ilk kez yapılırken gösterilir</label><input type="text" id="exSw" placeholder="örn: 17,5"></div>
+  <div class="field"><label>İpucu / Teknik Notu</label><input type="text" id="exCue" placeholder="Negatifler yavaş..."></div>
   <div class="modal-actions"><button class="btn ghost" onclick="hide('exEditModal')">Vazgeç</button><button class="btn prim" onclick="saveExEdit()">Kaydet</button></div>
 </div></div>
 
@@ -532,6 +650,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   <button class="on" id="nav-cal" onclick="showView('cal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Takvim</button>
   <button id="nav-stats" onclick="showView('stats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>İstatistik</button>
   <button id="nav-prog" onclick="showView('prog')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>Program</button>
+  <button id="nav-nut" onclick="showView('nut')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v8a3 3 0 0 0 6 0V3M8 11v10"/><path d="M17 3c-1.7 1.4-2.5 3.6-2.5 6s.8 3 2.5 3 2.5-.6 2.5-3-.8-4.6-2.5-6zM17 12v9"/></svg>Beslenme</button>
   <button id="nav-info" onclick="showView('info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>Bilgi</button>
 </div>
 
@@ -544,193 +663,207 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 
 <script>
 "use strict";
-/* ═══════════ EXERCISE LIBRARY (free | machine | target) ═══════════ */
+/* ═══════════ EXERCISE LIBRARY (tek hareket — alternatif yok) ═══════════ */
 var LIB=[
- ["Incline Dumbbell Press","Incline Chest Press Machine","Üst+orta göğüs, ön omuz"],
- ["Flat Dumbbell Press","Chest Press Machine","Orta+alt göğüs"],
- ["Close-Grip Dumbbell Press","Dip Machine","Alt göğüs, triceps (tüm başlar)"],
- ["Incline Dumbbell Fly","Low-to-High Cable Fly","Üst göğüs gerinme"],
- ["Flat Dumbbell Fly","Pec Deck","Orta göğüs gerinme"],
- ["Pull-Up","Lat Pulldown","Kanat genişlik"],
- ["Chest-Supported Dumbbell Row","Seated Cable Row","Kanat kalınlık, orta sırt, trapez"],
- ["One-Arm Dumbbell Row","Single-Arm Cable Row","Kanat kalınlık (tek kol, asimetri)"],
- ["Dumbbell Pullover","Straight-Arm Pulldown","Kanat izolasyon"],
- ["Seated Dumbbell Shoulder Press","Shoulder Press Machine","Ön+yan omuz"],
- ["Dumbbell Lateral Raise","Cable Lateral Raise","Yan omuz"],
- ["Dumbbell Rear Delt Fly","Reverse Pec Deck","Arka omuz, romboid"],
- ["Prone Dumbbell Y-Raise","Face Pull","Arka omuz, alt trapez (duruş)"],
- ["Dumbbell Shrug","Shrug Machine","Üst trapez"],
- ["Incline Dumbbell Curl","Bayesian Cable Curl","Biceps uzun baş"],
- ["Dumbbell Preacher Curl","Preacher Curl Machine","Biceps kısa baş"],
- ["Dumbbell Hammer Curl","Rope Hammer Curl","Brachialis, brachioradialis"],
- ["Overhead Dumbbell Triceps Extension","Overhead Cable Triceps Extension","Triceps uzun baş"],
- ["Dumbbell Kickback","Rope Pushdown","Triceps yan baş"],
- ["Goblet Squat","Leg Press","Quad, kalça, adduktör"],
- ["Dumbbell Step-Up","Hack Squat","Quad (dış), kalça"],
- ["Reverse Nordic Curl","Leg Extension","Rektus femoris"],
- ["Stability Ball Leg Curl","Seated Leg Curl","Hamstring (gerilmiş)"],
- ["Dumbbell Lying Leg Curl","Lying Leg Curl","Hamstring (kısa baş)"],
- ["Dumbbell Hip Thrust","Hip Thrust Machine","Gluteus maximus"],
- ["Side-Lying Leg Raise","Hip Abduction Machine","Gluteus medius"],
- ["Copenhagen Plank","Hip Adduction Machine","Adduktör"],
- ["Dumbbell Standing Calf Raise","Leg Press Calf Raise","Gastrocnemius"],
- ["Dumbbell Seated Calf Raise","Seated Calf Raise","Soleus"],
- ["Weighted Crunch","Cable Crunch","Üst karın"],
- ["Reverse Crunch","Captain's Chair Knee Raise","Alt karın"],
- ["Dead Bug","Pallof Press","Kor, oblik, bel sağlığı"],
- ["Decline Dumbbell Press","Decline Chest Press Machine","Alt göğüs"],
- ["Dumbbell Front Raise","Cable Front Raise","Ön omuz izolasyon"],
- ["Dumbbell Reverse Curl","Cable Reverse Curl","Brachioradialis / ön kol"],
- ["Lying Dumbbell Triceps Extension","Reverse-Grip Pushdown","Triceps orta baş"],
- ["Dumbbell Wrist Curl","Wrist Curl Machine","Ön kol fleksör"],
- ["Dumbbell Glute Kickback","Cable Glute Kickback","Gluteus izolasyon"],
- ["Side Plank","Cable Woodchop","Oblik (hafif, bel dostu)"],
- ["Incline Dumbbell Press (Nötr)","Machine High Row","Alternatif varyasyon"]
+ ["Incline Dumbbell Press","Üst göğüs"],["Flat Barbell Bench Press","Orta göğüs"],
+ ["Flat Dumbbell Press","Orta göğüs"],["Chest Fly Machine","Göğüs gerinme"],
+ ["High Cable Crossover","Alt-orta göğüs"],["Low-to-High Cable Fly","Üst göğüs gerinme"],
+ ["Pec Deck","Göğüs gerinme"],["Dumbbell Shoulder Press","Ön omuz"],
+ ["Shoulder Press Machine","Ön omuz"],["Dumbbell Lateral Raise","Yan omuz"],
+ ["Cable Lateral Raise","Yan omuz"],["Rear Deltoid Fly Machine","Arka omuz"],
+ ["Bent Over Dumbbell Rear Delt Fly","Arka omuz"],["Face Pull","Arka omuz, alt trapez"],
+ ["Wide Grip Lat Pulldown","Kanat genişlik"],["Close Grip Lat Pulldown","Kanat kalınlık"],
+ ["Pull-Up","Kanat genişlik"],["Chest Supported Row","Orta sırt"],
+ ["Seated Cable Row","Orta sırt"],["Seated Cable Row (Wide Grip)","Üst sırt"],
+ ["Barbell Row (Overhand Grip)","Orta sırt"],["One-Arm Dumbbell Row","Kanat kalınlık"],
+ ["Straight Arm Pulldown","Kanat izolasyon"],["Dumbbell Shrug","Üst trapez"],
+ ["Hyper Extension","Bel ekstansörleri, kalça"],["Dumbbell Alternate Curl","Biceps"],
+ ["Incline Bench Biceps Curl","Biceps uzun baş"],["Cable Barbell Curl","Biceps"],
+ ["Cable One Arm Biceps Curl","Biceps"],["Dumbbell Preacher Curl","Biceps kısa baş"],
+ ["Dumbbell Hammer Curl","Brachialis"],["Dumbbell Skullcrusher","Triceps uzun baş"],
+ ["Overhead Cable Triceps Extension","Triceps uzun baş"],["Rope Push Down","Triceps yan baş"],
+ ["Cable Triceps Push Down","Triceps yan baş"],["Cable Overhand One Arm Triceps Push Down","Triceps yan baş"],
+ ["Leg Extension","Quadriceps"],["Hack Squat","Quadriceps"],["Leg Press","Quadriceps, kalça"],
+ ["Seated Leg Curl","Hamstring"],["Lying Leg Curl","Hamstring"],["Dumbbell RDL","Hamstring, kalça"],
+ ["Hip Thrust Machine","Gluteus maximus"],["Hip Abduction Machine","Gluteus medius"],
+ ["Leg Press Calf Raise","Baldır (gastroc)"],["Seated Calf Raise","Baldır (soleus)"],
+ ["Cable Crunch","Üst karın"],["Reverse Crunch","Alt karın"],
+ ["Plate Crunch","Üst karın"],["Lying Leg Raise","Alt karın"],
+ ["Side Plank","Oblik, kor"],["Plank","Kor stabilite"],
+ ["Captain's Chair Knee Raise","Alt karın"],["Pallof Press","Kor, anti-rotasyon"],
+ ["Dead Bug","Kor stabilite"]
 ];
-function L(free,sets,reps,rir,rest,cue){
-  for(var i=0;i<LIB.length;i++) if(LIB[i][0]===free) return {free:LIB[i][0],mac:LIB[i][1],t:LIB[i][2],sets:sets,reps:reps,rir:rir,rest:rest,cue:cue||""};
-  return {free:free,mac:free,t:"",sets:sets,reps:reps,rir:rir,rest:rest,cue:cue||""};
+/* X(ad, set, tekrar, RPE, dinlenme sn, önerilen kg, ipucu) — hedef kas kütüphaneden gelir */
+function X(n,sets,reps,rpe,rest,sw,cue){
+  var t="";
+  for(var i=0;i<LIB.length;i++) if(LIB[i][0]===n){ t=LIB[i][1]; break; }
+  return {n:n,t:t,sets:sets,reps:reps,rpe:rpe,rest:rest,sw:sw||"",cue:cue||""};
 }
-/* ═══════════ BUILT-IN PROGRAMS (v5 — üst vücut öncelikli, tek bacak günü) ═══════════ */
-/* 5 GÜN: Üst İtiş 1 → Üst Çekiş 1 → (dinlen) → Alt → Üst İtiş 2 → Üst Çekiş 2 → (dinlen) */
-var EX_P1=[
- L("Incline Dumbbell Press",4,"6–10","1–2",150,"30° eğim. Derin iniş, üstte kilitleme yok. 45°+ işi ön omza kaydırır."),
- L("Flat Dumbbell Press",3,"8–12","1–2",120,"Göğüste tam gerinme, dirsek ~45°. Makinede yetersizliğe güvenle it."),
- L("Flat Dumbbell Fly",3,"10–15","0–2",90,"Presin veremediği maksimum gerinme. Kablo/pec deck direnç profili daha iyi."),
- L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"Öncelikli kas. Momentum yok; kablo vücudun arkasından geçsin."),
- L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Ense arkasına derin indir — uzun baş yalnızca burada tam gerilir."),
- L("Dumbbell Kickback",3,"12–15","0–2",75,"Dirsek gövdeye sabit, altta 1 sn sık. At nalı görünümü bu baştan."),
- L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Preslerden uyarı almaz. Dirsek hafif bükülü sabit, tepede 1 sn."),
- L("Weighted Crunch",3,"10–15","0–1",60,"Karın haftada 4× — belirgin karın için hem kas hem yağ oranı gerekir.")];
-var EX_P2=[
- L("Pull-Up",4,"6–10","1–2",150,"Üstte kolu tam uzat — lat en uzun hali. Yarım tekrar yok."),
- L("Chest-Supported Dumbbell Row",4,"8–12","1–2",120,"Göğüs destekli — bel yükü sıfır. Uzanışta bırak, çekişte omuz bıçağını sık."),
- L("Dumbbell Pullover",3,"10–15","0–2",90,"Dirsek neredeyse düz — biceps devre dışı, lat tek başına çalışır."),
- L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60,"Face pull: kulak hizasına çek, dirsek yüksek. Dik duruş için en değerli hareket."),
- L("Incline Dumbbell Curl",3,"8–12","0–2",90,"Kol gövdenin gerisinde sarkar — uzun baş yalnızca bu pozisyonda gerilir."),
- L("Dumbbell Hammer Curl",3,"12–15","0–2",75,"Nötr tutuş. Brachialis biceps altında — büyüdükçe kolu kalınlaştırır."),
- L("Dumbbell Shrug",3,"10–15","0–2",90,"Tam dikey çek, tepede 1 sn. Öne eğilme yok."),
- L("Dumbbell Lateral Raise",2,"12–20","0–1",75,"Haftanın 2. yan omuz dozu.")];
-var EX_LEG=[
- L("Goblet Squat",4,"6–10","1–2",180,"Hack squat: sırt yastığa tam yapışık. Bel kalkarsa derinliği azalt."),
- L("Stability Ball Leg Curl",4,"8–12","0–2",120,"Oturarak versiyon hamstringi daha uzun konumda yükler — tercih et."),
- L("Dumbbell Step-Up",3,"10–15","1–2",120,"Leg press: alt noktada kalça yastıktan kalkmadan dur."),
- L("Dumbbell Hip Thrust",3,"8–12","1–2",120,"Tepede 1 sn sık, kaburgayı aşağıda tut. Beli kavislendirme."),
- L("Reverse Nordic Curl",3,"12–20","0–1",75,"Leg extension: tepede 1 sn. Rektus femorisi diğerlerinin alamadığı açıda alır."),
- L("Dumbbell Lying Leg Curl",2,"12–15","0–2",90,"Farklı diz/kalça açısı — hamstringin ikinci uyaranı."),
- L("Side-Lying Leg Raise",2,"15–20","0–1",60,"Gluteus medius — kalça stabilitesi, dolaylı bel sağlığı."),
- L("Dumbbell Standing Calf Raise",3,"10–15","0–1",75,"Altta 2 sn derin gerinme. Ayakta makine eksenel yük — leg press versiyonu kullan."),
- L("Dumbbell Seated Calf Raise",2,"12–20","0–1",60,"Diz bükülü = soleus, gastroknemiusdan ayrı kas."),
- L("Reverse Crunch",3,"12–20","0–1",60,"Kalçayı yukarı kıvır — sadece bacak sallamak karnı çalıştırmaz.")];
-var EX_P3=[
- L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"ÖNCELİK — taze haldeyken ilk sırada. Compound-önce dogması bilinçli kırıldı."),
- L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",120,"Sırt destekli, eksenel yük yok. Ön deltoidin tek doğrudan işi."),
- L("Incline Dumbbell Fly",3,"10–15","0–2",90,"Açılışta göğsü tam ger, kapanışta orta hattı geç."),
- L("Close-Grip Dumbbell Press",3,"8–12","1–2",120,"Dip machine: alt göğüs + triceps tüm başlar. İki iş tek harekette."),
- L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Haftanın 2. uzun baş dozu."),
- L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"3. arka omuz dozu — dik duruş ve omuz dengesi."),
- L("Incline Dumbbell Press",2,"8–12","1–2",120,"2. üst göğüs dozu, orta tekrar."),
- L("Dead Bug",2,"10–15 / taraf","1–2",60,"Anti-rotasyon — bel sağlığı için atlanmaz.")];
-var EX_P4=[
- L("One-Arm Dumbbell Row",4,"8–12","1–2",120,"Zayıf (sol) taraftan başla, güçlü tarafta aynı sayıyı aşma."),
- L("Pull-Up",3,"8–12","1–2",120,"Nötr tutuş omuza daha dostu. 2. kanat dozu."),
- L("Dumbbell Pullover",2,"10–15","0–2",90,"Kanat izolasyonu, gerilmiş pozisyon."),
- L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Arka omuz — haftada 4 doz, dolaylı yük almayan kas."),
- L("Dumbbell Preacher Curl",3,"10–15","0–2",75,"Kol önde sabit → kısa baş vurgusu. Altta tam uzat."),
- L("Dumbbell Reverse Curl",2,"12–15","0–2",75,"Brachioradialis / ön kol. Ters tutuş, hafif yük."),
- L("Dumbbell Lateral Raise",3,"12–20","0–1",75,"Haftanın 4. yan omuz dozu — öncelikli kas, hızlı toparlanır."),
- L("Dumbbell Shrug",2,"10–15","0–2",90,"Üst trapez 2. doz."),
- L("Weighted Crunch",2,"10–15","0–1",60,"Karın.")];
-/* 4 GÜN: Üst İtiş → Üst Çekiş → (dinlen) → Alt → Üst Tam → (dinlen) → (dinlen) */
-var EX_4P1=[
- L("Incline Dumbbell Press",4,"6–10","1–2",150,"30° eğim, derin iniş. Haftanın en ağır göğüs işi."),
- L("Flat Dumbbell Press",3,"8–12","1–2",120,"Göğüste gerinme, dirsek ~45°."),
- L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"Öncelikli kas."),
- L("Flat Dumbbell Fly",3,"10–15","0–2",90,"Maksimum gerinme pozisyonu."),
- L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",120,"Sırt destekli, eksenel yük yok."),
- L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Ense arkasına derin — uzun baş."),
- L("Dumbbell Kickback",3,"12–15","0–2",75,"Dirsek sabit, altta sık."),
- L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Doğrudan çalışma şart."),
- L("Weighted Crunch",2,"10–15","0–1",60,"Karın.")];
-var EX_4P2=[
- L("Pull-Up",4,"6–10","1–2",150,"Üstte tam uzanma — latın en uzun hali."),
- L("Chest-Supported Dumbbell Row",4,"8–12","1–2",120,"Bel yükü sıfır. Omuz bıçağını sık."),
- L("Dumbbell Pullover",3,"10–15","0–2",90,"Biceps devre dışı — lat tek başına."),
- L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60,"Dik duruş — dirsek yüksek."),
- L("Incline Dumbbell Curl",3,"8–12","0–2",90,"Kol geride sarkar — uzun baş."),
- L("Dumbbell Hammer Curl",3,"12–15","0–2",75,"Brachialis — kolu kalınlaştırır."),
- L("Dumbbell Shrug",3,"10–15","0–2",90,"Tam dikey, öne eğilme yok."),
- L("Dumbbell Lateral Raise",2,"12–20","0–1",75,"2. yan omuz dozu."),
- L("Reverse Crunch",2,"12–20","0–1",60,"Alt karın.")];
-var EX_4P3=[
- L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"ÖNCELİK — taze haldeyken ilk sırada."),
- L("Incline Dumbbell Fly",3,"10–15","0–2",90,"2. üst göğüs dozu, gerinme odaklı."),
- L("One-Arm Dumbbell Row",3,"8–12","1–2",120,"Zayıf taraftan başla — asimetri düzeltme."),
- L("Close-Grip Dumbbell Press",3,"8–12","1–2",120,"Alt göğüs + triceps tüm başlar."),
- L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"3. arka omuz dozu."),
- L("Dumbbell Preacher Curl",3,"10–15","0–2",75,"Kısa baş — kol önde sabit."),
- L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"2. uzun baş dozu."),
- L("Pull-Up",2,"8–12","1–2",120,"2. kanat dozu."),
- L("Dead Bug",2,"10–15 / taraf","1–2",60,"Kor stabilite — bel sağlığı.")];
-/* 3 GÜN: Üst A → (dinlen) → Alt → (dinlen) → Üst B → (dinlen) → (dinlen) */
-var EX_3P1=[
- L("Incline Dumbbell Press",4,"6–10","1–2",150,"30° eğim. Haftanın en ağır göğüs işi, taze haldeyken."),
- L("Pull-Up",4,"6–10","1–2",150,"Üstte tam uzanma — latın en uzun hali."),
- L("Flat Dumbbell Press",3,"8–12","1–2",120,"Göğüste gerinme."),
- L("Chest-Supported Dumbbell Row",3,"8–12","1–2",120,"Göğüs destekli — bel yükü sıfır."),
- L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"Öncelikli kas — 4 set."),
- L("Dumbbell Rear Delt Fly",3,"15–20","0–1",60,"Presten uyarı almaz."),
- L("Overhead Dumbbell Triceps Extension",3,"10–15","0–2",90,"Uzun baş — kolun en büyük kütlesi."),
- L("Incline Dumbbell Curl",3,"8–12","0–2",90,"Kol geride — uzun baş gerilir."),
- L("Weighted Crunch",3,"10–15","0–1",60,"Karın.")];
-var EX_3P2=[
- L("Pull-Up",4,"6–10","1–2",150,"Nötr tutuş. Kanat genişliği."),
- L("Seated Dumbbell Shoulder Press",3,"8–12","1–2",120,"Sırt destekli, eksenel yük yok."),
- L("One-Arm Dumbbell Row",4,"8–12","1–2",120,"Zayıf taraftan başla."),
- L("Incline Dumbbell Fly",3,"10–15","0–2",90,"Üst göğüs gerinme."),
- L("Dumbbell Lateral Raise",4,"12–20","0–1",75,"2. yan omuz dozu."),
- L("Prone Dumbbell Y-Raise",3,"15–20","0–1",60,"Dik duruş."),
- L("Dumbbell Preacher Curl",3,"10–15","0–2",75,"Kısa baş."),
- L("Dumbbell Kickback",3,"12–15","0–2",75,"Triceps yan baş."),
- L("Dumbbell Shrug",2,"10–15","0–2",90,"Üst trapez."),
- L("Reverse Crunch",2,"12–20","0–1",60,"Alt karın.")];
+/* XT = süre bazlı hareket (plank vb). reps alanı saniye tutar, u:'sn' */
+function XT(n,sets,sec,rpe,rest,cue){ var e=X(n,sec,rpe,rest,"",cue); e.sets=sets; e.reps=sec; e.rpe=rpe; e.rest=rest; e.cue=cue||""; e.u='sn'; return e; }
+/* KOÇUN KARIN BLOĞU — her iki karın gününde aynı */
+function ABS(){ return [
+  X("Plate Crunch",3,"15","8",60,"","Plaka göğüste, karnı kısalt — boyundan çekme."),
+  X("Lying Leg Raise",3,"30","8",60,"","⚠ Bel yere tam yapışık kalsın; kalkıyorsa dizleri hafif bük veya ROM'u kısalt."),
+  XT("Side Plank",3,"30","8",45,"Her iki taraf 30 sn. Kalça düşmesin."),
+  XT("Plank",3,"60","8",45,"60 sn hedef — fazlası çıkarsa devam et.")
+]; }
+/* ═══════════ KOÇ PROGRAMI — 4 GÜN (Push/Pull) ═══════════ */
+var CP1=[
+ X("Incline Dumbbell Press",3,"8","7",150,"17,5","Göğüste derin gerinme, üstte kilitleme yok."),
+ X("Flat Barbell Bench Press",3,"8","7",150,"40","Dirsek ~45°, kontrollü iniş."),
+ X("Chest Fly Machine",3,"12","7",90,"43","Açılışta göğsü tam ger, kapanışta orta hattı geç."),
+ X("High Cable Crossover",3,"10","7",90,"15-15","Yukarıdan aşağı, alt göğüste sık."),
+ X("Dumbbell Lateral Raise",3,"15","8",75,"7,5-10","Negatifler yavaş. Momentum yok, trapeze kaydırma."),
+ X("Rear Deltoid Fly Machine",3,"15","8",75,"40","Tepede 1 sn tut, dirsek sabit."),
+ X("Dumbbell Alternate Curl",3,"12","8",75,"12,5","Ayakta gövdeyi sabitleyip yapılacak — sallanma yok."),
+ X("Incline Bench Biceps Curl",3,"12","8",75,"7,5-10","Kol gövdenin gerisinde sarkar — uzun baş gerilir."),
+ X("Leg Extension",4,"15","8",75,"43","Tepede 1 sn, yavaş iniş.")].concat(ABS());
+var CP2=[
+ X("Wide Grip Lat Pulldown",3,"10","7",150,"40","Göğse çek, üstte kolu tam uzat."),
+ X("Close Grip Lat Pulldown",3,"10","7",120,"40","Dirsekleri gövdeye yakın çek."),
+ X("Chest Supported Row",3,"10","8",120,"35-35","Üst sırt odaklı — omuz bıçaklarını sık."),
+ X("Seated Cable Row",3,"12","8",120,"40","Gövde dik, belden çekme."),
+ X("Hyper Extension",3,"15","7",75,"","⚠ Bel hassasiyetin varsa bu hareketi atla veya ROM'u yarıya indir."),
+ X("Straight Arm Pulldown",3,"15","8",75,"30","Rope. Negatifler çok kontrollü. Dirsek neredeyse düz."),
+ X("Dumbbell Skullcrusher",3,"12","8",75,"7,5","Dirsek sabit, alın hizasına indir."),
+ X("Rope Push Down",3,"12","8",75,"30","Dirsek gövdeye sabit, altta 1 sn sık."),
+ X("Seated Leg Curl",4,"15","10",90,"43","RPE 10 — son set tam tükenme. Tam gerinme.")];
+var CP3=[
+ X("Flat Barbell Bench Press",3,"8","6",150,"50","RPE 6 — yedekte 4 tekrar. Teknik odaklı ağır gün."),
+ X("Chest Fly Machine",3,"15","7",90,"47","Yüksek tekrar, gerinme odaklı."),
+ X("Dumbbell Shoulder Press",3,"10","7",120,"15","Sırt destekli, dirsek hafif önde."),
+ X("Dumbbell Lateral Raise",4,"15","7",75,"7,5","Negatifler yavaş."),
+ X("Bent Over Dumbbell Rear Delt Fly",3,"12","8",75,"5-7,5","Negatifler yavaş. Göğüs destekli yapabilirsen bel rahatlar."),
+ X("Cable Barbell Curl",3,"15","8",75,"30","Sabit dirsek, tam ROM."),
+ X("Cable One Arm Biceps Curl",3,"12","8",75,"15","Zayıf koldan başla."),
+ X("Hack Squat",3,"12","8",150,"15-15","Sırt yastığa tam yapışık; bel kalkarsa derinliği azalt."),
+ X("Leg Extension",3,"15","8",75,"43","Tepede 1 sn.")];
+var CP4=[
+ X("Close Grip Lat Pulldown",3,"10","7",150,"40","Dirsekleri aşağı-geri."),
+ X("Barbell Row (Overhand Grip)",3,"10","7",120,"30","⚠ Bel yükü var — gövde çok eğilmesin, karın sıkı."),
+ X("Seated Cable Row (Wide Grip)",3,"12","8",120,"40","Geniş tutuş — üst sırt odağı."),
+ X("Straight Arm Pulldown",3,"15","8",75,"30","Dirsek düz, lat izole."),
+ X("Cable Triceps Push Down",3,"12","7",75,"35","Dirsek sabit."),
+ X("Cable Overhand One Arm Triceps Push Down",3,"12","8",75,"15","Tek kol, tam ekstansiyon."),
+ X("Dumbbell RDL",3,"12","8",120,"15-15","⚠ Bel yükü var — sırt düz, hamstring gerilene kadar in, zorlama."),
+ X("Lying Leg Curl",3,"15","8",90,"47","Yavaş eksantrik.")].concat(ABS());
+/* ═══════════ ALTERNATİF PROGRAMLAR (kanıta dayalı, tek hareket) ═══════════ */
+var EP1=[X("Incline Dumbbell Press",4,"6–10","8",150,"","30° eğim, derin iniş."),
+ X("Flat Dumbbell Press",3,"8–12","8",120,"","Göğüste gerinme."),
+ X("Pec Deck",3,"10–15","9",90,"","Maksimum gerinme."),
+ X("Cable Lateral Raise",4,"12–20","9",75,"","Öncelikli kas, momentum yok."),
+ X("Overhead Cable Triceps Extension",3,"10–15","9",90,"","Ense arkasına derin."),
+ X("Rope Push Down",3,"12–15","9",75,"","Dirsek sabit."),
+ X("Rear Deltoid Fly Machine",3,"15–20","9",60,"","Tepede 1 sn."),
+ X("Cable Crunch",3,"10–15","9",60,"","Ağırlıkla ilerlet.")];
+var EP2=[X("Pull-Up",4,"6–10","8",150,"","Üstte tam uzanma."),
+ X("Chest Supported Row",4,"8–12","8",120,"","Bel yükü sıfır."),
+ X("Straight Arm Pulldown",3,"10–15","9",90,"","Biceps devre dışı."),
+ X("Face Pull",3,"15–20","9",60,"","Dirsek yüksek — dik duruş."),
+ X("Incline Bench Biceps Curl",3,"8–12","9",90,"","Kol geride sarkar."),
+ X("Dumbbell Hammer Curl",3,"12–15","9",75,"","Brachialis."),
+ X("Dumbbell Shrug",3,"10–15","9",90,"","Tam dikey."),
+ X("Cable Lateral Raise",2,"12–20","9",75,"","2. doz.")];
+var ELEG=[X("Hack Squat",4,"6–10","8",180,"","Sırt yastıkta; bel kalkmasın."),
+ X("Seated Leg Curl",4,"8–12","9",120,"","Uzun kas pozisyonu."),
+ X("Leg Press",3,"10–15","8",120,"","Altta bel yuvarlanmadan dur."),
+ X("Hip Thrust Machine",3,"8–12","8",120,"","Tepede 1 sn, kaburga aşağıda."),
+ X("Leg Extension",3,"12–20","9",75,"","Tepede 1 sn."),
+ X("Lying Leg Curl",2,"12–15","9",90,"","Farklı açı."),
+ X("Hip Abduction Machine",2,"15–20","9",60,"","Gluteus medius."),
+ X("Leg Press Calf Raise",3,"10–15","9",75,"","Altta 2 sn gerinme."),
+ X("Seated Calf Raise",2,"12–20","9",60,"","Soleus — ayrı kas."),
+ X("Reverse Crunch",3,"12–20","9",60,"","Kalçayı kıvır.")];
+var EP3=[X("Cable Lateral Raise",4,"12–20","9",75,"","ÖNCELİK — taze haldeyken ilk sırada."),
+ X("Dumbbell Shoulder Press",3,"8–12","8",120,"","Sırt destekli."),
+ X("Low-to-High Cable Fly",3,"10–15","9",90,"","Orta hattı geç."),
+ X("Pull-Up",3,"8–12","8",120,"","2. kanat dozu."),
+ X("Rear Deltoid Fly Machine",3,"15–20","9",60,"","3. doz."),
+ X("Overhead Cable Triceps Extension",3,"10–15","9",90,"","2. uzun baş dozu."),
+ X("Dumbbell Preacher Curl",2,"10–15","9",75,"","Kısa baş."),
+ X("Dead Bug",2,"10–15 / taraf","8",60,"","Anti-rotasyon.")];
+var EP4=[X("One-Arm Dumbbell Row",4,"8–12","8",120,"","Zayıf taraftan başla."),
+ X("Close Grip Lat Pulldown",3,"8–12","8",120,"","2. kanat dozu."),
+ X("Straight Arm Pulldown",2,"10–15","9",90,"","Gerilmiş pozisyon."),
+ X("Face Pull",3,"15–20","9",60,"","Arka omuz + alt trapez."),
+ X("Dumbbell Preacher Curl",3,"10–15","9",75,"","Kol önde sabit."),
+ X("Dumbbell Hammer Curl",2,"12–15","9",75,"","Brachialis."),
+ X("Cable Lateral Raise",3,"12–20","9",75,"","Yan omuz ek doz."),
+ X("Dumbbell Shrug",2,"10–15","9",90,"","Üst trapez."),
+ X("Cable Crunch",2,"10–15","9",60,"","Karın.")];
 function S(short,name,focus,ex){ return {short:short,name:name,focus:focus,ex:JSON.parse(JSON.stringify(ex))}; }
 var BUILTIN={
- p5:{id:"p5",name:"5 Gün",desc:"İtiş → Çekiş → Alt → İtiş 2 → Çekiş 2 · Üst 2×, alt 1× · ~127 set/hafta",builtin:true,
+ coach:{id:"coach",name:"Koç Programı",desc:"Push-1 → Pull-1 → dinlen → Push-2 → Pull-2 · 4 gün · RPE tabanlı",builtin:true,
+   rhythm:["T","T","R","T","T","R","R"],seq:["D1","D2","D3","D4"],
+   sessions:{D1:S("Push-1","GÖĞÜS · OMUZ · BICEPS","Üst göğüs önce, ardından yan/arka omuz ve biceps. Quad ve karın kapanışta.",CP1),
+     D2:S("Pull-1","SIRT · TRICEPS · HAMSTRING","İki pulldown açısı, kürek sıkma odaklı row, triceps ve hamstring.",CP2),
+     D3:S("Push-2","GÖĞÜS · OMUZ · BICEPS","Ağır bench (RPE 6), omuz hacmi yüksek, kablo biceps, quad kapanış.",CP3),
+     D4:S("Pull-2","SIRT · TRICEPS · HAMSTRING","Kalınlık odaklı çekiş, kablo triceps, arka zincir.",CP4)}},
+ p5:{id:"p5",name:"5 Gün (Kanıt)",desc:"İtiş → Çekiş → Alt → İtiş 2 → Çekiş 2 · Üst 2×, alt 1×",builtin:true,
    rhythm:["T","T","R","T","T","T","R"],seq:["P1","P2","LEG","P3","P4"],
-   sessions:{P1:S("İtiş 1","GÖĞÜS · TRICEPS · OMUZ","Göğüs öncelikli itiş. Haftanın en ağır göğüs işi taze haldeyken.",EX_P1),
-     P2:S("Çekiş 1","KANAT · BICEPS · TRAPEZ","Kanat genişlik + kalınlık + izolasyon, biceps uzun baş.",EX_P2),
-     LEG:S("Alt","BACAK · KALÇA · KARIN","Haftanın tek bacak günü — tüm alt bölgeler tek seansta, kısa dinlenme.",EX_LEG),
-     P3:S("İtiş 2","OMUZ · GÖĞÜS · TRICEPS","Omuz öncelikli itiş. Yan omuz taze haldeyken ilk sırada.",EX_P3),
-     P4:S("Çekiş 2","SIRT KALINLIK · KOL","Tek kol sırt, arka omuz, biceps kısa baş ve ön kol.",EX_P4)}},
- p4:{id:"p4",name:"4 Gün",desc:"İtiş → Çekiş → Alt → Üst Tam · Üst 2×, alt 1× · ~104 set/hafta",builtin:true,
+   sessions:{P1:S("İtiş 1","GÖĞÜS · TRICEPS · OMUZ","Göğüs öncelikli itiş.",EP1),
+     P2:S("Çekiş 1","KANAT · BICEPS · TRAPEZ","Kanat genişlik + kalınlık.",EP2),
+     LEG:S("Alt","BACAK · KALÇA · KARIN","Haftanın tek bacak günü.",ELEG),
+     P3:S("İtiş 2","OMUZ · GÖĞÜS · TRICEPS","Omuz öncelikli itiş.",EP3),
+     P4:S("Çekiş 2","SIRT KALINLIK · KOL","Tek kol sırt, kol detay.",EP4)}},
+ p4:{id:"p4",name:"4 Gün (Kanıt)",desc:"İtiş → Çekiş → Alt → Üst Tam · Üst 2×, alt 1×",builtin:true,
    rhythm:["T","T","R","T","T","R","R"],seq:["P1","P2","LEG","P3"],
-   sessions:{P1:S("İtiş","GÖĞÜS · OMUZ · TRICEPS","İtiş öncelikli. Göğüs ve omuz ağır bileşiklerle.",EX_4P1),
-     P2:S("Çekiş","KANAT · BICEPS · TRAPEZ","Çekiş öncelikli. Kanat ve biceps tüm kısımlar.",EX_4P2),
-     LEG:S("Alt","BACAK · KALÇA · KARIN","Haftanın tek bacak günü — tüm alt bölgeler.",EX_LEG),
-     P3:S("Üst Tam","OMUZ ÖNCELİK · DENGE","Yan omuz taze haldeyken; itiş ve çekişin ikinci dozu.",EX_4P3)}},
- p3:{id:"p3",name:"3 Gün",desc:"Üst A → Alt → Üst B · Üst 2×, alt 1× · ~76 set/hafta",builtin:true,
+   sessions:{P1:S("İtiş","GÖĞÜS · OMUZ · TRICEPS","İtiş öncelikli.",EP1),
+     P2:S("Çekiş","KANAT · BICEPS · TRAPEZ","Çekiş öncelikli.",EP2),
+     LEG:S("Alt","BACAK · KALÇA · KARIN","Tek bacak günü.",ELEG),
+     P3:S("Üst Tam","OMUZ ÖNCELİK · DENGE","Yan omuz taze haldeyken.",EP3)}},
+ p3:{id:"p3",name:"3 Gün (Kanıt)",desc:"Üst A → Alt → Üst B · Üst 2×, alt 1×",builtin:true,
    rhythm:["T","R","T","R","T","R","R"],seq:["U1","LEG","U2"],
-   sessions:{U1:S("Üst A","TAM ÜST — İTİŞ ÖNCE","Tüm üst vücut. İtiş bileşikleri taze haldeyken.",EX_3P1),
-     LEG:S("Alt","BACAK · KALÇA · KARIN","Haftanın tek bacak günü — tüm alt bölgeler.",EX_LEG),
-     U2:S("Üst B","TAM ÜST — ÇEKİŞ ÖNCE","Tüm üst vücut. Çekiş bileşikleri taze haldeyken.",EX_3P2)}}
+   sessions:{U1:S("Üst A","TAM ÜST — İTİŞ ÖNCE","İtiş bileşikleri taze haldeyken.",EP1.concat(EP2.slice(0,3))),
+     LEG:S("Alt","BACAK · KALÇA · KARIN","Tek bacak günü.",ELEG),
+     U2:S("Üst B","TAM ÜST — ÇEKİŞ ÖNCE","Çekiş bileşikleri taze haldeyken.",EP2.concat(EP3.slice(0,3)))}}
 };
 var MONTHS=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 var DOWN=["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"];
 
 /* ═══════════ STORAGE ═══════════ */
+/* ═══════════ BESLENME — koçun planı. Kullanıcı istediği gibi değiştirebilir. ═══════════ */
+var NUT_DEFAULT=[
+ "# Öğün-1",
+ "4 yumurta",
+ "100 gr yulaf (sütle olabilir, az meyve eklenebilir)",
+ "İsteğe bağlı: zeytin, peynir, domates, salatalık",
+ "> 150 gr buğday ekmeği alternatif olarak tercih edilebilir",
+ "",
+ "# Öğün-2 (spor öncesi)",
+ "200 gr tavuk / hindi / et",
+ "100 gr pirinç veya makarna (tam buğdaylı daha iyi)",
+ "Karışık salata eklenebilir",
+ "Probiyotik yoğurt eklenebilir",
+ "> İş yerinde olabildiğince protein ve karbonhidratı yüksek tercih etmeli",
+ "",
+ "# Ara Öğün-1 (spor öncesi)",
+ "Karışık kuruyemiş (çiğ) 15-20 gr",
+ "1 adet elma veya muz (isteğe bağlı)",
+ "Şekersiz kahve çeşitlerinden birisi (isteğe bağlı)",
+ "",
+ "# Öğün-3 (spor sonrası)",
+ "200 gr tavuk / hindi / et",
+ "100 gr pirinç",
+ "Karışık salata eklenebilir",
+ "",
+ "! Toplam ~2000 kcal"
+].join("\n");
+
 var _mem={};
 var STORE={get:function(k){try{return localStorage.getItem(k);}catch(e){return _mem[k]||null;}},
  set:function(k,v){try{localStorage.setItem(k,v);return true;}catch(e){_mem[k]=v;return false;}}};
 var DB={};
 try{DB=JSON.parse(STORE.get('boyka8')||'{}')||{};}catch(e){DB={};}
 (function(){
-  if(!DB.startDate){var t=new Date();t.setHours(0,0,0,0);DB.startDate=t.getTime();}
-  if(!DB.activeProgram) DB.activeProgram='p5';
+  if(!DB.startDate){ DB.startDate=new Date(2026,9,6,0,0,0,0).getTime(); }   // 6 Ekim 2026, Salı
+  if(!DB.activeProgram) DB.activeProgram='coach';
   if(!DB.weekPrograms) DB.weekPrograms={};
   if(!DB.overrides) DB.overrides={};      // dateKey -> 'OFF' | 'progId|sessId'
-  if(!DB.variant) DB.variant={};          // dateKey||sessKey||idx -> 'free'|'mac'
-  if(!DB.lastVariant) DB.lastVariant={};  // free||mac -> 'free'|'mac'
+  if(!DB.rpe) DB.rpe={};                  // exName||dateKey -> son set RPE
+  if(!DB.exnote) DB.exnote={};            // exName||dateKey -> kısa not
+  if(typeof DB.nutrition!=='string') DB.nutrition=NUT_DEFAULT;   // beslenme planı — kullanıcı düzenleyebilir
   if(!DB.done) DB.done={};                // dateKey||sessKey||idx -> 1
   if(!DB.daydone) DB.daydone={};
   if(!DB.logs) DB.logs={};                // exName||dateKey -> [{w,r,d}]
@@ -738,7 +871,7 @@ try{DB=JSON.parse(STORE.get('boyka8')||'{}')||{};}catch(e){DB={};}
   if(!DB.programs) DB.programs={};        // custom programs
   if(DB.configured===undefined) DB.configured=false;
   // Geçiş: program içeriği yenilendiğinde çözülemeyen override'ları temizle
-  if(DB.progVersion!==5){
+  if(DB.progVersion!==7){
     var cleaned=0;
     for(var ok in DB.overrides){
       var ov=DB.overrides[ok];
@@ -747,17 +880,19 @@ try{DB=JSON.parse(STORE.get('boyka8')||'{}')||{};}catch(e){DB={};}
         if(!pr||!pr.sessions||!pr.sessions[pp[1]]){ delete DB.overrides[ok]; cleaned++; }
       }
     }
-    DB.progVersion=5;
+    DB.progVersion=7;DB.activeProgram='coach';
+    DB.startDate=new Date(2026,9,6,0,0,0,0).getTime();   // 6 Ekim 2026 Salı — kullanıcı Ayarlar'dan değiştirebilir
     try{ STORE.set('boyka8',JSON.stringify(DB)); }catch(e){}
   }
 })();
+
 var _cacheVer=0;
 function save(){ _cacheVer++; if(!STORE.set('boyka8',JSON.stringify(DB))) toast('Depolama dolu olabilir'); }
 
 /* ═══════════ PROGRAM ACCESS ═══════════ */
 function getProg(id){ return BUILTIN[id]||DB.programs[id]||null; }
-function allProgs(){ var a=[BUILTIN.p5,BUILTIN.p4,BUILTIN.p3]; for(var k in DB.programs) a.push(DB.programs[k]); return a; }
-function progForWeek(wi){ var id=DB.weekPrograms[wi]; if(id&&getProg(id)) return getProg(id); return getProg(DB.activeProgram)||BUILTIN.p5; }
+function allProgs(){ var a=[BUILTIN.coach,BUILTIN.p5,BUILTIN.p4,BUILTIN.p3]; for(var k in DB.programs) a.push(DB.programs[k]); return a; }
+function progForWeek(wi){ var id=DB.weekPrograms[wi]; if(id&&getProg(id)) return getProg(id); return getProg(DB.activeProgram)||BUILTIN.coach; }
 function getSession(sk){ if(!sk||sk==='OFF'||sk==='R') return null; var p=sk.split('|'); var pr=getProg(p[0]); return pr&&pr.sessions[p[1]]?pr.sessions[p[1]]:null; }
 
 /* ═══════════ DATE ═══════════ */
@@ -771,16 +906,26 @@ function fmtDate(d){return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYea
 
 /* ═══════════ FLOW ENGINE (cached) ═══════════ */
 var _map=null,_mapVer=-1,_mapUpto=-1;
+/* phase = ritim fazı. Gidilemeyen bir ANTRENMAN gününde faz DONAR; böylece
+   o günden sonraki tüm program — antrenman sırası ve dinlenme günleri dahil —
+   olduğu gibi bir gün ileri kayar. Dinlenme gününe "gidemedim" demek faz yürütür. */
 function buildMap(uptoTime){
-  var s=startDate(), cur=new Date(s), map={}, pos=0, lastProg=null, guard=0;
+  var s=startDate(), cur=new Date(s), map={}, pos=0, phase=0, lastProg=null, guard=0;
   while(cur.getTime()<=uptoTime && guard++<5000){
     var k=dkey(cur), n=daysBetween(s,cur), wi=Math.floor(n/7), prog=progForWeek(wi);
     if(lastProg!==prog.id){ pos=0; lastProg=prog.id; }
-    var seq=prog.seq, ov=DB.overrides[k], out;
-    if(ov==='OFF'){ out='OFF'; }
-    else if(ov && getSession(ov)){ out=ov; var pp=ov.split('|'); if(pp[0]===prog.id){ var i=seq.indexOf(pp[1]); if(i>=0) pos=(i+1)%seq.length; } }
-    else if(prog.rhythm[n%7]==='T' && seq.length){ out=prog.id+'|'+seq[pos%seq.length]; pos=(pos+1)%seq.length; }
-    else out='R';
+    var seq=prog.seq, ov=DB.overrides[k], out, planned=prog.rhythm[phase%7];
+    if(ov==='OFF'){
+      out='OFF';
+      if(planned!=='T') phase++;          // zaten dinlenme günüyse kaydırma
+    }
+    else if(ov && getSession(ov)){
+      out=ov; var pp=ov.split('|');
+      if(pp[0]===prog.id){ var i=seq.indexOf(pp[1]); if(i>=0) pos=(i+1)%seq.length; }
+      phase++;
+    }
+    else if(planned==='T' && seq.length){ out=prog.id+'|'+seq[pos%seq.length]; pos=(pos+1)%seq.length; phase++; }
+    else { out='R'; phase++; }
     map[k]=out;
     cur.setDate(cur.getDate()+1);
   }
@@ -795,18 +940,78 @@ function sessKeyFor(date){
 
 /* ═══════════ KEYS ═══════════ */
 function slotKey(dk,sk,i){return dk+'||'+sk+'||'+i;}
-function pairKey(e){return e.free+'||'+e.mac;}
-function getVariant(dk,sk,i,e){ var v=DB.variant[slotKey(dk,sk,i)]; if(v) return v; return DB.lastVariant[pairKey(e)]||'free'; }
-function exNameOf(e,v){ return v==='mac'?e.mac:e.free; }
 function logKey(exName,dk){return exName+'||'+dk;}
-function lastPerformance(exName,beforeDk){
-  var pre=exName+'||', best=null, bt=-1, lim=pdkey(beforeDk).getTime();
-  for(var k in DB.logs){ if(k.indexOf(pre)!==0) continue; var dk=k.substring(pre.length); var t; try{t=pdkey(dk).getTime();}catch(e){continue;}
-    if(isNaN(t)||t>=lim) continue; var sets=(DB.logs[k]||[]).filter(function(s){return s.w||s.r;}); if(!sets.length) continue;
-    if(t>bt){bt=t;best={dk:dk,sets:sets};} }
+function hasSet(s){ return (s.w!==''&&s.w!==undefined&&s.w!==null) || (s.r!==''&&s.r!==undefined&&s.r!==null); }
+function numW(s){ return parseFloat(s.w)||0; }
+function numR(s){ return parseInt(s.r,10)||0; }
+
+/* e1RM — RPE düzeltmeli Epley.  RIR = 10 - RPE  →  e1RM = kg × (1 + (tekrar + RIR)/30) */
+function e1rm(w,r,rpe){
+  w=parseFloat(w)||0; r=parseInt(r,10)||0; if(w<=0||r<=0) return 0;
+  var rir=0, p=parseFloat(rpe);
+  if(!isNaN(p)&&p>0&&p<=10) rir=Math.max(0,10-p);
+  return w*(1+(r+rir)/30);
+}
+/* Bir antrenman gününün en iyi e1RM'i */
+function sessionE1RM(sets,rpe){
+  var best=0; (sets||[]).forEach(function(s){ var v=e1rm(s.w,s.r,rpe); if(v>best) best=v; }); return best;
+}
+/* Bir hareketin TÜM geçmişindeki en iyi e1RM (kişisel rekor) */
+function bestE1RM(exName){
+  var pre=exName+'||', best=0;
+  for(var k in DB.logs){ if(k.indexOf(pre)!==0) continue; var v=sessionE1RM(DB.logs[k],DB.rpe[k]); if(v>best) best=v; }
   return best;
 }
-function bestWeight(exName){ var pre=exName+'||',mx=0; for(var k in DB.logs){ if(k.indexOf(pre)!==0) continue; (DB.logs[k]||[]).forEach(function(s){var w=parseFloat(s.w)||0;if(w>mx)mx=w;}); } return mx; }
+/* Hareketin EN SON yapıldığı antrenman — gün/program bağımsız, isme göre.
+   beforeDk verilirse o günden ÖNCEKİ en yakın kayıt; verilmezse tüm geçmişin sonuncusu. */
+function lastPerformance(exName,beforeDk){
+  var pre=exName+'||', best=null, bt=-1, lim=beforeDk?pdkey(beforeDk).getTime():Infinity;
+  for(var k in DB.logs){
+    if(k.indexOf(pre)!==0) continue;
+    var dk=k.substring(pre.length), t; try{t=pdkey(dk).getTime();}catch(e){continue;}
+    if(isNaN(t)||t>=lim) continue;
+    var sets=(DB.logs[k]||[]).filter(hasSet); if(!sets.length) continue;
+    if(t>bt){ bt=t; best={dk:dk,sets:sets,rpe:DB.rpe[k]||'',note:DB.exnote[k]||''}; }
+  }
+  return best;
+}
+/* Gün farkı metni */
+function agoText(dk){
+  var n=daysBetween(pdkey(dk),new Date());
+  if(n<0) return 'ileri tarihli';
+  if(n===0) return 'bugün'; if(n===1) return 'dün'; if(n<7) return n+' gün önce';
+  if(n<30) return Math.round(n/7)+' hafta önce'; return Math.round(n/30)+' ay önce';
+}
+function r25(x){ return Math.round(x/2.5)*2.5; }
+function fmtKg(x){ var v=Math.round(x*10)/10; return (String(v).indexOf('.')>=0?String(v).replace('.',','):String(v)); }
+/* Geçen seferin RPE'sine göre bu antrenmanın hedefi */
+function progressTarget(lp,e){
+  if(!lp) return null;
+  var heavy=0,hr=0;
+  lp.sets.forEach(function(s){ var w=numW(s); if(w>heavy){heavy=w;hr=numR(s);} });
+  var reps=0; lp.sets.forEach(function(s){ var r=numR(s); if(r>reps) reps=r; });
+  var p=parseFloat(lp.rpe), hedef=parseFloat(e&&e.rpe);
+  if(isNaN(hedef)) hedef=8;
+  if(isNaN(p)||p<=0){
+    return {cls:'hold',tag:'Aynı',txt:'Geçen sefer RPE girilmemiş. <b>'+(heavy?fmtKg(heavy)+' kg':'aynı kilo')+'</b> ile başla, son setin RPE\'sini mutlaka gir.'};
+  }
+  if(p<=hedef-1.5){
+    var art=heavy>0?r25(Math.max(2.5,heavy*0.05)):0;
+    return {cls:'up',tag:'Arttır',txt:'Son set RPE '+fmtKg(p)+' — hedef RPE '+e.rpe+'. Kiloyu <b>'+(art?('+'+fmtKg(art)+' kg → '+fmtKg(heavy+art)+' kg'):'arttır')+'</b>.'};
+  }
+  if(p<=hedef-0.5){
+    var a2=heavy>0?2.5:0;
+    return {cls:'up',tag:'Hafif Arttır',txt:'Son set RPE '+fmtKg(p)+'. <b>'+(a2?('+2,5 kg → '+fmtKg(heavy+a2)+' kg'):'bir kademe arttır')+'</b> ya da aynı kiloda 1-2 tekrar ekle.'};
+  }
+  if(p<=hedef+0.5){
+    return {cls:'hold',tag:'Aynı Kilo',txt:'Tam hedefte. <b>'+(heavy?fmtKg(heavy)+' kg':'aynı kilo')+'</b> ile devam, '+(reps?('bu sefer '+(reps+1)+' tekrar'):'bir tekrar fazla')+' hedefle.'};
+  }
+  if(p<=9.5){
+    return {cls:'hold',tag:'Sabit Kal',txt:'Son set RPE '+fmtKg(p)+' — hedefin üstünde. <b>'+(heavy?fmtKg(heavy)+' kg':'aynı kilo')+'</b> ile kal, teknik ve tekrar üzerine çalış.'};
+  }
+  var dus=heavy>0?r25(Math.max(2.5,heavy*0.05)):0;
+  return {cls:'down',tag:'Azalt',txt:'Son set RPE '+fmtKg(p)+' (tükenme). <b>'+(dus?(fmtKg(Math.max(0,heavy-dus))+' kg'):'biraz hafif')+'</b> ile temiz setler yap.'};
+}
 
 /* ═══════════ CALENDAR ═══════════ */
 var calYear,calMonth,selDate=null;
@@ -856,7 +1061,7 @@ function renderDay(){
   var ctrl='<div class="dayctrl"><button class="dc-btn'+(sk==='OFF'?' active':'')+'" onclick="toggleOff()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>'+(sk==='OFF'?'İzni Kaldır':'Gidemedim')+'</button>'+
     '<button class="dc-btn" onclick="openSwap()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3l4 4-4 4M3 7h18M7 21l-4-4 4-4M21 17H3"/></svg>Farklı Çalış</button>'+
     (ov?'<button class="dc-btn reset" onclick="clearOverride()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.4 2.6L3 8"/><path d="M3 3v5h5"/></svg>Otomatik</button>':'')+'</div>';
-  if(sk==='OFF'){ head.innerHTML='<div class="sess-card"><div class="sess-date">'+ds+'</div><div class="sess-kick" style="color:var(--steel)">İzin</div><div class="sess-title" style="color:var(--steel)">GİDİLEMEDİ</div><div class="sess-focus">Sıra kaymadı. Geçmiş kayıtların etkilenmedi.</div></div>'+ctrl; list.innerHTML=''; return; }
+  if(sk==='OFF'){ head.innerHTML='<div class="sess-card"><div class="sess-date">'+ds+'</div><div class="sess-kick" style="color:var(--steel)">İzin</div><div class="sess-title" style="color:var(--steel)">GİDİLEMEDİ</div><div class="sess-focus">Bu günden sonraki tüm program — antrenman sırası ve dinlenme günleri dahil — olduğu gibi ileri kaydı. Geçmiş kayıtların etkilenmedi.</div></div>'+ctrl; list.innerHTML=''; return; }
   if(sk==='R'){ head.innerHTML='<div class="sess-card"><div class="sess-date">'+ds+'</div><div class="sess-kick" style="color:var(--dim)">Planlı Dinlenme</div></div>'+ctrl; list.innerHTML='<div class="restday"><div class="ico">🛌</div><div class="big">Dinlenme</div><p>Kas dinlenirken büyür.<br>İstersen "Farklı Çalış" ile antrenman ekleyebilirsin.</p></div>'; return; }
   var s=getSession(sk); if(!s){ head.innerHTML='<div class="sess-card"><div class="sess-date">'+ds+'</div><div class="sess-focus">Bu antrenman artık mevcut değil (program silinmiş olabilir).</div></div>'+ctrl; list.innerHTML=''; return; }
   var total=s.ex.length, dn=0; s.ex.forEach(function(e,i){ if(DB.done[slotKey(k,sk,i)]) dn++; });
@@ -864,21 +1069,41 @@ function renderDay(){
   head.innerHTML='<div class="sess-card"><div class="sess-date">'+ds+' · '+pr.name+'</div><div class="sess-kick">'+s.short+(ov?'<span class="swap-badge">Değiştirildi</span>':'')+'</div><div class="sess-title">'+s.name+'</div><div class="sess-focus">'+s.focus+'</div><div class="progwrap"><div class="progbar"><div class="progfill" style="width:'+pct+'%"></div></div><div class="progtext">'+dn+' / '+total+' hareket tamamlandı</div></div></div>'+ctrl;
   var h=''; s.ex.forEach(function(e,i){ h+=cardHTML(k,sk,e,i); }); list.innerHTML=h;
 }
+/* SON KEZ kutusu — hareketin en son yapıldığı veri, hangi gün/program olursa olsun */
+function lastBoxHTML(name,k,e){
+  var lp=lastPerformance(name,k);
+  if(!lp){
+    var sug=e&&e.sw?('Koçun başlangıç önerisi: <b>'+e.sw+' kg</b>. '):'';
+    return '<div class="lastbox"><div class="lb-h"><span>Son Kez</span></div><div class="lb-none">'+sug+'Bu hareketi ilk kez yapıyorsun — setleri gir ki bir dahaki sefere buradan takip edebil.</div></div>';
+  }
+  var pd=pdkey(lp.dk), ago=agoText(lp.dk);
+  var setsH=lp.sets.map(function(x){ var w=(x.w===''||x.w===undefined)?'–':fmtKg(parseFloat(x.w)||0); var r=(x.r===''||x.r===undefined)?'–':x.r; return '<span class="lb-set"><b>'+w+'</b> kg × '+r+'</span>'; }).join('');
+  var er=sessionE1RM(lp.sets,lp.rpe), pr=bestE1RM(name);
+  var meta=[];
+  if(lp.rpe) meta.push('Son set RPE <b>'+lp.rpe+'</b>');
+  if(er>0) meta.push('e1RM <b>'+fmtKg(er)+' kg</b>');
+  if(pr>0&&pr-er>0.05) meta.push('Rekor <b>'+fmtKg(pr)+' kg</b>');
+  if(lp.note) meta.push('“'+esc(lp.note)+'”');
+  var t=progressTarget(lp,e), tH='';
+  if(t) tH='<div class="lb-t '+t.cls+'"><span class="tg">'+t.tag+'</span><span class="tx">'+t.txt+'</span></div>';
+  var fresh=daysBetween(pd,new Date())<=10?' fresh':'';
+  return '<div class="lastbox'+fresh+'"><div class="lb-h"><span>Son Kez · '+pd.getDate()+' '+MONTHS[pd.getMonth()].slice(0,3)+'</span><span class="ago">'+ago+'</span></div>'+
+    '<div class="lb-sets">'+setsH+'</div>'+(meta.length?'<div class="lb-meta">'+meta.join(' · ')+'</div>':'')+tH+'</div>';
+}
 function cardHTML(k,sk,e,i){
-  var vr=getVariant(k,sk,i,e), name=exNameOf(e,vr), done=DB.done[slotKey(k,sk,i)], med=DB.media[name], ph;
+  var name=e.n, done=DB.done[slotKey(k,sk,i)], med=DB.media[name], ph;
   if(med&&med.type==='video') ph='<video src="'+med.data+'" muted playsinline preload="metadata"></video><div class="playic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>';
   else if(med) ph='<img src="'+med.data+'" alt="">';
   else ph='<div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1-2h6l1 2"/></svg><span>Medya</span></div>';
-  var lp=lastPerformance(name,k), lpH='';
-  if(lp){ var pd=pdkey(lp.dk); lpH='<div class="lastperf">Geçen sefer ('+pd.getDate()+' '+MONTHS[pd.getMonth()].slice(0,3)+'): '+lp.sets.map(function(x){return '<b>'+(x.w||'–')+'×'+(x.r||'–')+'</b>';}).join(' · ')+'</div>'; }
+  var cur=DB.logs[logKey(name,k)]||[], curH='';
+  if(cur.filter(hasSet).length) curH='<div class="lastperf">Bugün girdiğin: '+cur.filter(hasSet).map(function(x){return '<b>'+(x.w||'–')+'×'+(x.r||'–')+'</b>';}).join(' · ')+(DB.rpe[logKey(name,k)]?' · RPE '+DB.rpe[logKey(name,k)]:'')+'</div>';
   return '<div class="ex'+(done?' done':'')+'" id="card-'+i+'"><div class="ex-main"><div class="ex-photo" onclick="openMedia('+i+')">'+ph+'</div><div class="ex-body"><div class="ex-num">#'+(i+1)+(e.t?' · '+e.t:'')+'</div><div class="ex-name">'+name+'</div>'+
-    '<div class="ex-chips"><span class="chip set">'+e.sets+' × '+e.reps+'</span><span class="chip rir">RIR '+e.rir+'</span><span class="chip">'+e.rest+' sn</span></div></div></div>'+lpH+(e.cue?'<div class="cue">💡 '+e.cue+'</div>':'')+
-    '<div class="varsel"><div class="varbtn'+(vr==='free'?' on':'')+'" onclick="setVar('+i+',\'free\')"><div class="vk">Dambıl / Serbest</div><div class="vv">'+e.free+'</div></div><div class="varbtn'+(vr==='mac'?' on':'')+'" onclick="setVar('+i+',\'mac\')"><div class="vk">Makine / Kablo</div><div class="vv">'+e.mac+'</div></div></div>'+
+    '<div class="ex-chips"><span class="chip set">'+e.sets+' × '+e.reps+(e.u==='sn'?' sn':'')+'</span><span class="chip rpe">RPE '+e.rpe+'</span><span class="chip">'+e.rest+' sn dinlen</span></div></div></div>'+curH+(e.cue?'<div class="cue">💡 '+e.cue+'</div>':'')+
+    lastBoxHTML(name,k,e)+
     '<div class="ex-foot"><button onclick="openLog('+i+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Setleri Gir</button><button class="mid'+(done?' dn':'')+'" onclick="toggleDone('+i+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>'+(done?'Bitti':'Bitir')+'</button></div></div>';
 }
 function refreshCard(i){ var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var el=document.getElementById('card-'+i); if(el){ el.outerHTML=cardHTML(selDate,sk,s.ex[i],i); } }
 function refreshHeader(){ var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var dn=0; s.ex.forEach(function(e,i){ if(DB.done[slotKey(selDate,sk,i)]) dn++; }); var pct=Math.round(dn/s.ex.length*100); var f=document.querySelector('#sessHead .progfill'), t=document.querySelector('#sessHead .progtext'); if(f) f.style.width=pct+'%'; if(t) t.textContent=dn+' / '+s.ex.length+' hareket tamamlandı'; }
-function setVar(i,v){ var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; DB.variant[slotKey(selDate,sk,i)]=v; DB.lastVariant[pairKey(s.ex[i])]=v; save(); keepScroll(function(){refreshCard(i);}); }
 function toggleDone(i){
   var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var kk=slotKey(selDate,sk,i);
   if(DB.done[kk]) delete DB.done[kk]; else {DB.done[kk]=1; vibrate(15);}
@@ -898,12 +1123,16 @@ function toggleOff(){
 function isoDate(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function pad(n){return (n<10?'0':'')+n;}
 function doOff(moveTo){
-  var sk=sessKeyFor(pdkey(selDate));
   DB.overrides[selDate]='OFF';
-  if(moveTo){ var cur=pdkey(selDate); cur.setDate(cur.getDate()+1); var target=midnight(moveTo), guard=0;
+  if(moveTo){
+    var cur=pdkey(selDate); cur.setDate(cur.getDate()+1);
+    var target=midnight(moveTo), guard=0;
     while(cur.getTime()<target.getTime()&&guard++<60){ DB.overrides[dkey(cur)]='OFF'; cur.setDate(cur.getDate()+1); }
-    if(sk&&sk!=='OFF'&&sk!=='R') DB.overrides[dkey(target)]=sk; }
-  save(); hide('offModal'); renderDay(); toast(moveTo?('Antrenman '+fmtDate(moveTo)+' gününe taşındı'):'İzin girildi, sıra kaydırıldı');
+    // Hedef güne override koymuyoruz: faz donduğu için bugünün antrenmanı
+    // oraya kendiliğinden düşer, dinlenme düzeni de aynen beraber kayar.
+  }
+  save(); hide('offModal'); renderDay();
+  toast(moveTo?('Program '+fmtDate(moveTo)+' gününe kaydırıldı'):'Tüm program bir gün ileri kaydırıldı');
 }
 function doOffMove(){ var v=document.getElementById('offMoveDate').value; if(!v){toast('Tarih seç');return;} var a=v.split('-'); var d=new Date(+a[0],+a[1]-1,+a[2]); if(d.getTime()<=pdkey(selDate).getTime()){toast('Bugünden sonraki bir gün seç');return;} doOff(d); }
 /* SWAP */
@@ -917,34 +1146,92 @@ function doSwap(key){ var s=getSession(key); if(confirm('Bugün "'+s.short+'" ol
 function clearOverride(){ if(confirm('Bu günü otomatik akışa döndür?')){ delete DB.overrides[selDate]; save(); renderDay(); toast('Otomatiğe döndü'); } }
 
 /* ═══════════ LOG ═══════════ */
-var logI=null, logName=null, logRest=90, logSets=3;
+var logI=null, logName=null, logRest=90, logSets=3, logPrev=null, logUnit='';
 function openLog(i){
-  var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var e=s.ex[i], vr=getVariant(selDate,sk,i,e);
-  logI=i; logName=exNameOf(e,vr); logRest=e.rest||90; logSets=parseInt(e.sets,10)||3;
+  var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var e=s.ex[i];
+  logI=i; logName=e.n; logRest=e.rest||90; logSets=parseInt(e.sets,10)||3;
   document.getElementById('logTitle').textContent=logName;
-  document.getElementById('logSub').textContent=e.sets+' × '+e.reps+' · RIR '+e.rir+' · '+e.rest+' sn';
-  var lp=lastPerformance(logName,selDate), pb=document.getElementById('prevBox');
-  if(lp){ var pd=pdkey(lp.dk); pb.classList.remove('hidden'); pb.innerHTML='<span class="pdate">Geçen sefer — '+pd.getDate()+' '+MONTHS[pd.getMonth()]+'</span>'+lp.sets.map(function(x){return '<b>'+(x.w||'–')+'kg × '+(x.r||'–')+'</b>';}).join('  ·  '); } else pb.classList.add('hidden');
-  var cur=DB.logs[logKey(logName,selDate)]||[], h='';
-  for(var j=0;j<logSets;j++){ var p=cur[j]||{w:'',r:'',d:0}; var ph=lp&&lp.sets[j]?lp.sets[j]:null;
-    h+='<div class="setrow"><div class="sn">'+(j+1)+'</div><input type="number" inputmode="decimal" step="0.5" placeholder="'+(ph&&ph.w?ph.w:'kg')+'" id="w-'+j+'" value="'+(p.w||'')+'" onfocus="scrollIn(this)"><input type="number" inputmode="numeric" placeholder="'+(ph&&ph.r?ph.r:'tekrar')+'" id="r-'+j+'" value="'+(p.r||'')+'" onfocus="scrollIn(this)"><div class="sdone'+(p.d?' on':'')+'" id="d-'+j+'" onclick="toggleSet('+j+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div></div>'; }
-  document.getElementById('setRows').innerHTML=h; show('logModal');
+  logUnit=(e.u==='sn')?'sn':'';
+  document.getElementById('logSub').textContent=e.sets+' × '+e.reps+(logUnit?' sn':'')+' · Hedef RPE '+e.rpe+' · '+e.rest+' sn dinlenme';
+  document.getElementById('setLabW').textContent=logUnit?'Ağırlık (kg, boşsa vücut)':'Ağırlık (kg)';
+  document.getElementById('setLabR').textContent=logUnit?'Süre (sn)':'Tekrar';
+  var lp=lastPerformance(logName,selDate); logPrev=lp;
+  var pb=document.getElementById('prevBox'), cb=document.getElementById('copyPrevBtn');
+  if(lp){
+    var pd=pdkey(lp.dk), er=sessionE1RM(lp.sets,lp.rpe);
+    pb.classList.remove('hidden');
+    pb.innerHTML='<span class="pdate">Son kez — '+pd.getDate()+' '+MONTHS[pd.getMonth()]+' ('+agoText(lp.dk)+')</span>'+
+      lp.sets.map(function(x){return '<b>'+(x.w||'–')+'kg × '+(x.r||'–')+'</b>';}).join('  ·  ')+
+      (lp.rpe?'<br><span class="pdate" style="margin:4px 0 0">Son set RPE '+lp.rpe+(er>0?' · e1RM '+fmtKg(er)+' kg':'')+'</span>':'');
+    cb.classList.remove('hidden');
+    cb.textContent='↻ Son seferin kilolarını doldur';
+  } else { pb.classList.add('hidden'); cb.classList.add('hidden'); }
+  var lk=logKey(logName,selDate), cur=DB.logs[lk]||[], h='';
+  for(var j=0;j<logSets;j++){
+    var p=cur[j]||{w:'',r:'',d:0}, ph=lp&&lp.sets[j]?lp.sets[j]:null;
+    var phw=(ph&&ph.w!=='')?ph.w:(e.sw&&!lp?e.sw:'kg'), phr=(ph&&ph.r!=='')?ph.r:'tekrar';
+    h+='<div class="setrow"><div class="sn">'+(j+1)+'</div>'+
+      '<input type="number" inputmode="decimal" step="0.5" placeholder="'+phw+'" id="w-'+j+'" value="'+(p.w!==undefined?p.w:'')+'" onfocus="scrollIn(this)" oninput="updE1()">'+
+      '<input type="number" inputmode="numeric" placeholder="'+phr+'" id="r-'+j+'" value="'+(p.r!==undefined?p.r:'')+'" onfocus="scrollIn(this)" oninput="updE1()">'+
+      '<div class="sdone'+(p.d?' on':'')+'" id="d-'+j+'" onclick="toggleSet('+j+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div></div>';
+  }
+  document.getElementById('setRows').innerHTML=h;
+  document.getElementById('logRpe').value=DB.rpe[lk]||'';
+  document.getElementById('logNote').value=DB.exnote[lk]||'';
+  updE1(); show('logModal');
+}
+function copyPrev(){
+  if(!logPrev) return;
+  for(var j=0;j<logSets;j++){ var p=logPrev.sets[j]; if(!p) break;
+    var w=document.getElementById('w-'+j), r=document.getElementById('r-'+j);
+    if(w&&w.value==='') w.value=(p.w!==undefined?p.w:'');
+    if(r&&r.value==='') r.value=(p.r!==undefined?p.r:''); }
+  updE1(); toast('Son seferin değerleri dolduruldu');
+}
+/* Canlı e1RM göstergesi */
+function updE1(){
+  var rpe=document.getElementById('logRpe'), best=0, bw=0, br=0;
+  var rv=rpe?rpe.value:'';
+  for(var j=0;j<logSets;j++){
+    var w=document.getElementById('w-'+j), r=document.getElementById('r-'+j); if(!w) break;
+    var v=e1rm(w.value,r?r.value:'',rv); if(v>best){best=v;bw=parseFloat(w.value)||0;br=parseInt(r?r.value:'',10)||0;}
+  }
+  var box=document.getElementById('e1Box'); if(!box) return;
+  var pr=logName?bestE1RM(logName):0;
+  if(best<=0){ box.innerHTML='<span class="k">Tahmini 1RM</span><span class="d">kilo + tekrar gir</span>'; return; }
+  var d='';
+  if(pr>0){ var fark=best-pr; d=fark>0.05?('rekor +'+fmtKg(fark)+' kg 🔥'):('rekor '+fmtKg(pr)+' kg'); }
+  else d='ilk kayıt';
+  box.innerHTML='<span class="k">Tahmini 1RM</span><span class="v">'+fmtKg(best)+' kg</span><span class="d">'+d+'</span>';
 }
 function scrollIn(el){ setTimeout(function(){ try{ el.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){} },250); }
 function toggleSet(j){ var el=document.getElementById('d-'+j); el.classList.toggle('on'); if(el.classList.contains('on')){vibrate(12);startTimer(logRest);} }
 function saveLog(){
   if(logName===null) return; var data=[], any=false;
   for(var j=0;j<logSets;j++){ var w=document.getElementById('w-'+j), r=document.getElementById('r-'+j), d=document.getElementById('d-'+j); if(!w) break;
-    var o={w:w.value,r:r?r.value:'',d:(d&&d.classList.contains('on'))?1:0}; if(o.w||o.r) any=true; data.push(o); }
+    var o={w:w.value,r:r?r.value:'',d:(d&&d.classList.contains('on'))?1:0}; if(hasSet(o)) any=true; data.push(o); }
   var lk=logKey(logName,selDate);
-  if(any){ var pb=bestWeight(logName); DB.logs[lk]=data; var nb=bestWeight(logName); save(); hide('logModal'); keepScroll(function(){refreshCard(logI);}); toast(nb>pb&&pb>0?('Yeni rekor: '+nb+' kg 💪'):'Kaydedildi'); }
-  else { delete DB.logs[lk]; save(); hide('logModal'); keepScroll(function(){refreshCard(logI);}); toast('Kayıt temizlendi'); }
+  var rv=document.getElementById('logRpe').value.trim(), nv=document.getElementById('logNote').value.trim();
+  if(rv){ var rn=parseFloat(rv.replace(',','.')); if(isNaN(rn)||rn<1||rn>10){ toast('RPE 1 ile 10 arasında olmalı'); return; } rv=String(Math.round(rn*2)/2); any=true; }
+  if(nv) any=true;
+  if(any){
+    var pre=bestE1RM(logName);
+    DB.logs[lk]=data;
+    if(rv) DB.rpe[lk]=rv; else delete DB.rpe[lk];
+    if(nv) DB.exnote[lk]=nv; else delete DB.exnote[lk];
+    var post=bestE1RM(logName);
+    save(); hide('logModal'); keepScroll(function(){refreshCard(logI);});
+    toast(post>pre+0.05&&pre>0?('Yeni rekor: '+fmtKg(post)+' kg tahmini 1RM 💪'):'Kaydedildi');
+  } else {
+    delete DB.logs[lk]; delete DB.rpe[lk]; delete DB.exnote[lk];
+    save(); hide('logModal'); keepScroll(function(){refreshCard(logI);}); toast('Kayıt temizlendi');
+  }
 }
 
 /* ═══════════ MEDIA ═══════════ */
 var medName=null, medI=null;
 function openMedia(i){
-  var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var e=s.ex[i]; medI=i; medName=exNameOf(e,getVariant(selDate,sk,i,e));
+  var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var e=s.ex[i]; medI=i; medName=e.n;
   document.getElementById('mediaTitle').textContent=medName;
   var m=DB.media[medName], pw=document.getElementById('mediaPrevWrap');
   if(m){ pw.innerHTML=m.type==='video'?'<video class="mediaprev" src="'+m.data+'" controls playsinline></video>':'<img class="mediaprev" src="'+m.data+'" alt="">'; document.getElementById('delMediaBtn').classList.remove('hidden'); }
@@ -1017,7 +1304,7 @@ function renderEditor(){
   var s=ED.sessions[edSess];
   var h2='<div class="backbtn" onclick="edSess=null;renderEditor()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Programa Dön</div>'+
     '<div class="card"><div class="p-head"><div class="p-name">'+s.short+' — '+s.name+'</div><button class="sbtn" onclick="openSessEdit()">Düzenle</button></div><div class="p-desc">'+s.focus+'</div></div>'+
-    '<div class="card"><h4>Hareketler ('+s.ex.length+')</h4>'+s.ex.map(function(e,i){ return '<div class="erow"><div class="e-main" onclick="openExEdit('+i+')"><div class="e-t">'+(i+1)+'. '+e.free+' / '+e.mac+'</div><div class="e-s">'+e.sets+' × '+e.reps+' · RIR '+e.rir+' · '+e.rest+' sn'+(e.t?' · '+e.t:'')+'</div></div><button class="ibtn" onclick="moveEx('+i+',-1)">↑</button><button class="ibtn" onclick="moveEx('+i+',1)">↓</button><button class="ibtn del" onclick="delEx('+i+')">✕</button></div>'; }).join('')+
+    '<div class="card"><h4>Hareketler ('+s.ex.length+')</h4>'+s.ex.map(function(e,i){ return '<div class="erow"><div class="e-main" onclick="openExEdit('+i+')"><div class="e-t">'+(i+1)+'. '+e.n+'</div><div class="e-s">'+e.sets+' × '+e.reps+' · RPE '+e.rpe+' · '+e.rest+' sn'+(e.t?' · '+e.t:'')+'</div></div><button class="ibtn" onclick="moveEx('+i+',-1)">↑</button><button class="ibtn" onclick="moveEx('+i+',1)">↓</button><button class="ibtn del" onclick="delEx('+i+')">✕</button></div>'; }).join('')+
     '<button class="actbtn prim" onclick="openExEdit(-1)">+ Hareket Ekle</button></div>';
   b.innerHTML=h2;
 }
@@ -1029,18 +1316,26 @@ function openSessEdit(){ var s=ED.sessions[edSess]; document.getElementById('seS
 function saveSessEdit(){ var s=ED.sessions[edSess]; s.short=document.getElementById('seShort').value||'Antrenman'; s.name=document.getElementById('seName').value||s.short.toUpperCase(); s.focus=document.getElementById('seFocus').value; edSave(); hide('sessEditModal'); renderEditor(); }
 var exEditI=-1;
 function openExEdit(i){
-  exEditI=i; var s=ED.sessions[edSess], e=i>=0?s.ex[i]:{free:'',mac:'',t:'',sets:3,reps:'8–12',rir:'1–2',rest:90};
+  exEditI=i; var s=ED.sessions[edSess], e=i>=0?s.ex[i]:{n:'',t:'',sets:3,reps:'10',rpe:'8',rest:90,sw:'',cue:''};
   document.getElementById('exEditTitle').textContent=i>=0?'Hareketi Düzenle':'Hareket Ekle';
-  var lib=document.getElementById('exLib'); if(lib.options.length<=1){ lib.innerHTML='<option value="">— kütüphaneden seç —</option>'+LIB.map(function(x,j){return '<option value="'+j+'">'+x[0]+' / '+x[1]+'</option>';}).join(''); }
-  lib.value=''; document.getElementById('exFree').value=e.free; document.getElementById('exMac').value=e.mac; document.getElementById('exT').value=e.t||'';
-  document.getElementById('exSets').value=e.sets; document.getElementById('exReps').value=e.reps; document.getElementById('exRir').value=e.rir; document.getElementById('exRest').value=e.rest;
+  var lib=document.getElementById('exLib'); if(lib.options.length<=1){ lib.innerHTML='<option value="">— kütüphaneden seç —</option>'+LIB.map(function(x,j){return '<option value="'+j+'">'+esc(x[0])+'</option>';}).join(''); }
+  lib.value=''; document.getElementById('exName').value=e.n||''; document.getElementById('exT').value=e.t||'';
+  document.getElementById('exSets').value=e.sets; document.getElementById('exReps').value=e.reps;
+  document.getElementById('exRpe').value=e.rpe; document.getElementById('exRest').value=e.rest;
+  document.getElementById('exSw').value=e.sw||''; document.getElementById('exCue').value=e.cue||'';
   show('exEditModal');
 }
-function pickLib(){ var v=document.getElementById('exLib').value; if(v==='') return; var x=LIB[+v]; document.getElementById('exFree').value=x[0]; document.getElementById('exMac').value=x[1]; document.getElementById('exT').value=x[2]; }
+function pickLib(){ var v=document.getElementById('exLib').value; if(v==='') return; var x=LIB[+v]; document.getElementById('exName').value=x[0]; document.getElementById('exT').value=x[1]; }
 function saveExEdit(){
-  var free=document.getElementById('exFree').value.trim(), mac=document.getElementById('exMac').value.trim();
-  if(!free&&!mac){toast('En az bir hareket adı gir');return;} if(!free) free=mac; if(!mac) mac=free;
-  var e={free:free,mac:mac,t:document.getElementById('exT').value.trim(),sets:parseInt(document.getElementById('exSets').value,10)||3,reps:document.getElementById('exReps').value.trim()||'8–12',rir:document.getElementById('exRir').value.trim()||'1–2',rest:parseInt(document.getElementById('exRest').value,10)||90};
+  var n=document.getElementById('exName').value.trim();
+  if(!n){toast('Hareket adı gir');return;}
+  var e={n:n,t:document.getElementById('exT').value.trim(),
+    sets:parseInt(document.getElementById('exSets').value,10)||3,
+    reps:document.getElementById('exReps').value.trim()||'10',
+    rpe:document.getElementById('exRpe').value.trim()||'8',
+    rest:parseInt(document.getElementById('exRest').value,10)||90,
+    sw:document.getElementById('exSw').value.trim(),
+    cue:document.getElementById('exCue').value.trim()};
   var s=ED.sessions[edSess]; if(exEditI>=0) s.ex[exEditI]=e; else s.ex.push(e); edSave(); hide('exEditModal'); renderEditor();
 }
 function moveEx(i,d){ var s=ED.sessions[edSess], j=i+d; if(j<0||j>=s.ex.length) return; var t=s.ex[i]; s.ex[i]=s.ex[j]; s.ex[j]=t; edSave(); renderEditor(); }
@@ -1049,23 +1344,34 @@ function delEx(i){ var s=ED.sessions[edSess]; s.ex.splice(i,1); edSave(); render
 /* ═══════════ STATS ═══════════ */
 var statMetric='top', statPeriod='day';
 function allExerciseNames(){
-  var set={}; LIB.forEach(function(x){set[x[0]]=1;set[x[1]]=1;});
-  allProgs().forEach(function(p){ for(var sid in p.sessions) p.sessions[sid].ex.forEach(function(e){set[e.free]=1;set[e.mac]=1;}); });
+  var set={}; LIB.forEach(function(x){ set[x[0]]=1; });
+  allProgs().forEach(function(p){ for(var sid in p.sessions) p.sessions[sid].ex.forEach(function(e){ if(e&&e.n) set[e.n]=1; }); });
   for(var k in DB.logs){ var n=k.split('||')[0]; if(n) set[n]=1; }
   return Object.keys(set).sort();
 }
 function initStats(){
   var p=document.getElementById('exPicker'), cur=p.value, names=allExerciseNames();
-  var logged={}; for(var k in DB.logs){ logged[k.split('||')[0]]=1; }
-  p.innerHTML='<optgroup label="Kayıtlı">'+names.filter(function(n){return logged[n];}).map(function(n){return '<option value="'+esc(n)+'">'+n+'</option>';}).join('')+'</optgroup><optgroup label="Tümü">'+names.map(function(n){return '<option value="'+esc(n)+'">'+n+'</option>';}).join('')+'</optgroup>';
-  if(cur) p.value=cur;
+  var logged={}; for(var k in DB.logs){ if((DB.logs[k]||[]).filter(hasSet).length) logged[k.split('||')[0]]=1; }
+  var rec=names.filter(function(n){return logged[n];}), rest=names.filter(function(n){return !logged[n];});
+  var h='';
+  if(rec.length) h+='<optgroup label="Kaydın Olanlar">'+rec.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('')+'</optgroup>';
+  h+='<optgroup label="'+(rec.length?'Diğer Hareketler':'Tüm Hareketler')+'">'+rest.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('')+'</optgroup>';
+  p.innerHTML=h;
+  if(cur&&names.indexOf(cur)>=0) p.value=cur; else if(rec.length) p.value=rec[0];
   renderProgress(); renderStats();
 }
 function setMetric(m){statMetric=m;var b=document.querySelectorAll('#metricTabs .tb');for(var i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-m')===m);renderStats();}
 function setPeriod(p){statPeriod=p;var b=document.querySelectorAll('[data-p]');for(var i=0;i<b.length;i++)b[i].classList.toggle('pon',b[i].getAttribute('data-p')===p);renderStats();}
 function collectData(name){
   var out=[], pre=name+'||';
-  for(var k in DB.logs){ if(k.indexOf(pre)!==0) continue; var dk=k.substring(pre.length); var sets=(DB.logs[k]||[]).filter(function(s){return (parseFloat(s.w)||0)>0||(parseInt(s.r,10)||0)>0;}); if(!sets.length) continue; var d; try{d=pdkey(dk);}catch(e){continue;} if(isNaN(d.getTime())) continue; out.push({date:d,sets:sets}); }
+  for(var k in DB.logs){
+    if(k.indexOf(pre)!==0) continue;
+    var dk=k.substring(pre.length);
+    var sets=(DB.logs[k]||[]).filter(function(s){return (parseFloat(s.w)||0)>0||(parseInt(s.r,10)||0)>0;});
+    if(!sets.length) continue;
+    var d; try{d=pdkey(dk);}catch(e){continue;} if(isNaN(d.getTime())) continue;
+    out.push({date:d,sets:sets,rpe:DB.rpe[k]||''});
+  }
   out.sort(function(a,b){return a.date-b.date;}); return out;
 }
 function calcMetric(sets){
@@ -1074,18 +1380,25 @@ function calcMetric(sets){
   if(statMetric==='vol') return sets.reduce(function(a,s){return a+(parseFloat(s.w)||0)*(parseInt(s.r,10)||0);},0);
   if(statMetric==='reps') return rs.reduce(function(a,b){return a+b;},0);
   if(statMetric==='avg'){var v=ws.filter(function(x){return x>0;});return v.length?v.reduce(function(a,b){return a+b;},0)/v.length:0;}
-  if(statMetric==='e1rm'){var best=0;sets.forEach(function(s){var w=parseFloat(s.w)||0,r=parseInt(s.r,10)||0;if(w>0&&r>0){var e=w*(1+r/30);if(e>best)best=e;}});return best;}
+  if(statMetric==='e1rm'){ var best=0; sets.forEach(function(s){ var e=e1rm(s.w,s.r,s._rpe); if(e>best) best=e; }); return best; }
   return 0;
 }
-function pKey(d){ if(statPeriod==='day') return dkey(d); if(statPeriod==='month') return d.getFullYear()+'-'+(d.getMonth()+1); return 'W'+weekIndexFor(d); }
-function pLabel(d){ if(statPeriod==='day') return d.getDate()+'/'+(d.getMonth()+1); if(statPeriod==='month') return MONTHS[d.getMonth()].slice(0,3); return 'H'+(weekIndexFor(d)+1); }
+/* Hafta anahtarı: başlangıç tarihinden ÖNCEKİ günler de ayrı kovalara düşsün (eskiden hepsi -1 olup tek kovaya çöküyordu) */
+function wIdx(d){ return Math.floor(daysBetween(startDate(),d)/7); }
+function pKey(d){ if(statPeriod==='day') return dkey(d); if(statPeriod==='month') return d.getFullYear()+'-'+pad(d.getMonth()+1); return 'W'+wIdx(d); }
+function pLabel(d){ if(statPeriod==='day') return d.getDate()+'/'+(d.getMonth()+1); if(statPeriod==='month') return MONTHS[d.getMonth()].slice(0,3); return 'H'+(wIdx(d)+1); }
 function renderStats(){
   var name=document.getElementById('exPicker').value, cv=document.getElementById('chart'), nd=document.getElementById('noData'), grid=document.getElementById('statGrid');
   if(!name) return; var data=collectData(name);
   if(!data.length){cv.style.display='none';nd.style.display='block';grid.innerHTML='';return;}
   nd.style.display='none'; cv.style.display='block';
   var groups={},order=[],labels={};
-  data.forEach(function(d){var pk=pKey(d.date);if(!groups[pk]){groups[pk]=[];order.push(pk);labels[pk]=pLabel(d.date);}groups[pk]=groups[pk].concat(d.sets);});
+  data.forEach(function(d){
+    var pk=pKey(d.date); if(!groups[pk]){groups[pk]=[];order.push(pk);labels[pk]=pLabel(d.date);}
+    // o antrenmanın son-set RPE'sini setlere iliştir ki e1RM doğru hesaplansın
+    var tagged=d.sets.map(function(x){ return {w:x.w,r:x.r,d:x.d,_rpe:d.rpe}; });
+    groups[pk]=groups[pk].concat(tagged);
+  });
   var pts=order.map(function(pk){return calcMetric(groups[pk]);}), labs=order.map(function(pk){return labels[pk];});
   requestAnimationFrame(function(){drawChart(cv,labs,pts);}); renderBoxes(pts);
 }
@@ -1109,28 +1422,68 @@ function renderBoxes(pts){
   var unit=statMetric==='reps'?'':(statMetric==='vol'?' kg·t':' kg'), first=pts[0], last=pts[pts.length-1], ch=last-first, pv=first?Math.round(ch/first*100):0;
   var peak=Math.max.apply(null,pts), avg=pts.reduce(function(a,b){return a+b;},0)/pts.length, cls=ch>0?'up':(ch<0?'down':'');
   var names={top:'Max Kilo',vol:'Hacim',avg:'Ort. Kilo',reps:'Tekrar',e1rm:'Tah. 1RM'};
+  if(pts.length===1){ document.getElementById('statGrid').innerHTML='<div class="statbox"><div class="sv">'+r1(last)+unit+'</div><div class="sl">'+names[statMetric]+'</div></div><div class="statbox"><div class="sv">1</div><div class="sl">Kayıtlı Antrenman</div></div><div class="statbox" style="grid-column:1/-1"><div class="sv" style="font-size:13px;font-family:\'Barlow Condensed\',sans-serif">Değişim için en az 2 kayıt gerekli</div><div class="sl">Bu hareketi tekrar yap</div></div>'; return; }
   document.getElementById('statGrid').innerHTML='<div class="statbox"><div class="sv">'+r1(last)+unit+'</div><div class="sl">Şu An · '+names[statMetric]+'</div></div><div class="statbox '+cls+'"><div class="sv">'+(ch>0?'+':'')+r1(ch)+unit+(first?' ('+(pv>0?'+':'')+pv+'%)':'')+'</div><div class="sl">Başlangıçtan Değişim</div></div><div class="statbox"><div class="sv">'+r1(peak)+unit+'</div><div class="sl">Zirve</div></div><div class="statbox"><div class="sv">'+r1(avg)+unit+'</div><div class="sl">Ortalama</div></div>';
 }
 function r1(x){return Math.round(x*10)/10;}
 function renderProgress(){
   var days=Object.keys(DB.daydone).length, sets=0, vol=0;
-  for(var k in DB.logs){(DB.logs[k]||[]).forEach(function(s){var w=parseFloat(s.w)||0,r=parseInt(s.r,10)||0;if(w||r)sets++;vol+=w*r;});}
+  for(var k in DB.logs){(DB.logs[k]||[]).forEach(function(s){var w=parseFloat(s.w)||0,r=parseInt(s.r,10)||0;if(hasSet(s))sets++;vol+=w*r;});}
   document.getElementById('st-done').textContent=days; document.getElementById('st-sets').textContent=sets; document.getElementById('st-vol').textContent=(vol/1000).toFixed(1);
 }
 
+/* ═══════════ BESLENME ═══════════ */
+function renderNut(){
+  document.getElementById('nutEditWrap').style.display='none';
+  var box=document.getElementById('nutRead'), lines=String(DB.nutrition||'').split('\n');
+  var h='', open=false, ul=false;
+  function closeUl(){ if(ul){h+='</ul>';ul=false;} }
+  function closeMeal(){ closeUl(); if(open){h+='</div>';open=false;} }
+  for(var i=0;i<lines.length;i++){
+    var L=lines[i].replace(/\s+$/,'');
+    if(!L){ continue; }
+    if(L.charAt(0)==='#'){
+      closeMeal();
+      var t=L.replace(/^#+\s*/,''), tag='';
+      var m=t.match(/^(.*?)\s*\((.*)\)\s*$/);
+      if(m){ t=m[1]; tag=m[2]; }
+      h+='<div class="meal"><div class="meal-h"><span class="mn">'+esc(t)+'</span>'+(tag?'<span class="mt">'+esc(tag)+'</span>':'')+'</div>';
+      open=true;
+    } else if(L.charAt(0)==='!'){
+      closeMeal();
+      h+='<div class="kcal"><div class="kv">'+esc(L.replace(/^!\s*/,''))+'</div><div class="kl">Günlük Hedef</div></div>';
+    } else if(L.charAt(0)==='>'){
+      closeUl();
+      var n='<div class="mnote">⌁ '+esc(L.replace(/^>\s*/,''))+'</div>';
+      if(open) h+=n; else h+='<div class="meal">'+n+'</div>';
+    } else {
+      if(!open){ h+='<div class="meal">'; open=true; }
+      if(!ul){ h+='<ul>'; ul=true; }
+      h+='<li>'+esc(L)+'</li>';
+    }
+  }
+  closeMeal();
+  if(!h) h='<div class="card info"><p>Beslenme planın boş. “Düzenle” ile yazabilirsin.</p></div>';
+  box.innerHTML=h+'<button class="actbtn prim" style="margin-top:4px" onclick="nutOpen()">Beslenme Planını Düzenle</button>';
+}
+function nutOpen(){ document.getElementById('nutEdit').value=DB.nutrition||''; document.getElementById('nutRead').style.display='none'; document.getElementById('nutEditWrap').style.display='block'; window.scrollTo(0,0); }
+function nutCancel(){ document.getElementById('nutRead').style.display='block'; document.getElementById('nutEditWrap').style.display='none'; }
+function nutSave(){ DB.nutrition=document.getElementById('nutEdit').value; save(); document.getElementById('nutRead').style.display='block'; renderNut(); toast('Beslenme planı kaydedildi'); }
+function nutReset(){ if(!confirm('Koçun orijinal beslenme planına dönülsün mü? Kendi değişikliklerin silinir.')) return; DB.nutrition=NUT_DEFAULT; save(); document.getElementById('nutRead').style.display='block'; renderNut(); toast('Koçun planına dönüldü'); }
+
 /* ═══════════ BACKUP / RESET ═══════════ */
-function openBackup(){ var slim={}; ['startDate','activeProgram','weekPrograms','overrides','variant','lastVariant','done','daydone','logs','programs','configured'].forEach(function(f){slim[f]=DB[f];}); document.getElementById('backupBox').value=JSON.stringify(slim); show('backupModal'); }
+function openBackup(){ var slim={}; ['startDate','activeProgram','weekPrograms','overrides','done','daydone','logs','rpe','exnote','nutrition','programs','configured','progVersion'].forEach(function(f){slim[f]=DB[f];}); document.getElementById('backupBox').value=JSON.stringify(slim); show('backupModal'); }
 function copyBackup(){ var ta=document.getElementById('backupBox'); ta.select(); ta.setSelectionRange(0,999999); try{ if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value); else document.execCommand('copy'); toast('Kopyalandı'); }catch(e){toast('Manuel seçip kopyala');} }
-function restoreBackup(){ var v=document.getElementById('backupBox').value.trim(); if(!v){toast('Boş');return;} try{ var o=JSON.parse(v); if(!o||typeof o!=='object') throw 0; if(!confirm('Mevcut veriler bu yedekle değiştirilecek. Devam?')) return; ['startDate','activeProgram','weekPrograms','overrides','variant','lastVariant','done','daydone','logs','programs','configured'].forEach(function(f){if(o[f]!==undefined)DB[f]=o[f];}); save(); hide('backupModal'); showView('cal'); toast('Geri yüklendi'); }catch(e){toast('Yedek metni geçersiz');} }
-function resetAll(){ if(confirm('Tüm ilerleme, kayıt ve medya silinecek. Özel programların korunur. Emin misin?')&&confirm('Son onay: geri alınamaz.')){ DB.variant={};DB.lastVariant={};DB.done={};DB.daydone={};DB.logs={};DB.media={};DB.overrides={};DB.weekPrograms={}; save(); showView('cal'); toast('Sıfırlandı'); } }
+function restoreBackup(){ var v=document.getElementById('backupBox').value.trim(); if(!v){toast('Boş');return;} try{ var o=JSON.parse(v); if(!o||typeof o!=='object') throw 0; if(!confirm('Mevcut veriler bu yedekle değiştirilecek. Devam?')) return; ['startDate','activeProgram','weekPrograms','overrides','done','daydone','logs','rpe','exnote','nutrition','programs','configured','progVersion'].forEach(function(f){if(o[f]!==undefined)DB[f]=o[f];}); save(); hide('backupModal'); showView('cal'); toast('Geri yüklendi'); }catch(e){toast('Yedek metni geçersiz');} }
+function resetAll(){ if(confirm('Tüm ilerleme, kayıt ve medya silinecek. Özel programların korunur. Emin misin?')&&confirm('Son onay: geri alınamaz.')){ DB.done={};DB.daydone={};DB.logs={};DB.rpe={};DB.exnote={};DB.media={};DB.overrides={};DB.weekPrograms={}; save(); showView('cal'); toast('Sıfırlandı'); } }
 
 /* ═══════════ VIEWS / UTIL ═══════════ */
 function show(id){document.getElementById(id).classList.add('show');}
 function hide(id){document.getElementById(id).classList.remove('show');}
 function showView(v){
-  ['cal','day','stats','prog','editor','info'].forEach(function(x){var el=document.getElementById('view-'+x);if(el)el.classList.toggle('show',x===v);});
-  ['cal','stats','prog','info'].forEach(function(x){var b=document.getElementById('nav-'+x);if(b)b.classList.toggle('on',x===v||(v==='day'&&x==='cal')||(v==='editor'&&x==='prog'));});
-  if(v==='cal') renderCal(); if(v==='stats') initStats(); if(v==='prog') renderProgs();
+  ['cal','day','stats','prog','editor','nut','info'].forEach(function(x){var el=document.getElementById('view-'+x);if(el)el.classList.toggle('show',x===v);});
+  ['cal','stats','prog','nut','info'].forEach(function(x){var b=document.getElementById('nav-'+x);if(b)b.classList.toggle('on',x===v||(v==='day'&&x==='cal')||(v==='editor'&&x==='prog'));});
+  if(v==='cal') renderCal(); if(v==='stats') initStats(); if(v==='prog') renderProgs(); if(v==='nut') renderNut();
   window.scrollTo(0,0);
 }
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},1900);}
