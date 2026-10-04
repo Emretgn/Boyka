@@ -212,19 +212,6 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .sidetog button.on{background:var(--amber);color:#1a1205;border-color:var(--amber);}
 .legend{display:flex;align-items:center;gap:6px;justify-content:center;padding:2px 10px 0;font-family:'Barlow Condensed',sans-serif;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);}
 .legend i{width:17px;height:9px;border-radius:2px;display:inline-block;}
-/* büyük dokunulabilir kas listesi */
-.mglist{display:grid;grid-template-columns:1fr;gap:7px;margin-bottom:12px;}
-.mgrow{display:flex;align-items:center;gap:11px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px 13px;cursor:pointer;min-height:54px;-webkit-tap-highlight-color:transparent;}
-.mgrow.on{border-color:var(--amber);background:linear-gradient(180deg,#241d0e,var(--panel));}
-.mgrow .sw{width:12px;height:30px;border-radius:4px;flex-shrink:0;}
-.mgrow .nm{flex:1;min-width:0;}
-.mgrow .nm b{display:block;font-size:14px;color:var(--ink);font-weight:600;}
-.mgrow .nm span{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--dim);letter-spacing:.04em;}
-.mgrow .vl{text-align:right;flex-shrink:0;}
-.mgrow .vl b{display:block;font-family:'Anton',sans-serif;font-size:17px;color:var(--amber2);line-height:1.1;}
-.mgrow .vl span{font-family:'Barlow Condensed',sans-serif;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
-.mgrow.zero .vl b{color:var(--dim);}
-.mghead{font-family:'Barlow Condensed',sans-serif;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);margin:14px 0 8px;}
 /* ═══ ÖLÇÜLER ═══ */
 .msrow{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-bottom:7px;}
 .msrow .ml{flex:1;min-width:0;}
@@ -363,8 +350,8 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     <button class="tb" data-mp="m" onclick="setMusPeriod('m')">Bu Ay</button>
     <button class="tb" data-mp="all" onclick="setMusPeriod('all')">Tümü</button>
   </div>
-  <div class="mghead">Kasa dokun — ya da aşağıdaki listeden seç</div>
-  <div class="mglist" id="mgList"></div>
+  <label class="sp-label">Kas Grubu Seç</label>
+  <select class="selbox" id="musPicker" onchange="pickMuscleSel(this.value)"></select>
   <div id="mgDetail"></div>
 </div>
 
@@ -994,13 +981,15 @@ var EXMAP={
  "Seated Cable Row":{lats:1,traps:.5,delt_r:.5,biceps:.5},
  "Seated Cable Row (Wide Grip)":{lats:1,delt_r:.5,traps:.5,biceps:.5},
  "Barbell Row (Overhand Grip)":{lats:1,traps:.5,delt_r:.5,biceps:.5,lowback:.5},
- "One Arm Dumbbell Row":{lats:1,traps:.5,biceps:.5},
+ "One-Arm Dumbbell Row":{lats:1,traps:.5,biceps:.5,delt_r:.5},
  "Hyper Extension":{lowback:1,glutes:.5,hams:.5},
  "Dumbbell Alternate Curl":{biceps:1,forearm:.5},
  "Incline Bench Biceps Curl":{biceps:1},
  "Cable Barbell Curl":{biceps:1,forearm:.5},
  "Cable One Arm Biceps Curl":{biceps:1},
+ "Dumbbell Hammer Curl":{biceps:1,forearm:1},
  "Hammer Curl":{biceps:1,forearm:1},
+ "Dumbbell Preacher Curl":{biceps:1},
  "Preacher Curl":{biceps:1},
  "Dumbbell Skullcrusher":{triceps:1},
  "Rope Push Down":{triceps:1},
@@ -1011,7 +1000,7 @@ var EXMAP={
  "Dips":{triceps:1,chest:.5,delt:.5},
  "Leg Extension":{quads:1},
  "Hack Squat":{quads:1,glutes:.5},
- "Leg Press":{quads:1,glutes:.5,hams:.5},
+ "Leg Press":{quads:1,glutes:.5},
  "Seated Leg Curl":{hams:1},
  "Lying Leg Curl":{hams:1},
  "Dumbbell RDL":{hams:1,glutes:.5,lowback:.5},
@@ -1032,9 +1021,15 @@ var EXMAP={
 /* Kütüphanedeki hedef-kas metninden otomatik çıkarım (EXMAP'te olmayan/özel hareketler için) */
 var TGUESS=[['üst göğüs','chest'],['göğüs','chest'],['yan omuz','delt'],['ön omuz','delt'],['arka omuz','delt_r'],
  ['omuz','delt'],['trapez','traps'],['kanat','lats'],['sırt','lats'],['bel','lowback'],
- ['biceps','biceps'],['triceps','triceps'],['önkol','forearm'],['karın','abs'],['oblik','obliques'],['kor','obliques'],
+ ['biceps','biceps'],['brachialis','biceps'],['triceps','triceps'],['önkol','forearm'],['fleksör','forearm'],['karın','abs'],['oblik','obliques'],['kor','obliques'],
  ['quadriceps','quads'],['hamstring','hams'],['kalça','glutes'],['glute','glutes'],['baldır','calves']];
+var _mcache={}, _mcacheVer=-1;
 function musclesOf(name){
+  if(_mcacheVer!==_cacheVer){ _mcache={}; _mcacheVer=_cacheVer; }
+  if(_mcache[name]!==undefined) return _mcache[name];
+  var r=_musclesOf(name); _mcache[name]=r; return r;
+}
+function _musclesOf(name){
   if(EXMAP[name]) return EXMAP[name];
   var t='';
   for(var i=0;i<LIB.length;i++) if(LIB[i][0]===name){ t=(LIB[i][1]||'').toLowerCase(); break; }
@@ -1186,6 +1181,7 @@ function fmtKg(x){ var v=Math.round(x*10)/10; return (String(v).indexOf('.')>=0?
 /* Geçen seferin RPE'sine göre bu antrenmanın hedefi */
 function progressTarget(lp,e){
   if(!lp) return null;
+  var BR=(e&&e.u==='sn')?'saniye':'tekrar';
   var heavy=0,hr=0;
   lp.sets.forEach(function(s){ var w=numW(s); if(w>heavy){heavy=w;hr=numR(s);} });
   var reps=0; lp.sets.forEach(function(s){ var r=numR(s); if(r>reps) reps=r; });
@@ -1200,10 +1196,10 @@ function progressTarget(lp,e){
   }
   if(p<=hedef-0.5){
     var a2=heavy>0?2.5:0;
-    return {cls:'up',tag:'Hafif Arttır',txt:'Son set RPE '+fmtKg(p)+'. <b>'+(a2?('+2,5 kg → '+fmtKg(heavy+a2)+' kg'):'bir kademe arttır')+'</b> ya da aynı kiloda 1-2 tekrar ekle.'};
+    return {cls:'up',tag:'Hafif Arttır',txt:'Son set RPE '+fmtKg(p)+'. <b>'+(a2?('+2,5 kg → '+fmtKg(heavy+a2)+' kg'):'bir kademe arttır')+'</b> ya da aynı kiloda 1-2 '+BR+' ekle.'};
   }
   if(p<=hedef+0.5){
-    return {cls:'hold',tag:'Aynı Kilo',txt:'Tam hedefte. <b>'+(heavy?fmtKg(heavy)+' kg':'aynı kilo')+'</b> ile devam, '+(reps?('bu sefer '+(reps+1)+' tekrar'):'bir tekrar fazla')+' hedefle.'};
+    return {cls:'hold',tag:'Aynı Kilo',txt:'Tam hedefte. <b>'+(heavy?fmtKg(heavy)+' kg':'aynı kilo')+'</b> ile devam, '+(reps?('bu sefer '+(reps+1)+' '+BR):('bir '+BR+' fazla'))+' hedefle.'};
   }
   if(p<=9.5){
     return {cls:'hold',tag:'Sabit Kal',txt:'Son set RPE '+fmtKg(p)+' — hedefin üstünde. <b>'+(heavy?fmtKg(heavy)+' kg':'aynı kilo')+'</b> ile kal, teknik ve tekrar üzerine çalış.'};
@@ -1583,10 +1579,10 @@ function calcMetric(sets){
   if(statMetric==='e1rm'){ var best=0; sets.forEach(function(s){ var e=e1rm(s.w,s.r,s._rpe); if(e>best) best=e; }); return best; }
   return 0;
 }
-/* Hafta anahtarı: başlangıç tarihinden ÖNCEKİ günler de ayrı kovalara düşsün (eskiden hepsi -1 olup tek kovaya çöküyordu) */
-function wIdx(d){ return Math.floor(daysBetween(startDate(),d)/7); }
-function pKey(d){ if(statPeriod==='day') return dkey(d); if(statPeriod==='month') return d.getFullYear()+'-'+pad(d.getMonth()+1); return 'W'+wIdx(d); }
-function pLabel(d){ if(statPeriod==='day') return d.getDate()+'/'+(d.getMonth()+1); if(statPeriod==='month') return MONTHS[d.getMonth()].slice(0,3); return 'H'+(wIdx(d)+1); }
+/* Hafta anahtarı: o haftanın pazartesi tarihi. Başlangıç gününden bağımsız, negatif hafta numarası çıkmaz. */
+function weekMonday(d){ var x=midnight(d); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x; }
+function pKey(d){ if(statPeriod==='day') return dkey(d); if(statPeriod==='month') return d.getFullYear()+'-'+pad(d.getMonth()+1); return 'W'+dkey(weekMonday(d)); }
+function pLabel(d){ if(statPeriod==='day') return d.getDate()+'/'+(d.getMonth()+1); if(statPeriod==='month') return MONTHS[d.getMonth()].slice(0,3); var m=weekMonday(d); return m.getDate()+'/'+(m.getMonth()+1); }
 function renderStats(){
   var name=document.getElementById('exPicker').value, cv=document.getElementById('chart'), nd=document.getElementById('noData'), grid=document.getElementById('statGrid');
   if(!name) return; var data=collectData(name);
@@ -1658,7 +1654,27 @@ function periodRange(){
   b.setHours(23,59,59,999);
   return [a.getTime(), b.getTime()];
 }
-function periodWeeks(){ return musPeriod==='w'?1:(musPeriod==='l4'?4:(musPeriod==='m'?4.3:0)); }
+/* Seçili dönemde fiilen geçen hafta sayısı (ay başındaysa 4.3 değil, gerçek süre) */
+function periodWeeks(){
+  var r=periodRange(), a=r[0], bEnd=Math.min(r[1], midnight(new Date()).getTime()+86399999);
+  if(musPeriod==='all'){
+    var first=null;
+    for(var k in DB.logs){ var i=k.lastIndexOf('||'); if(i<0) continue; var t;
+      try{ t=midnight(pdkey(k.substring(i+2))).getTime(); }catch(e){ continue; }
+      if(isNaN(t)) continue; if(first===null||t<first) first=t; }
+    if(first===null) return 0;
+    a=first;
+  }
+  var gun=Math.floor((bEnd-a)/86400000)+1;
+  return Math.max(1, gun/7);
+}
+/* Son 7 günün seti — hacim değerlendirmesi hep buna bakar, seçili dönemden bağımsız */
+function last7Sets(mg){
+  var b=midnight(new Date()); b.setHours(23,59,59,999);
+  var a=midnight(new Date()); a.setDate(a.getDate()-6);
+  var o=muscleAgg(a.getTime(), b.getTime())[mg];
+  return o?o.sets:0;
+}
 
 /* Kas grubu toplamları — fraksiyonel hacim (ana kas 1.0, yardımcı 0.5) */
 function muscleAgg(fromT,toT){
@@ -1726,43 +1742,47 @@ function renderMuscle(){
     for(var j=0;j<paths.length;j++){
       sv+='<path d="'+paths[j]+'" fill="'+(sel?'#f5a623':fill)+'" stroke="#101318" stroke-width="2.6" stroke-linejoin="round"'+(sel?' filter="url(#bgl)"':'')+'/>';
       sv+='<path d="'+paths[j]+'" fill="url(#bsh)" stroke="none" pointer-events="none"/>';
-      if(g) hits+='<path class="mz" d="'+paths[j]+'" fill="transparent" stroke="transparent" stroke-width="26" onclick="pickMuscle(\''+g+'\')"/>';
     }
+    /* tıklama katmanı: kasın tüm alt parçalarını TEK yolda birleştir → parmakla kolay hedef */
+    if(g) hits+='<path class="mz" d="'+paths.join(' ')+'" fill="transparent" stroke="transparent" stroke-width="40" stroke-linejoin="round" onclick="pickMuscle(\''+g+'\')"/>';
   }
   sv+='</g>'+hits+'</svg>';
   document.getElementById('bodyHost').innerHTML=sv;
-  /* ── büyük dokunulabilir liste ── */
+  /* dropdown — en çok çalışılandan aza sıralı, değeriyle birlikte */
   var rows=MG.slice().sort(function(a,b){ return musValue(agg[b[0]])-musValue(agg[a[0]]); });
-  var h='';
-  rows.forEach(function(m){
-    var o=agg[m[0]], v=musValue(o), L=heatLevel(v,mx), gun=Object.keys(o.days).length;
-    h+='<div class="mgrow'+(musSel===m[0]?' on':'')+(v<=0?' zero':'')+'" onclick="pickMuscle(\''+m[0]+'\')">'+
-       '<span class="sw" style="background:'+HEATC[L]+'"></span>'+
-       '<span class="nm"><b>'+m[1]+'</b><span>'+m[2]+(gun?(' · '+gun+' gün'):'')+'</span></span>'+
-       '<span class="vl"><b>'+musFmt(v)+'</b><span>'+musLabel()+'</span></span></div>';
-  });
-  document.getElementById('mgList').innerHTML=h;
+  var sel='<option value="">— kas grubu seç —</option>';
+  rows.forEach(function(m){ var v=musValue(agg[m[0]]);
+    sel+='<option value="'+m[0]+'"'+(musSel===m[0]?' selected':'')+'>'+m[1]+' — '+musFmt(v)+musUnit()+'</option>'; });
+  var pk=document.getElementById('musPicker'); if(pk) pk.innerHTML=sel;
   renderMgDetail(agg);
+}
+function pickMuscleSel(g){ musSel=g||null; if(musSel) snapSide(); renderMuscle(); }
+function snapSide(){
+  for(var i=0;i<MG.length;i++) if(MG[i][0]===musSel && MG[i][3]!==bodySide){
+    bodySide=MG[i][3];
+    document.getElementById('bs-f').classList.toggle('on',bodySide==='f');
+    document.getElementById('bs-b').classList.toggle('on',bodySide==='b');
+  }
 }
 function pickMuscle(g){
   musSel=(musSel===g)?null:g;
-  /* seçilen kas başka taraftaysa o tarafa geç */
-  if(musSel){ for(var i=0;i<MG.length;i++) if(MG[i][0]===musSel && MG[i][3]!==bodySide){ bodySide=MG[i][3];
-    document.getElementById('bs-f').classList.toggle('on',bodySide==='f'); document.getElementById('bs-b').classList.toggle('on',bodySide==='b'); } }
+  if(musSel) snapSide();   /* seçilen kas diğer taraftaysa görünümü çevir */
   keepScroll(renderMuscle);
 }
 function renderMgDetail(agg){
   var host=document.getElementById('mgDetail');
   if(!musSel){ host.innerHTML='<div class="card info"><p>Bir kas grubuna dokun — o kasın haftalık gelişim grafiği ve detay sayıları burada açılır.</p></div>'; return; }
   var o=agg[musSel], gun=Object.keys(o.days).length, hf=periodWeeks();
-  var haftalik=hf?(o.sets/hf):0;
-  var durum = o.sets<=0 ? ['dim','Hiç çalışılmadı']
-            : (haftalik<10 ? ['down','Haftalık 10 setin altında']
-            : (haftalik<=20 ? ['up','Bilimsel aralıkta (10–20)'] : ['down','Haftalık 20 setin üstünde']));
+  var ortHaftalik=hf?Math.round(o.sets/hf*10)/10:null;   // seçili dönemin haftalık ortalaması
+  var s7=last7Sets(musSel);                              // son 7 günün seti — değerlendirme hep buna bakar
+  var durum = s7<=0 ? ['','Son 7 günde hiç çalışılmadı']
+            : (s7<10 ? ['down','Son 7 günde '+(Math.round(s7*10)/10)+' set — 10 setin altında']
+            : (s7<=20 ? ['up','Son 7 günde '+(Math.round(s7*10)/10)+' set — bilimsel aralıkta (10–20)']
+            : ['down','Son 7 günde '+(Math.round(s7*10)/10)+' set — 20 setin üstünde']));
   var h='<div class="card"><h4>'+mgName(musSel)+'</h4>'+
     '<div class="statgrid" style="margin-bottom:12px">'+
     '<div class="statbox"><div class="sv">'+musFmt(o.sets)+'</div><div class="sl">Toplam Set</div></div>'+
-    '<div class="statbox"><div class="sv">'+(hf?(Math.round(haftalik*10)/10):'—')+'</div><div class="sl">Haftalık Set</div></div>'+
+    '<div class="statbox"><div class="sv">'+(ortHaftalik===null?'—':ortHaftalik)+'</div><div class="sl">Haftalık Ortalama Set</div></div>'+
     '<div class="statbox"><div class="sv">'+Math.round(o.reps)+'</div><div class="sl">Toplam Tekrar</div></div>'+
     '<div class="statbox"><div class="sv">'+(o.vol>=1000?(Math.round(o.vol/100)/10)+'k':Math.round(o.vol))+' kg</div><div class="sl">Toplam Hacim</div></div>'+
     '<div class="statbox"><div class="sv">'+(o.wcnt?Math.round(o.wsum/o.wcnt*10)/10:'—')+' kg</div><div class="sl">Ortalama Kilo</div></div>'+
