@@ -972,21 +972,24 @@ var BODY={"f":[["chest",["M272.91 422.84c-18.95-17.19-22-57-12.64-78.79 5.57-12.
 
 /* Kas grupları — çizimdeki bölgelerle birebir eşleşir */
 var MG=[
- ['chest',    'Göğüs',         'Pectoralis major',        'f','chest'],
- ['delt',     'Omuz (Ön/Yan)', 'Deltoid ön + yan baş',    'f','deltoids'],
- ['delt_r',   'Arka Omuz',     'Deltoid arka baş',        'b','deltoids'],
- ['traps',    'Trapez',        'Trapezius',               'b','trapezius'],
- ['lats',     'Kanat / Sırt',  'Latissimus + rhomboid',   'b','upper-back'],
- ['lowback',  'Bel',           'Erector spinae',          'b','lower-back'],
- ['biceps',   'Biceps',        'Biceps brachii',          'f','biceps'],
- ['triceps',  'Triceps',       'Triceps brachii',         'b','triceps'],
- ['forearm',  'Önkol',         'Brachioradialis + fleksör','f','forearm'],
- ['abs',      'Karın',         'Rectus abdominis',        'f','abs'],
- ['obliques', 'Oblik / Kor',   'Obliquus + transversus',  'f','obliques'],
- ['quads',    'Quadriceps',    'Quadriceps femoris',      'f','quadriceps'],
- ['hams',     'Hamstring',     'Biceps femoris + semi',   'b','hamstring'],
- ['glutes',   'Kalça',         'Gluteus maximus/medius',  'b','gluteal'],
- ['calves',   'Baldır',        'Gastrocnemius + soleus',  'f','calves']
+ ['chest',    'Göğüs',          'Pectoralis major',          'f',[['f','chest']]],
+ ['delt',     'Omuz (Ön/Yan)',  'Deltoid ön + yan baş',      'f',[['f','deltoids']]],
+ ['delt_r',   'Arka Omuz',      'Deltoid arka baş',          'b',[['b','deltoids']]],
+ ['traps',    'Trapez',         'Trapezius üst + orta',      'b',[['b','trapezius'],['f','trapezius']]],
+ ['lats',     'Kanat / Sırt',   'Latissimus + rhomboid',     'b',[['b','upper-back']]],
+ ['lowback',  'Bel',            'Erector spinae',            'b',[['b','lower-back']]],
+ ['neck',     'Boyun',          'Sternocleidomastoid + splenius','f',[['f','neck'],['b','neck']]],
+ ['biceps',   'Biceps',         'Biceps brachii',            'f',[['f','biceps']]],
+ ['triceps',  'Triceps',        'Triceps brachii',           'b',[['b','triceps'],['f','triceps']]],
+ ['forearm',  'Önkol',          'Brachioradialis + fleksör', 'f',[['f','forearm'],['b','forearm']]],
+ ['abs',      'Karın',          'Rectus abdominis',          'f',[['f','abs']]],
+ ['obliques', 'Oblik / Kor',    'Obliquus + transversus',    'f',[['f','obliques']]],
+ ['quads',    'Quadriceps',     'Quadriceps femoris',        'f',[['f','quadriceps']]],
+ ['adductor', 'Adduktor',       'İç bacak (adductor grubu)', 'f',[['f','adductors'],['b','adductors']]],
+ ['hams',     'Hamstring',      'Biceps femoris + semi',     'b',[['b','hamstring']]],
+ ['glutes',   'Kalça',          'Gluteus maximus/medius',    'b',[['b','gluteal']]],
+ ['calves',   'Baldır',         'Gastrocnemius + soleus',    'b',[['b','calves'],['f','calves']]],
+ ['tibialis', 'Ön Baldır',      'Tibialis anterior',         'f',[['f','tibialis']]]
 ];
 function mgName(id){ for(var i=0;i<MG.length;i++) if(MG[i][0]===id) return MG[i][1]; return id; }
 
@@ -1037,13 +1040,14 @@ var EXMAP={
  "Overhead Rope Triceps Extension":{triceps:1},
  "Dips":{triceps:1,chest:.5,delt:.5},
  "Leg Extension":{quads:1},
- "Hack Squat":{quads:1,glutes:.5},
- "Leg Press":{quads:1,glutes:.5},
+ "Hack Squat":{quads:1,glutes:.5,adductor:.5},
+ "Leg Press":{quads:1,glutes:.5,adductor:.5},
  "Seated Leg Curl":{hams:1},
  "Lying Leg Curl":{hams:1},
  "Dumbbell RDL":{hams:1,glutes:.5,lowback:.5},
  "Hip Thrust Machine":{glutes:1,hams:.5},
  "Hip Abduction Machine":{glutes:1},
+ "Leg Press Calf Raise":{calves:1,tibialis:0},
  "Leg Press Calf Raise":{calves:1},
  "Seated Calf Raise":{calves:1},
  "Plate Crunch":{abs:1},
@@ -1060,7 +1064,8 @@ var EXMAP={
 var TGUESS=[['üst göğüs','chest'],['göğüs','chest'],['yan omuz','delt'],['ön omuz','delt'],['arka omuz','delt_r'],
  ['omuz','delt'],['trapez','traps'],['kanat','lats'],['sırt','lats'],['bel','lowback'],
  ['biceps','biceps'],['brachialis','biceps'],['triceps','triceps'],['önkol','forearm'],['fleksör','forearm'],['karın','abs'],['oblik','obliques'],['kor','obliques'],
- ['quadriceps','quads'],['hamstring','hams'],['kalça','glutes'],['glute','glutes'],['baldır','calves']];
+ ['quadriceps','quads'],['hamstring','hams'],['kalça','glutes'],['glute','glutes'],['baldır','calves'],
+ ['adduktor','adductor'],['iç bacak','adductor'],['tibialis','tibialis'],['boyun','neck'],['trapez','traps']];
 var _mcache={}, _mcacheVer=-1;
 function musclesOf(name){
   if(_mcacheVer!==_cacheVer){ _mcache={}; _mcacheVer=_cacheVer; }
@@ -1763,7 +1768,10 @@ function renderMuscle(){
   MG.forEach(function(m){ if(m[3]===side||true){} });
   /* slug -> kas grubu eşlemesi (bu görünüm için) */
   var slug2mg={};
-  MG.forEach(function(m){ if(m[3]===side) slug2mg[m[4]]=m[0]; });
+  MG.forEach(function(m){
+    var par=m[4]; if(!par) return;
+    for(var i=0;i<par.length;i++) if(par[i][0]===side) slug2mg[par[i][1]]=m[0];
+  });
   var sv='<svg class="bodysvg" viewBox="'+(side==='f'?'41 114 646 1239':'761 154 646 1199')+'" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">'+
    '<defs><linearGradient id="bsh" x1="0.25" y1="0" x2="0.75" y2="1">'+
    '<stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".42" stop-color="#fff" stop-opacity=".04"/>'+
