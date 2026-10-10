@@ -759,8 +759,12 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 </div></div>
 
 <script src="three.min.js" onerror="this.remove()"></script>
-<script src="GLTFLoader.js" onerror="this.remove()"></script>
-<script src="SkeletonUtils.js" onerror="this.remove()"></script>
+<script>/* bazı telefonlar yüklerken "three.min.js" adını "three_min.js" yapıyor: ikisini de dene */
+if(!window.THREE){document.write('<scr'+'ipt src="three_min.js"><\/scr'+'ipt>');}</script>
+<script>if(window.THREE){
+document.write('<scr'+'ipt src="GLTFLoader.js"><\/scr'+'ipt>');
+document.write('<scr'+'ipt src="SkeletonUtils.js"><\/scr'+'ipt>');
+}</script>
 
 <!-- 3B ANİMASYON -->
 <div id="animModal">
