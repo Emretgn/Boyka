@@ -113,6 +113,40 @@ border-bottom:1px solid var(--line);padding:12px 16px 11px;padding-top:calc(12px
 .lastperf b{color:var(--amber2);}
 .cue{font-size:11.5px;color:var(--dim);font-style:italic;padding:9px 12px 0;line-height:1.45;border-top:1px solid var(--line);}
 /* SON KEZ kutusu — hareketin en son yapıldığı veriler (günden bağımsız) */
+/* ═══ 3B ANİMASYON ═══ */
+.ex-photo .anim3d{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s;display:block;}
+.ex-photo .play3d{position:absolute;right:5px;bottom:5px;width:21px;height:21px;border-radius:50%;
+ background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;}
+.ex-photo .play3d::after{content:"";border-left:7px solid #f5a623;border-top:4.5px solid transparent;
+ border-bottom:4.5px solid transparent;margin-left:2px;}
+#animModal{position:fixed;inset:0;z-index:500;background:#07080a;display:none;flex-direction:column;}
+#animModal.show{display:flex;}
+.an-top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 13px 9px;border-bottom:1px solid var(--line);}
+.an-top h3{flex:1;margin:0;font-family:'Anton',sans-serif;font-size:17px;letter-spacing:.02em;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.an-x{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:9px;
+ width:34px;height:34px;font-size:17px;line-height:1;cursor:pointer;flex-shrink:0;}
+.an-stage{position:relative;flex:1;min-height:0;background:#0b0d10;touch-action:none;}
+.an-stage canvas{display:block;width:100%;height:100%;}
+.an-yuk{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+ font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.05em;color:var(--dim);
+ text-align:center;padding:0 24px;}
+.an-tempo{position:absolute;top:10px;left:11px;font-family:'Barlow Condensed',sans-serif;font-weight:600;
+ font-size:10px;letter-spacing:.11em;background:rgba(0,0,0,.52);padding:5px 8px;border-radius:6px;color:var(--amber2);}
+.an-faz{position:absolute;top:10px;right:11px;font-family:'Barlow Condensed',sans-serif;font-weight:600;
+ font-size:11.5px;letter-spacing:.08em;background:rgba(0,0,0,.52);padding:5px 9px;border-radius:6px;color:#fff;}
+.an-track{position:absolute;left:11px;right:11px;bottom:11px;height:3px;background:rgba(255,255,255,.16);border-radius:2px;}
+.an-track i{display:block;height:100%;width:0;background:var(--amber);border-radius:2px;}
+.an-ctrl{display:flex;gap:6px;padding:10px 11px calc(10px + env(safe-area-inset-bottom));overflow-x:auto;}
+.an-ctrl::-webkit-scrollbar{display:none;}
+.an-ctrl button{flex-shrink:0;background:var(--panel2);border:1px solid var(--line);color:var(--mut);
+ border-radius:9px;padding:9px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;
+ font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;}
+.an-ctrl button.on{background:var(--amber);color:#1a1205;border-color:var(--amber);}
+.an-ctrl .sp{flex:1;min-width:4px;}
+.an-bilgi{padding:0 13px 12px;font-size:12.5px;color:var(--mut);line-height:1.5;}
+.an-bilgi b{color:var(--ink);font-size:13.5px;}
+.an-bilgi span{display:block;color:var(--dim);margin-top:5px;font-size:12px;}
 .lastbox{margin:0 12px 11px;border:1px solid var(--line);background:var(--panel2);border-radius:10px;overflow:hidden;}
 .lastbox.fresh{border-color:rgba(245,166,35,.42);}
 .lb-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 10px 5px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
@@ -724,6 +758,33 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   <div class="modal-actions"><button class="btn ghost" onclick="hide('exEditModal')">Vazgeç</button><button class="btn prim" onclick="saveExEdit()">Kaydet</button></div>
 </div></div>
 
+<script src="three.min.js" onerror="this.remove()"></script>
+<script src="GLTFLoader.js" onerror="this.remove()"></script>
+<script src="SkeletonUtils.js" onerror="this.remove()"></script>
+
+<!-- 3B ANİMASYON -->
+<div id="animModal">
+  <div class="an-top"><h3 id="animBaslik">Hareket</h3>
+    <button class="an-x" onclick="Boyka3D.kapat()">✕</button></div>
+  <div class="an-stage" id="animStage">
+    <canvas id="animCv"></canvas>
+    <div class="an-tempo" id="animTempo">TEMPO</div>
+    <div class="an-faz" id="animFaz">—</div>
+    <div class="an-track"><i id="animBar"></i></div>
+    <div class="an-yuk" id="animYuk">Animasyon hazırlanıyor…</div>
+  </div>
+  <div class="an-ctrl">
+    <button id="animOynat" class="on" onclick="Boyka3D.oynatDur()">❚❚</button>
+    <button data-ac="uc" class="on" onclick="Boyka3D.kameraSec('uc')">3/4</button>
+    <button data-ac="yan" onclick="Boyka3D.kameraSec('yan')">Yan</button>
+    <button data-ac="on" onclick="Boyka3D.kameraSec('on')">Ön</button>
+    <span class="sp"></span>
+    <button data-ag="male" onclick="Boyka3D.cinsSec('male')">Erkek</button>
+    <button data-ag="female" onclick="Boyka3D.cinsSec('female')">Kadın</button>
+  </div>
+  <div class="an-bilgi" id="animBilgi"></div>
+</div>
+
 <!-- ÖLÇÜ MODALI -->
 <div class="modal-bg" id="measureModal"><div class="modal">
   <h3>Beden Ölçüsü</h3><div class="msub">Boş bıraktıkların kaydedilmez — sadece ölçtüklerini gir</div>
@@ -1307,6 +1368,7 @@ function renderDay(){
   var pct=total?Math.round(dn/total*100):0, pr=getProg(sk.split('|')[0]);
   head.innerHTML='<div class="sess-card"><div class="sess-date">'+ds+' · '+pr.name+'</div><div class="sess-kick">'+s.short+(ov?'<span class="swap-badge">Değiştirildi</span>':'')+'</div><div class="sess-title">'+s.name+'</div><div class="sess-focus">'+s.focus+'</div><div class="progwrap"><div class="progbar"><div class="progfill" style="width:'+pct+'%"></div></div><div class="progtext">'+dn+' / '+total+' hareket tamamlandı</div></div></div>'+ctrl;
   var h=''; s.ex.forEach(function(e,i){ h+=cardHTML(k,sk,e,i); }); list.innerHTML=h;
+  if(window.kapaklariDoldur) kapaklariDoldur();
 }
 /* SON KEZ kutusu — hareketin en son yapıldığı veri, hangi gün/program olursa olsun */
 function lastBoxHTML(name,k,e){
@@ -1334,14 +1396,33 @@ function cardHTML(k,sk,e,i){
   if(med&&med.type==='video') ph='<video src="'+med.data+'" muted playsinline preload="metadata"></video><div class="playic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>';
   else if(med) ph='<img src="'+med.data+'" alt="">';
   else ph='<div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1-2h6l1 2"/></svg><span>Medya</span></div>';
+  /* 3B animasyon varsa küçük kapak + oynat rozeti; yoksa eski medya alanı */
+  if(window.Boyka3D && Boyka3D.varMi(name)){
+    ph='<img class="anim3d" alt=""><div class="play3d"></div>';
+  }
   var cur=DB.logs[logKey(name,k)]||[], curH='';
   if(cur.filter(hasSet).length) curH='<div class="lastperf">Bugün girdiğin: '+cur.filter(hasSet).map(function(x){return '<b>'+(x.w||'–')+'×'+(x.r||'–')+'</b>';}).join(' · ')+(DB.rpe[logKey(name,k)]?' · RPE '+DB.rpe[logKey(name,k)]:'')+'</div>';
-  return '<div class="ex'+(done?' done':'')+'" id="card-'+i+'"><div class="ex-main"><div class="ex-photo" onclick="openMedia('+i+')">'+ph+'</div><div class="ex-body"><div class="ex-num">#'+(i+1)+(e.t?' · '+e.t:'')+'</div><div class="ex-name">'+name+'</div>'+
+  return '<div class="ex'+(done?' done':'')+'" id="card-'+i+'"><div class="ex-main"><div class="ex-photo" data-anim="'+esc(name)+'" onclick="acMedya('+i+')">'+ph+'</div><div class="ex-body"><div class="ex-num">#'+(i+1)+(e.t?' · '+e.t:'')+'</div><div class="ex-name">'+name+'</div>'+
     '<div class="ex-chips"><span class="chip set">'+e.sets+' × '+e.reps+(e.u==='sn'?' sn':'')+'</span><span class="chip rpe">RPE '+e.rpe+'</span><span class="chip">'+e.rest+' sn dinlen</span></div></div></div>'+curH+(e.cue?'<div class="cue">💡 '+e.cue+'</div>':'')+
     lastBoxHTML(name,k,e)+
     '<div class="ex-foot"><button onclick="openLog('+i+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Setleri Gir</button><button class="mid'+(done?' dn':'')+'" onclick="toggleDone('+i+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>'+(done?'Bitti':'Bitir')+'</button></div></div>';
 }
-function refreshCard(i){ var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var el=document.getElementById('card-'+i); if(el){ el.outerHTML=cardHTML(selDate,sk,s.ex[i],i); } }
+function refreshCard(i){ var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var el=document.getElementById('card-'+i); if(el){ el.outerHTML=cardHTML(selDate,sk,s.ex[i],i); kapaklariDoldur(); } }
+/* Kartlardaki 3B kapakları sırayla üret — aynı anda tek render */
+function kapaklariDoldur(){
+  if(!window.Boyka3D) return;
+  var ps=document.querySelectorAll('#exlist .ex-photo[data-anim]');
+  for(var i=0;i<ps.length;i++){
+    var el=ps[i], img=el.querySelector('img.anim3d');
+    if(img && !img.src) Boyka3D.kapakIste(el.getAttribute('data-anim'), el);
+  }
+}
+/* Medya alanına dokunma: animasyon varsa oynatıcı, yoksa eski foto ekranı */
+function acMedya(i){
+  var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return;
+  var n=s.ex[i].n;
+  if(window.Boyka3D && Boyka3D.varMi(n)) Boyka3D.ac(n); else openMedia(i);
+}
 function refreshHeader(){ var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var dn=0; s.ex.forEach(function(e,i){ if(DB.done[slotKey(selDate,sk,i)]) dn++; }); var pct=Math.round(dn/s.ex.length*100); var f=document.querySelector('#sessHead .progfill'), t=document.querySelector('#sessHead .progtext'); if(f) f.style.width=pct+'%'; if(t) t.textContent=dn+' / '+s.ex.length+' hareket tamamlandı'; }
 function toggleDone(i){
   var sk=sessKeyFor(pdkey(selDate)), s=getSession(sk); if(!s) return; var kk=slotKey(selDate,sk,i);
@@ -2032,6 +2113,2178 @@ function deleteMeasure(){
   delete DB.body[dk]; save(); hide('measureModal'); renderBody(); toast('Silindi');
 }
 
+/* 3B motor — THREE yoksa tüm blok atlanır, uygulama normal çalışır */
+if(window.THREE){
+/* ───── rig.js ───── */
+/* ═══════════════════════════════════════════════════════════════════
+   BOYKA — İSKELET + MANKEN
+   Mixamo adlandırmalı kemik ağacı. GLB gelmeden çalışır; GLB gelince
+   aynı arayüzle onun iskeleti kullanılır.
+   ═══════════════════════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+  var T = global.THREE;
+
+  /* Mixamo kemik adları — önekli veya öneksiz tanınır */
+  function baseName(n) {
+    return String(n).replace(/^mixamorig[:_]?/i, '');
+  }
+
+  /* ── Dinlenme pozu (T-poz), 1,80 m erkek için metre cinsinden offsetler ──
+     Yön: karakter +Z'ye bakar, sol taraf +X.                               */
+  var SKEL = [
+    ['Hips',            null,        [0, 0.98, 0]],
+    ['Spine',           'Hips',      [0, 0.10, 0]],
+    ['Spine1',          'Spine',     [0, 0.11, 0]],
+    ['Spine2',          'Spine1',    [0, 0.11, 0]],
+    ['Neck',            'Spine2',    [0, 0.17, 0]],
+    ['Head',            'Neck',      [0, 0.10, 0.01]],
+    ['HeadTop_End',     'Head',      [0, 0.20, 0]],
+
+    ['LeftShoulder',    'Spine2',    [ 0.045, 0.12, 0]],
+    ['LeftArm',         'LeftShoulder', [ 0.145, 0, 0]],
+    ['LeftForeArm',     'LeftArm',   [ 0.280, 0, 0]],
+    ['LeftHand',        'LeftForeArm', [ 0.255, 0, 0]],
+    ['LeftHandIndex1',  'LeftHand',  [ 0.085, 0, 0.018]],
+    ['LeftHandIndex2',  'LeftHandIndex1', [ 0.042, 0, 0]],
+    ['LeftHandThumb1',  'LeftHand',  [ 0.038, 0, -0.030]],
+    ['LeftHandThumb2',  'LeftHandThumb1', [ 0.045, 0, -0.012]],
+
+    ['RightShoulder',   'Spine2',    [-0.045, 0.12, 0]],
+    ['RightArm',        'RightShoulder', [-0.145, 0, 0]],
+    ['RightForeArm',    'RightArm',  [-0.280, 0, 0]],
+    ['RightHand',       'RightForeArm', [-0.255, 0, 0]],
+    ['RightHandIndex1', 'RightHand', [-0.085, 0, 0.018]],
+    ['RightHandIndex2', 'RightHandIndex1', [-0.042, 0, 0]],
+    ['RightHandThumb1', 'RightHand', [-0.038, 0, -0.030]],
+    ['RightHandThumb2', 'RightHandThumb1', [-0.045, 0, -0.012]],
+
+    ['LeftUpLeg',       'Hips',      [ 0.090, -0.06, 0]],
+    ['LeftLeg',         'LeftUpLeg', [0, -0.440, 0]],
+    ['LeftFoot',        'LeftLeg',   [0, -0.430, 0]],
+    ['LeftToeBase',     'LeftFoot',  [0, -0.050, 0.140]],
+    ['LeftToe_End',     'LeftToeBase', [0, 0, 0.060]],
+
+    ['RightUpLeg',      'Hips',      [-0.090, -0.06, 0]],
+    ['RightLeg',        'RightUpLeg',[0, -0.440, 0]],
+    ['RightFoot',       'RightLeg',  [0, -0.430, 0]],
+    ['RightToeBase',    'RightFoot', [0, -0.050, 0.140]],
+    ['RightToe_End',    'RightToeBase', [0, 0, 0.060]]
+  ];
+
+  /* Cinsiyete göre oran çarpanları — iskeletin kendisi aynı, ölçüler farklı */
+  var SHAPE = {
+    male:   { height: 1.80, shoulder: 1.00, hip: 1.00, limb: 1.00, bulk: 1.00 },
+    female: { height: 1.68, shoulder: 0.88, hip: 1.10, limb: 0.98, bulk: 0.86 }
+  };
+
+  /* ═══════ İSKELET KUR ═══════ */
+  function buildSkeleton(shape) {
+    var bones = {}, root = null;
+    SKEL.forEach(function (d) {
+      var name = d[0], parent = d[1], off = d[2].slice();
+      /* omuz/kalça genişliği, uzuv uzunluğu */
+      if (/Shoulder|Arm|Hand/.test(name)) off[0] *= shape.shoulder;
+      if (/UpLeg/.test(name)) off[0] *= shape.hip;
+      if (/^(LeftLeg|RightLeg|LeftFoot|RightFoot)$/.test(name)) off[1] *= shape.limb;
+      if (/ForeArm|Hand$/.test(name)) off[0] *= shape.limb;
+
+      var b = new T.Bone();
+      b.name = 'mixamorig:' + name;
+      b.position.set(off[0], off[1], off[2]);
+      bones[name] = b;
+      if (parent) bones[parent].add(b); else root = b;
+    });
+    return { bones: bones, root: root };
+  }
+
+  /* Ölçek: Box3 DEĞİL — kemik dünya konumlarından hesaplanır.
+     (skinned mesh'te Box3 bind-pose yüzünden yanlış sonuç verir)          */
+  function fitHeight(rig, targetH) {
+    rig.root.updateWorldMatrix(true, true);
+    var v = new T.Vector3(), top = -1e9, bottom = 1e9;
+    ['HeadTop_End', 'Head', 'Neck'].forEach(function (n) {
+      if (rig.bones[n]) { rig.bones[n].getWorldPosition(v); if (v.y > top) top = v.y; }
+    });
+    ['LeftToe_End', 'RightToe_End', 'LeftFoot', 'RightFoot', 'LeftToeBase', 'RightToeBase'].forEach(function (n) {
+      if (rig.bones[n]) { rig.bones[n].getWorldPosition(v); if (v.y < bottom) bottom = v.y; }
+    });
+    var h = top - bottom;
+    if (!(h > 0.1)) return 1;
+    return targetH / h;
+  }
+
+  /* ═══════ MANKEN GÖVDESİ ═══════
+     Her kemiğe, çocuğuna uzanan bir uzuv parçası ekler. Deri yok —
+     parçalar doğrudan kemiğe bağlı, bu yüzden skinning gerekmez.        */
+  function segment(from, to, r1, r2, mat) {
+    var d = new T.Vector3().subVectors(to, from), len = d.length();
+    if (len < 1e-4) return null;
+    var g = new T.CylinderGeometry(r2, r1, len, 16, 1, false);
+    g.translate(0, len / 2, 0);
+    var m = new T.Mesh(g, mat);
+    m.castShadow = true; m.receiveShadow = true;
+    /* +Y'yi d yönüne çevir */
+    m.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), d.clone().normalize());
+    m.position.copy(from);
+    return m;
+  }
+  function ball(r, mat) {
+    var m = new T.Mesh(new T.SphereGeometry(r, 18, 14), mat);
+    m.castShadow = true; m.receiveShadow = true; return m;
+  }
+
+  function buildBody(rig, shape, mats) {
+    var B = rig.bones, k = shape.bulk, group = [];
+    function add(boneName, childName, r1, r2, mat) {
+      var b = B[boneName], c = B[childName];
+      if (!b || !c) return;
+      var s = segment(new T.Vector3(0, 0, 0), c.position, r1 * k, r2 * k, mat);
+      if (s) { b.add(s); group.push(s); }
+    }
+    function joint(boneName, r, mat) {
+      var b = B[boneName]; if (!b) return;
+      var s = ball(r * k, mat); b.add(s); group.push(s);
+    }
+
+    /* gövde — kıyafet */
+    add('Hips', 'Spine', 0.150, 0.145, mats.short);
+    add('Spine', 'Spine1', 0.145, 0.150, mats.shirt);
+    add('Spine1', 'Spine2', 0.150, 0.158, mats.shirt);
+    add('Spine2', 'Neck', 0.158, 0.075, mats.shirt);
+    /* göğüs kafesi hacmi */
+    (function () {
+      var m = new T.Mesh(new T.SphereGeometry(0.168 * k, 20, 16), mats.shirt);
+      m.scale.set(1.0, 0.80, 0.68); m.position.y = 0.075;
+      m.castShadow = true; m.receiveShadow = true;
+      B.Spine1.add(m); group.push(m);
+    })();
+    /* kalça hacmi */
+    (function () {
+      var m = new T.Mesh(new T.SphereGeometry(0.155 * k, 20, 16), mats.short);
+      m.scale.set(1.08 * shape.hip, 0.72, 0.80); m.position.y = -0.01;
+      m.castShadow = true; m.receiveShadow = true;
+      B.Hips.add(m); group.push(m);
+    })();
+
+    add('Neck', 'Head', 0.055, 0.058, mats.skin);
+    (function () {
+      var m = ball(0.098 * k, mats.skin);
+      m.scale.set(0.92, 1.12, 1.0); m.position.y = 0.085;
+      B.Head.add(m); group.push(m);
+      var hair = new T.Mesh(new T.SphereGeometry(0.102 * k, 18, 14,
+        0, Math.PI * 2, 0, Math.PI * 0.62), mats.hair);
+      hair.scale.set(0.95, 1.16, 1.03); hair.position.y = 0.085;
+      hair.castShadow = true; B.Head.add(hair); group.push(hair);
+    })();
+
+    ['Left', 'Right'].forEach(function (S) {
+      /* kol */
+      add(S + 'Shoulder', S + 'Arm', 0.072, 0.062, mats.shirt);
+      add(S + 'Arm', S + 'ForeArm', 0.062, 0.048, mats.skin);
+      add(S + 'ForeArm', S + 'Hand', 0.048, 0.034, mats.skin);
+      joint(S + 'Arm', 0.063, mats.shirt);
+      joint(S + 'ForeArm', 0.046, mats.skin);
+      /* el */
+      (function () {
+        var m = new T.Mesh(new T.BoxGeometry(0.085 * k, 0.075 * k, 0.038 * k), mats.skin);
+        m.position.set((S === 'Left' ? 1 : -1) * 0.040 * k, 0, 0.004);
+        m.castShadow = true; B[S + 'Hand'].add(m); group.push(m);
+      })();
+      add(S + 'HandIndex1', S + 'HandIndex2', 0.016, 0.013, mats.skin);
+      add(S + 'HandThumb1', S + 'HandThumb2', 0.016, 0.013, mats.skin);
+      /* bacak */
+      add(S + 'UpLeg', S + 'Leg', 0.098, 0.072, mats.short);
+      add(S + 'Leg', S + 'Foot', 0.072, 0.045, mats.skin);
+      joint(S + 'UpLeg', 0.095, mats.short);
+      joint(S + 'Leg', 0.068, mats.skin);
+      /* ayakkabı */
+      (function () {
+        var m = new T.Mesh(new T.BoxGeometry(0.092 * k, 0.062 * k, 0.235 * k), mats.shoe);
+        m.position.set(0, -0.028, 0.055);
+        m.castShadow = true; m.receiveShadow = true;
+        B[S + 'Foot'].add(m); group.push(m);
+      })();
+    });
+    return group;
+  }
+
+  /* ═══════ GLB İSKELETİNİ EŞLE ═══════ */
+  function mapGLB(scene) {
+    var bones = {};
+    scene.traverse(function (o) { if (o.isBone) bones[baseName(o.name)] = o; });
+    if (!bones.Hips) return null;
+    return { bones: bones, root: bones.Hips, glb: true };
+  }
+
+  global.BoykaRig = {
+    SHAPE: SHAPE,
+    baseName: baseName,
+    build: function (gender, mats) {
+      var shape = SHAPE[gender] || SHAPE.male;
+      var rig = buildSkeleton(shape);
+      var meshes = buildBody(rig, shape, mats);
+      rig.shape = shape; rig.meshes = meshes; rig.glb = false;
+      rig.scale = fitHeight(rig, shape.height);
+      return rig;
+    },
+    fromGLB: function (scene, gender) {
+      var rig = mapGLB(scene);
+      if (!rig) return null;
+      var shape = SHAPE[gender] || SHAPE.male;
+      rig.shape = shape;
+      rig.scale = fitHeight(rig, shape.height);
+      return rig;
+    },
+    fitHeight: fitHeight
+  };
+})(window);
+
+/* ───── engine.js ───── */
+/* ═══════════════════════════════════════════════════════════════════
+   BOYKA — POZ MOTORU + HAREKET VERİSİ + EKİPMAN
+   Hazır animasyon dosyası yok. Her hareket 0–1 arası bir faz
+   parametresine göre kalça yüksekliği / gövde eğimi / ayak ve el
+   hedef noktaları olarak tanımlanır; poz her karede dinlenme
+   pozundan kurulur.
+   ═══════════════════════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+  var T = global.THREE;
+  var _v1 = new T.Vector3(), _v2 = new T.Vector3(), _v3 = new T.Vector3(),
+      _q1 = new T.Quaternion(), _q2 = new T.Quaternion(), _m1 = new T.Matrix4();
+
+  /* ───────── yardımcılar ───────── */
+  function smooth(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  var D2R = Math.PI / 180;
+
+  /* ═════════ POZ ÇÖZÜCÜ ═════════ */
+  function Poser(rig, container) {
+    this.rig = rig; this.container = container;
+    this.rest = {};
+    var B = rig.bones;
+    for (var k in B) this.rest[k] = B[k].quaternion.clone();
+    this.inv = new T.Matrix4();
+    /* k = kemik-yerel birimden iskelet-yerel (metre) birime çevrim.
+       Mixamo dışa aktarımlarında armature 0.01 ölçekli olabilir; hedefler
+       hep metre cinsinden yazılır, burada çevrilir.                        */
+    this.k = 1;
+    try {
+      container.updateWorldMatrix(true, true);
+      var par = B.Hips && B.Hips.parent ? B.Hips.parent : null;
+      if (par) {
+        var sb = new T.Vector3(), sc = new T.Vector3();
+        par.getWorldScale(sb); container.getWorldScale(sc);
+        if (sc.x > 1e-9) this.k = sb.x / sc.x;
+      }
+      if (!(this.k > 1e-9)) this.k = 1;
+    } catch (e) { this.k = 1; }
+    /* Uzuv boyları iskeletten okunur — her model farklı oranda olabilir.  */
+    var kk = this.k;
+    function boy(n) { var b = B[n]; return b ? b.position.length() * kk : 0; }
+    this.begin();
+    var hp = this.pos('Hips', new T.Vector3());
+    var sh = this.pos(B.LeftArm ? 'LeftArm' : 'Spine2', new T.Vector3());
+    var ay = this.pos('LeftFoot', new T.Vector3());
+    this.L = {
+      bacak: boy('LeftLeg') + boy('LeftFoot'),      // kalça → ayak bileği
+      kol:   boy('LeftForeArm') + boy('LeftHand'),  // omuz → bilek
+      govde: Math.abs(sh.y - hp.y),                 // kalça → omuz
+      kalcaY: hp.y,                                 // duruşta kalça yüksekliği
+      ayakY: ay.y,                                  // ayak bileği yüksekliği
+      omuzX: Math.abs(sh.x)                         // omuz yarı genişliği
+    };
+  }
+  /* dinlenme pozuna dön — her kare buradan başlanır */
+  Poser.prototype.reset = function () {
+    var B = this.rig.bones;
+    for (var k in B) if (this.rest[k]) B[k].quaternion.copy(this.rest[k]);
+  };
+  Poser.prototype.begin = function () {
+    this.container.updateWorldMatrix(true, false);
+    this.inv.copy(this.container.matrixWorld).invert();
+  };
+  /* kemiğin iskelet-yerel konumu */
+  Poser.prototype.pos = function (name, out) {
+    var b = this.rig.bones[name]; out = out || new T.Vector3();
+    if (!b) return out.set(0, 0, 0);
+    b.updateWorldMatrix(true, false);
+    out.setFromMatrixPosition(b.matrixWorld).applyMatrix4(this.inv);
+    return out;
+  };
+  Poser.prototype.parentQuat = function (bone, out) {
+    out = out || new T.Quaternion();
+    if (bone.parent) { bone.parent.updateWorldMatrix(true, false); bone.parent.getWorldQuaternion(out); }
+    else out.identity();
+    this.container.getWorldQuaternion(_q2);
+    return out.premultiply(_q2.invert());
+  };
+  /* kemiği, çocuğu verilen dünya(iskelet-yerel) yönüne bakacak şekilde çevir */
+  Poser.prototype.aim = function (boneName, childName, dir, roll) {
+    var B = this.rig.bones, b = B[boneName], c = B[childName];
+    if (!b || !c) return;
+    var from = _v1.copy(c.position).normalize();
+    var pq = this.parentQuat(b, _q1);
+    var to = _v2.copy(dir).normalize().applyQuaternion(pq.clone().invert());
+    b.quaternion.setFromUnitVectors(from, to);
+    if (roll) b.quaternion.multiply(_q2.setFromAxisAngle(from, roll));
+  };
+  /* iki kemikli IK — diz/dirsek kutup yönüyle */
+  Poser.prototype.twoBone = function (rootN, midN, endN, target, pole) {
+    var B = this.rig.bones, root = B[rootN], mid = B[midN], end = B[endN];
+    if (!root || !mid || !end) return;
+    var l1 = mid.position.length() * this.k, l2 = end.position.length() * this.k;
+    var A = this.pos(rootN, new T.Vector3());
+    var toT = new T.Vector3().subVectors(target, A);
+    var d = toT.length();
+    var dMin = Math.abs(l1 - l2) + 1e-4, dMax = l1 + l2 - 1e-4;
+    d = Math.max(dMin, Math.min(dMax, d));
+    var dir = toT.clone().normalize();
+    var cosA = (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d);
+    var angA = Math.acos(Math.max(-1, Math.min(1, cosA)));
+    var poleDir = new T.Vector3().subVectors(pole, A);
+    var axis = new T.Vector3().crossVectors(dir, poleDir);
+    if (axis.lengthSq() < 1e-8) axis.set(1, 0, 0); else axis.normalize();
+    var upper = dir.clone().applyAxisAngle(axis, angA);
+    this.aim(rootN, midN, upper);
+    var K = A.clone().addScaledVector(upper, l1);
+    this.aim(midN, endN, new T.Vector3().subVectors(target, K));
+  };
+  /* omurga eğimini pelvis + 3 omura dağıt, baş nötr kalsın */
+  Poser.prototype.spine = function (pitchDeg, rollDeg, twistDeg, headF) {
+    var B = this.rig.bones, p = pitchDeg * D2R, r = (rollDeg || 0) * D2R, t = (twistDeg || 0) * D2R;
+    var hf = (headF === undefined) ? 1 : headF;
+    var share = { Hips: 0.34, Spine: 0.22, Spine1: 0.22, Spine2: 0.22 };
+    for (var n in share) {
+      var b = B[n]; if (!b) continue;
+      var e = new T.Euler(p * share[n], t * share[n], r * share[n], 'XYZ');
+      b.quaternion.multiply(_q1.setFromEuler(e));
+    }
+    /* baş nötr: gövdenin eğimini geri al */
+    if (B.Neck) B.Neck.quaternion.multiply(_q1.setFromEuler(new T.Euler(-p * 0.55 * hf, 0, 0, 'XYZ')));
+    if (B.Head) B.Head.quaternion.multiply(_q1.setFromEuler(new T.Euler(-p * 0.35 * hf, 0, 0, 'XYZ')));
+  };
+  /* Omurgayı verilen yöne çevir — eğim pelvis + 3 omura dağıtılır.
+     Yerel Euler yerine 'hedefe çevir' kullanılır; böylece modelin dinlenme
+     rotasyonlarından bağımsız olarak açı tam tutar.                       */
+  Poser.prototype.spineAim = function (dir, basDir) {
+    var B = this.rig.bones;
+    var d = dir.clone().normalize();
+    var zincir = [['Hips', 'Spine'], ['Spine', 'Spine1'], ['Spine1', 'Spine2'], ['Spine2', 'Neck']];
+    for (var i = 0; i < zincir.length; i++) {
+      if (B[zincir[i][0]] && B[zincir[i][1]]) this.aim(zincir[i][0], zincir[i][1], d);
+    }
+    if (B.Neck && B.Head) this.aim('Neck', 'Head', (basDir || new T.Vector3(0, 1, 0)).clone().normalize());
+  };
+  /* Dikeyden ileri doğru derece cinsinden eğim (0 = dik, 90 = yatay) */
+  Poser.prototype.lean = function (deg, basDeg) {
+    var a = deg * D2R;
+    var d = new T.Vector3(0, Math.cos(a), Math.sin(a));
+    var b = (basDeg === undefined) ? deg * 0.45 : basDeg;
+    var ba = b * D2R;
+    this.spineAim(d, new T.Vector3(0, Math.cos(ba), Math.sin(ba)));
+  };
+
+  /* parmaklar ekipmanı kavrasın */
+  Poser.prototype.grip = function (side, amount) {
+    var B = this.rig.bones, s = side, a = amount === undefined ? 1 : amount;
+    var sgn = s === 'Left' ? 1 : -1;
+    [['HandIndex1', 1.25], ['HandIndex2', 1.15]].forEach(function (f) {
+      var b = B[s + f[0]]; if (!b) return;
+      b.quaternion.multiply(_q1.setFromAxisAngle(new T.Vector3(0, 0, sgn), -f[1] * a));
+    });
+    [['HandThumb1', 0.75], ['HandThumb2', 0.65]].forEach(function (f) {
+      var b = B[s + f[0]]; if (!b) return;
+      b.quaternion.multiply(_q1.setFromAxisAngle(new T.Vector3(0, 0, sgn), f[1] * a));
+    });
+  };
+  /* kökü taşı */
+  /* Kökü iskelet-yerel (metre) koordinatta konumlandır.
+     Mixamo dışa aktarımlarında armature döndürülmüş/ölçeklenmiş olabilir,
+     bu yüzden tam matris dönüşümü uygulanır.                              */
+  Poser.prototype.root = function (x, y, z) {
+    var hips = this.rig.bones.Hips, par = hips.parent;
+    if (!par) { hips.position.set(x, y, z); return; }
+    par.updateWorldMatrix(true, false);
+    _m1.copy(par.matrixWorld).invert().multiply(this.container.matrixWorld);
+    hips.position.set(x, y, z).applyMatrix4(_m1);
+  };
+
+  /* ═════════ EKİPMAN ═════════ */
+  function texMetal(renderer) {
+    var c = document.createElement('canvas'); c.width = c.height = 128;
+    var g = c.getContext('2d');
+    g.fillStyle = '#9aa0a8'; g.fillRect(0, 0, 128, 128);
+    for (var i = 0; i < 2200; i++) {
+      g.fillStyle = 'rgba(' + (120 + Math.random() * 90 | 0) + ',' + (124 + Math.random() * 90 | 0) + ',' + (130 + Math.random() * 90 | 0) + ',.5)';
+      g.fillRect(Math.random() * 128, Math.random() * 128, 1, 1 + Math.random() * 2);
+    }
+    var t = new T.CanvasTexture(c); t.wrapS = t.wrapT = T.RepeatWrapping; return t;
+  }
+  var EQ = {};
+  EQ.barbell = function (mats, kg) {
+    var g = new T.Group();
+    var shaft = new T.Mesh(new T.CylinderGeometry(0.0145, 0.0145, 2.20, 20), mats.steel);
+    shaft.rotation.z = Math.PI / 2; shaft.castShadow = true; g.add(shaft);
+    [-1, 1].forEach(function (s) {
+      var sl = new T.Mesh(new T.CylinderGeometry(0.025, 0.025, 0.40, 18), mats.steel);
+      sl.rotation.z = Math.PI / 2; sl.position.x = s * 0.88; sl.castShadow = true; g.add(sl);
+      var collar = new T.Mesh(new T.CylinderGeometry(0.036, 0.036, 0.035, 16), mats.dark);
+      collar.rotation.z = Math.PI / 2; collar.position.x = s * 0.70; g.add(collar);
+      var n = Math.max(1, Math.min(4, Math.round(((kg || 60) - 20) / 40)));
+      for (var i = 0; i < n; i++) {
+        var p = new T.Mesh(new T.CylinderGeometry(0.225, 0.225, 0.052, 36), i % 2 ? mats.plateB : mats.plateA);
+        p.rotation.z = Math.PI / 2; p.position.x = s * (0.745 + i * 0.056);
+        p.castShadow = true; p.receiveShadow = true; g.add(p);
+      }
+    });
+    return g;
+  };
+  EQ.dumbbell = function (mats) {
+    var g = new T.Group();
+    var h = new T.Mesh(new T.CylinderGeometry(0.0155, 0.0155, 0.135, 16), mats.steel);
+    h.rotation.z = Math.PI / 2; h.castShadow = true; g.add(h);
+    [-1, 1].forEach(function (s) {
+      for (var i = 0; i < 2; i++) {
+        var p = new T.Mesh(new T.CylinderGeometry(0.082 - i * 0.012, 0.082 - i * 0.012, 0.030, 24), mats.dark);
+        p.rotation.z = Math.PI / 2; p.position.x = s * (0.082 + i * 0.031);
+        p.castShadow = true; g.add(p);
+      }
+    });
+    return g;
+  };
+  EQ.bench = function (mats) {
+    var g = new T.Group();
+    var pad = new T.Mesh(new T.BoxGeometry(0.30, 0.09, 1.25), mats.pad);
+    pad.position.y = 0.44; pad.castShadow = true; pad.receiveShadow = true; g.add(pad);
+    [-0.52, 0.52].forEach(function (z) {
+      var l = new T.Mesh(new T.BoxGeometry(0.42, 0.40, 0.06), mats.dark);
+      l.position.set(0, 0.20, z); l.castShadow = true; g.add(l);
+    });
+    return g;
+  };
+  EQ.pullupBar = function (mats) {
+    var g = new T.Group();
+    var bar = new T.Mesh(new T.CylinderGeometry(0.019, 0.019, 1.30, 18), mats.steel);
+    bar.rotation.z = Math.PI / 2; bar.position.y = 2.25; bar.castShadow = true; g.add(bar);
+    [-0.64, 0.64].forEach(function (x) {
+      var p = new T.Mesh(new T.CylinderGeometry(0.035, 0.035, 2.25, 12), mats.dark);
+      p.position.set(x, 1.125, 0); p.castShadow = true; g.add(p);
+    });
+    return g;
+  };
+
+  /* ═════════ HAREKET KÜTÜPHANESİ ═════════
+     Her hareket: tempo, ekipman, ve 0–1 fazına göre poz kurucu.      */
+  var EX = {};
+
+  EX['Back Squat'] = {
+    ad: 'Back Squat', tr: 'Sırt Squat',
+    tempo: [2, 1, 1], ekipman: 'barbell', kas: 'Quadriceps · Kalça · Kor',
+    not: 'Sırt nötr, diz ayak ucu yönünde, kalça geriye.',
+    kamera: { r: 3.9, th: 36, ph: 10, ty: 1.00 },
+    kur: function (ctx) { ctx.bar = EQ.barbell(ctx.mats, 100); ctx.scene.add(ctx.bar); },
+    poz: function (P, u, ctx) {
+      var L = P.L;
+      var ust = L.kalcaY, dip = L.ayakY + (ust - L.ayakY) * 0.46;   // uyluk paralelin altı
+      var kalcaY = lerp(ust, dip, u);
+      var kalcaZ = -0.02 - 0.13 * u;
+      var egim = lerp(7, 36, u);
+      P.root(0, kalcaY, kalcaZ);
+      P.lean(egim, egim * 0.42);
+      var fx = L.omuzX * 1.00 + 0.02, disa = 12 * D2R;
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+          new T.Vector3(s * fx, L.ayakY, 0),
+          new T.Vector3(s * (fx + 0.10), L.ayakY + L.bacak * 0.55, 0.55 + 0.35 * u));
+        P.aim(S + 'Foot', S + 'ToeBase', new T.Vector3(s * Math.sin(disa), -0.34, Math.cos(disa)));
+      });
+      /* bar trapez üzerinde */
+      var sp = P.pos('Spine2', new T.Vector3());
+      var barY = sp.y + 0.10, barZ = sp.z - 0.085;
+      if (ctx.bar) { ctx.bar.position.set(0, barY, barZ); ctx.bar.rotation.set(0, 0, 0); }
+      /* eller bara kilitli — geniş tutuş, dirsek aşağı-geri */
+      var omuz = P.pos('LeftArm', new T.Vector3());
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var om = P.pos(S + 'Arm', new T.Vector3());
+        var el = new T.Vector3(s * (L.omuzX + L.kol * 0.72), barY - 0.015, barZ + 0.01);
+        var dirsek = new T.Vector3(s * (L.omuzX + L.kol * 1.05), om.y - L.kol * 1.15, barZ - L.kol * 0.25);
+        P.twoBone(S + 'Arm', S + 'ForeArm', S + 'Hand', el, dirsek);
+        P.aim(S + 'Hand', S + 'HandIndex1', new T.Vector3(-s * 0.85, -0.42, 0.32));
+        P.grip(S, 1);
+      });
+    }
+  };
+
+  EX['Push-Up'] = {
+    ad: 'Push-Up', tr: 'Şınav',
+    tempo: [2, 0, 1], ekipman: null, kas: 'Göğüs · Ön Omuz · Triceps',
+    not: 'Gövde tek çizgi, dirsek ~45°, kalça düşmesin.',
+    kamera: { r: 2.9, th: 28, ph: 17, ty: 0.42 },
+    kur: function () {},
+    poz: function (P, u, ctx) {
+      var L = P.L;
+      /* Ayak bileği → kalça → omuz tek çizgi; çizgi ayak ucundan döner. */
+      var aUst = 19 * D2R, aAlt = 4 * D2R;
+      var a = lerp(aUst, aAlt, u);
+      var dir = new T.Vector3(0, Math.sin(a), Math.cos(a));
+      var bilekY = 0.10, ucZ = -(L.bacak + L.govde) * 0.70;
+      var bilek = new T.Vector3(0, bilekY, ucZ);
+      var kalca = bilek.clone().addScaledVector(dir, L.bacak * 0.995);
+      var omuz = kalca.clone().addScaledVector(dir, L.govde);
+      P.root(0, kalca.y, kalca.z);
+      P.spineAim(dir, new T.Vector3(0, -0.12, 1));
+      var geri = dir.clone().negate();
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        /* hedef, KALÇADAN değil uyluk kemiğinden ölçülür → bacak tam uzanır */
+        var ul = P.pos(S + 'UpLeg', new T.Vector3());
+        var ayak = ul.clone().addScaledVector(geri, L.bacak * 0.985);
+        var diz = ul.clone().addScaledVector(geri, L.bacak * 0.5);
+        diz.y -= L.bacak * 0.9;
+        P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot', ayak, diz);
+        P.aim(S + 'Foot', S + 'ToeBase', new T.Vector3(0, -0.82, -0.57));
+      });
+      var elX = L.omuzX + L.kol * 0.30, elZ = omuz.z - 0.03;
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        P.twoBone(S + 'Arm', S + 'ForeArm', S + 'Hand',
+          new T.Vector3(s * elX, 0.035, elZ),
+          new T.Vector3(s * (elX + L.kol * (0.55 + 0.35 * u)), omuz.y + 0.05, elZ - L.kol * 0.60));
+        P.aim(S + 'Hand', S + 'HandIndex1', new T.Vector3(s * 0.12, -0.20, 0.97));
+        P.grip(S, 0.28);
+      });
+    }
+  };
+
+  EX['Dumbbell Curl'] = {
+    ad: 'Dumbbell Curl', tr: 'Dambıl Curl',
+    tempo: [2, 1, 1], ekipman: 'dumbbell', kas: 'Biceps · Önkol',
+    not: 'Dirsek gövdede sabit, sallanma yok, tepede sık.',
+    kamera: { r: 3.0, th: 32, ph: 7, ty: 1.02 },
+    kur: function (ctx) {
+      ctx.dbL = EQ.dumbbell(ctx.mats); ctx.dbR = EQ.dumbbell(ctx.mats);
+      ctx.scene.add(ctx.dbL); ctx.scene.add(ctx.dbR);
+    },
+    poz: function (P, u, ctx) {
+      var L = P.L;
+      P.root(0, L.kalcaY, 0);
+      P.lean(3 + 2 * u, 0);
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+          new T.Vector3(s * L.omuzX * 0.92, L.ayakY, 0),
+          new T.Vector3(s * L.omuzX, L.ayakY + L.bacak * 0.55, 0.62));
+        P.aim(S + 'Foot', S + 'ToeBase', new T.Vector3(s * 0.14, -0.32, 0.94));
+      });
+      /* dirsek gövdeye yapışık — üst kol neredeyse sabit */
+      var sh = P.pos('Spine2', new T.Vector3());
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var shoulderPos = P.pos(S + 'Arm', new T.Vector3());
+        /* üst kol: hafifçe geriye, dirsek gövdeye yakın */
+        var elbow = new T.Vector3(s * (L.omuzX * 0.97), shoulderPos.y - L.kol * 0.52, -0.04 - 0.02 * u);
+        P.aim(S + 'Arm', S + 'ForeArm', new T.Vector3().subVectors(elbow, shoulderPos));
+        /* önkol: dirsek fleksiyonu 12° → 148° */
+        var fl = lerp(12, 148, u) * D2R;
+        var fore = new T.Vector3(s * Math.sin(0.18), -Math.cos(fl), Math.sin(fl)).normalize();
+        P.aim(S + 'ForeArm', S + 'Hand', fore);
+        P.grip(S, 1);
+        /* dambılı ele kilitle */
+        var db = S === 'Left' ? ctx.dbL : ctx.dbR;
+        if (db) {
+          var hp = P.pos(S + 'Hand', new T.Vector3());
+          var dir = new T.Vector3().copy(fore);
+          hp.addScaledVector(dir, 0.085);
+          db.position.copy(hp);          /* ekipman holder'ın çocuğu → iskelet-yerel koordinat */
+          db.quaternion.identity();
+        }
+      });
+    }
+  };
+
+  /* ═════════ FAZ ZAMANLAMASI ═════════
+     tempo = [eksantrik, dip bekleme, konsantrik]; başa hazırlık,
+     sonuna kilitlenme eklenir → toplam 4–5 sn.                      */
+  function cycle(tempo) {
+    var ecc = tempo[0] || 2, pau = tempo[1] || 0, con = tempo[2] || 1;
+    var ready = 0.55, lock = 0.55;
+    var segs = [
+      { ad: 'Hazır', t: ready, a: 0, b: 0 },
+      { ad: 'İniş', t: ecc, a: 0, b: 1 },
+      { ad: 'Dip', t: Math.max(pau, 0.12), a: 1, b: 1 },
+      { ad: 'Çıkış', t: con, a: 1, b: 0 },
+      { ad: 'Kilitle', t: lock, a: 0, b: 0 }
+    ];
+    var total = 0; segs.forEach(function (s) { total += s.t; });
+    return { segs: segs, total: total };
+  }
+  function phaseAt(cyc, t) {
+    var x = ((t % cyc.total) + cyc.total) % cyc.total, acc = 0;
+    for (var i = 0; i < cyc.segs.length; i++) {
+      var s = cyc.segs[i];
+      if (x < acc + s.t) {
+        var k = (x - acc) / s.t;
+        return { u: lerp(s.a, s.b, smooth(k)), ad: s.ad, ilerleme: x / cyc.total };
+      }
+      acc += s.t;
+    }
+    var L = cyc.segs[cyc.segs.length - 1];
+    return { u: L.b, ad: L.ad, ilerleme: 1 };
+  }
+
+  global.BoykaEngine = {
+    Poser: Poser, EX: EX, EQ: EQ, cycle: cycle, phaseAt: phaseAt,
+    texMetal: texMetal, smooth: smooth, lerp: lerp
+  };
+})(window);
+
+/* ───── gear.js ───── */
+/* ═══════════════════════════════════════════════════════════════════
+   BOYKA — EKİPMAN KÜTÜPHANESİ (hepsi kodla çizilir)
+   Hepsi iskelet-yerel (metre) koordinatta, holder'ın çocuğu olarak eklenir.
+   ═══════════════════════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+  var T = global.THREE, E = global.BoykaEngine;
+  var G = E.EQ;
+
+  function kutu(w, h, d, mat, x, y, z) {
+    var m = new T.Mesh(new T.BoxGeometry(w, h, d), mat);
+    m.position.set(x || 0, y || 0, z || 0);
+    m.castShadow = true; m.receiveShadow = true; return m;
+  }
+  function boru(r, h, mat, eksen) {
+    var m = new T.Mesh(new T.CylinderGeometry(r, r, h, 16), mat);
+    if (eksen === 'x') m.rotation.z = Math.PI / 2;
+    if (eksen === 'z') m.rotation.x = Math.PI / 2;
+    m.castShadow = true; m.receiveShadow = true; return m;
+  }
+
+  /* ── Düz / eğimli sehpa ── */
+  G.bench = function (mats, egimDeg, z0) {
+    var g = new T.Group(), a = (egimDeg || 0) * Math.PI / 180;
+    var ped = kutu(0.31, 0.10, 1.25, mats.pad, 0, 0, 0);
+    ped.rotation.x = -a; ped.position.set(0, 0.45, z0 || 0);
+    g.add(ped);
+    [-0.50, 0.50].forEach(function (z) {
+      g.add(kutu(0.42, 0.42, 0.07, mats.dark, 0, 0.21, (z0 || 0) + z));
+    });
+    g.add(kutu(0.10, 0.06, 1.15, mats.dark, 0, 0.40, z0 || 0));
+    return g;
+  };
+  /* ── Makine koltuğu: oturak + sırt yastığı ── */
+  G.seat = function (mats, sirtEgim, yukseklik) {
+    var g = new T.Group(), h = yukseklik === undefined ? 0.46 : yukseklik;
+    g.add(kutu(0.42, 0.09, 0.42, mats.pad, 0, h, -0.02));
+    var sirt = kutu(0.40, 0.62, 0.09, mats.pad, 0, h + 0.33, -0.24);
+    sirt.rotation.x = (sirtEgim || 8) * Math.PI / 180; g.add(sirt);
+    g.add(kutu(0.34, h - 0.06, 0.34, mats.dark, 0, (h - 0.06) / 2, -0.10));
+    return g;
+  };
+  /* ── Kablo kulesi (tek veya çift) ── */
+  G.tower = function (mats, cift, makaraY) {
+    var g = new T.Group(), my = makaraY === undefined ? 2.05 : makaraY;
+    var xs = cift ? [-0.95, 0.95] : [0];
+    xs.forEach(function (x) {
+      g.add(kutu(0.12, 2.25, 0.12, mats.dark, x, 1.125, -0.55));
+      var mk = new T.Mesh(new T.TorusGeometry(0.055, 0.016, 8, 20), mats.steel);
+      mk.position.set(x, my, -0.47); mk.castShadow = true; g.add(mk);
+      g.add(kutu(0.26, 1.10, 0.20, mats.dark, x, 0.60, -0.62));
+    });
+    if (cift) g.add(kutu(2.10, 0.09, 0.12, mats.dark, 0, 2.22, -0.55));
+    return g;
+  };
+  /* ── Kablo: iki nokta arası ince boru (her karede güncellenir) ── */
+  G.cable = function (mats) {
+    var m = new T.Mesh(new T.CylinderGeometry(0.009, 0.009, 1, 8), mats.dark);
+    m.castShadow = false; return m;
+  };
+  G.cableSet = function (kablo, a, b) {
+    if (!kablo) return;
+    var d = new T.Vector3().subVectors(b, a), L = d.length();
+    if (L < 1e-4) { kablo.visible = false; return; }
+    kablo.visible = true;
+    kablo.position.copy(a).addScaledVector(d, 0.5);
+    kablo.scale.set(1, L, 1);
+    kablo.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), d.normalize());
+  };
+  /* ── Tutamaklar ── */
+  G.handle = function (mats, tip) {
+    var g = new T.Group();
+    if (tip === 'rope') {
+      [-0.055, 0.055].forEach(function (x) {
+        var r = new T.Mesh(new T.CylinderGeometry(0.014, 0.018, 0.26, 10), mats.pad);
+        r.position.set(x, -0.10, 0); r.rotation.z = x > 0 ? -0.22 : 0.22;
+        r.castShadow = true; g.add(r);
+      });
+      g.add(boru(0.012, 0.09, mats.dark, 'y'));
+    } else if (tip === 'bar') {
+      g.add(boru(0.016, 0.62, mats.steel, 'x'));
+      [-0.27, 0.27].forEach(function (x) { g.add(kutu(0.03, 0.03, 0.03, mats.dark, x, 0, 0)); });
+    } else if (tip === 'wide') {
+      g.add(boru(0.016, 1.15, mats.steel, 'x'));
+      [-0.52, 0.52].forEach(function (x) {
+        var e = boru(0.015, 0.22, mats.steel, 'y'); e.position.set(x, -0.10, 0);
+        e.rotation.z = x > 0 ? -0.5 : 0.5; g.add(e);
+      });
+    } else if (tip === 'vbar') {
+      [-1, 1].forEach(function (s) {
+        var e = boru(0.015, 0.20, mats.steel, 'y');
+        e.position.set(s * 0.055, -0.07, 0); e.rotation.z = s * -0.55; g.add(e);
+      });
+    } else { /* tek tutamak */
+      g.add(boru(0.014, 0.12, mats.steel, 'x'));
+      g.add(kutu(0.02, 0.07, 0.02, mats.dark, 0, 0.06, 0));
+    }
+    return g;
+  };
+  /* ── Bacak makinesi (ekstansiyon / curl) ── */
+  G.legMachine = function (mats, tip) {
+    var g = new T.Group();
+    g.add(G.seat(mats, tip === 'ext' ? 14 : 10, 0.46));
+    /* hareketli kol + rulo */
+    var kol = new T.Group();
+    kol.add(boru(0.022, 0.42, mats.steel, 'x'));
+    var rulo = boru(0.055, 0.34, mats.pad, 'x'); kol.add(rulo);
+    g.add(kol); g.userData.kol = kol;
+    g.add(kutu(0.10, 0.50, 0.10, mats.dark, 0.30, 0.25, 0.30));
+    return g;
+  };
+  /* ── Hack squat kızağı ── */
+  G.hackSled = function (mats) {
+    var g = new T.Group();
+    var ray = kutu(0.14, 2.0, 0.14, mats.dark, 0, 1.0, -0.75);
+    ray.rotation.x = -0.52; g.add(ray);
+    var omuz = kutu(0.66, 0.12, 0.26, mats.pad, 0, 1.45, -0.30); g.add(omuz);
+    var sirt = kutu(0.46, 1.10, 0.10, mats.pad, 0, 0.95, -0.44);
+    sirt.rotation.x = -0.52; g.add(sirt);
+    var plat = kutu(0.80, 0.07, 0.55, mats.dark, 0, 0.09, 0.26); g.add(plat);
+    return g;
+  };
+  /* ── Leg press ── */
+  G.legPress = function (mats) {
+    var g = new T.Group();
+    g.add(kutu(0.52, 0.10, 0.70, mats.pad, 0, 0.42, -0.30));
+    var sirt = kutu(0.48, 0.70, 0.10, mats.pad, 0, 0.62, -0.62);
+    sirt.rotation.x = 0.55; g.add(sirt);
+    var plat = kutu(0.72, 0.60, 0.08, mats.dark, 0, 0.90, 0.52);
+    plat.rotation.x = 0.55; g.add(plat); g.userData.plat = plat;
+    g.add(kutu(0.10, 1.5, 0.10, mats.dark, 0.42, 0.75, 0.10));
+    g.add(kutu(0.10, 1.5, 0.10, mats.dark, -0.42, 0.75, 0.10));
+    return g;
+  };
+  /* ── Preacher sehpası ── */
+  G.preacher = function (mats) {
+    var g = new T.Group();
+    g.add(kutu(0.40, 0.09, 0.36, mats.pad, 0, 0.52, -0.34));
+    var ped = kutu(0.46, 0.44, 0.10, mats.pad, 0, 0.84, 0.02);
+    ped.rotation.x = -0.72; g.add(ped);
+    g.add(kutu(0.30, 0.60, 0.30, mats.dark, 0, 0.30, -0.10));
+    return g;
+  };
+  /* ── Hip thrust / abduction makinesi ── */
+  G.hipMachine = function (mats, tip) {
+    var g = new T.Group();
+    if (tip === 'thrust') {
+      g.add(kutu(0.62, 0.11, 0.42, mats.pad, 0, 0.46, -0.42));
+      g.add(kutu(0.52, 0.12, 0.20, mats.pad, 0, 0.56, 0.10));
+      g.add(kutu(0.70, 0.08, 0.50, mats.dark, 0, 0.05, 0.42));
+    } else {
+      g.add(G.seat(mats, 12, 0.46));
+      [-1, 1].forEach(function (s) {
+        g.add(kutu(0.10, 0.34, 0.14, mats.pad, s * 0.26, 0.40, 0.18));
+      });
+    }
+    return g;
+  };
+  /* ── Calf: leg press veya oturarak ── */
+  G.calfSeat = function (mats) {
+    var g = new T.Group();
+    g.add(G.seat(mats, 6, 0.46));
+    g.add(kutu(0.42, 0.12, 0.18, mats.pad, 0, 0.60, 0.26));
+    g.add(kutu(0.52, 0.08, 0.30, mats.dark, 0, 0.10, 0.44));
+    return g;
+  };
+  /* ── Chest / rear-delt fly makinesi ── */
+  G.flyMachine = function (mats) {
+    var g = new T.Group();
+    g.add(G.seat(mats, 6, 0.46));
+    var kol = new T.Group();
+    [-1, 1].forEach(function (s) {
+      var a = new T.Group();
+      a.add(boru(0.028, 0.70, mats.dark, 'y'));
+      var tut = boru(0.020, 0.20, mats.steel, 'y');
+      tut.position.set(0, 0.36, 0.06); a.add(tut);
+      a.position.set(s * 0.46, 1.00, -0.34);
+      kol.add(a);
+    });
+    g.add(kol); g.userData.kol = kol;
+    g.add(kutu(0.14, 2.0, 0.14, mats.dark, 0, 1.0, -0.52));
+    return g;
+  };
+  /* ── Pulldown istasyonu ── */
+  G.pulldown = function (mats) {
+    var g = new T.Group();
+    g.add(G.seat(mats, 4, 0.50));
+    g.add(kutu(0.13, 2.25, 0.13, mats.dark, 0, 1.12, -0.60));
+    g.add(kutu(0.13, 0.13, 0.80, mats.dark, 0, 2.20, -0.26));
+    var mk = new T.Mesh(new T.TorusGeometry(0.06, 0.017, 8, 20), mats.steel);
+    mk.position.set(0, 2.14, 0.06); g.add(mk);
+    /* diz destek yastığı */
+    g.add(kutu(0.46, 0.10, 0.16, mats.pad, 0, 0.72, 0.26));
+    return g;
+  };
+  /* ── Hyper extension sehpası ── */
+  G.hyper = function (mats) {
+    var g = new T.Group();
+    var ped = kutu(0.34, 0.10, 0.42, mats.pad, 0, 0.78, -0.06);
+    ped.rotation.x = -0.30; g.add(ped);
+    g.add(kutu(0.30, 0.12, 0.14, mats.pad, 0, 0.30, 0.30));
+    g.add(kutu(0.26, 0.80, 0.26, mats.dark, 0, 0.40, -0.10));
+    g.add(kutu(0.44, 0.07, 0.40, mats.dark, 0, 0.05, 0.28));
+    return g;
+  };
+  /* ── Shrug / plaka ── */
+  G.plate = function (mats, r) {
+    var m = new T.Mesh(new T.CylinderGeometry(r || 0.17, r || 0.17, 0.035, 28), mats.plateA);
+    m.rotation.x = Math.PI / 2; m.castShadow = true; return m;
+  };
+})(window);
+
+/* ───── lib.js ───── */
+/* ═══════════════════════════════════════════════════════════════════
+   BOYKA — HAREKET KÜTÜPHANESİ
+   55 hareket, 21 ortak kalıptan türetilir. Her hareket 0–1 fazına göre
+   duruş + el/ayak hedefleri verir; poz IK ile kurulur.
+   ═══════════════════════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+  var T = global.THREE, E = global.BoykaEngine, G = E.EQ;
+  var EX = E.EX, lerp = E.lerp, D2R = Math.PI / 180;
+  function V(x, y, z) { return new T.Vector3(x, y, z); }
+
+  /* ═════════ DURUŞ KALIPLARI ═════════ */
+
+  /* Ayakta: ayaklar yerde sabit, gövde eğimi verilebilir */
+  function ayakta(P, L, o) {
+    o = o || {};
+    var ac = o.ayakAcik === undefined ? 0.95 : o.ayakAcik;
+    var kY = o.kalcaY === undefined ? L.kalcaY : o.kalcaY;
+    P.root(0, kY, o.kalcaZ || 0);
+    P.lean(o.egim || 4, o.bas);
+    ['Left', 'Right'].forEach(function (S) {
+      var s = S === 'Left' ? 1 : -1, fx = L.omuzX * ac;
+      P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+        V(s * fx, L.ayakY, o.ayakZ || 0),
+        V(s * (fx + 0.06), L.ayakY + L.bacak * 0.55, (o.ayakZ || 0) + 0.60));
+      P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.13, -0.32, 0.94));
+    });
+  }
+
+  /* Oturarak: kalça koltukta, uyluk yatay, baldır aşağı */
+  function otur(P, L, o) {
+    o = o || {};
+    var koltuk = o.koltukY === undefined ? 0.46 : o.koltukY;
+    var kY = koltuk + 0.11, kZ = o.kalcaZ === undefined ? -0.04 : o.kalcaZ;
+    P.root(0, kY, kZ);
+    P.lean(o.egim === undefined ? 8 : o.egim, o.bas);
+    var uyluk = L.bacak * 0.50, baldir = L.bacak * 0.50;
+    ['Left', 'Right'].forEach(function (S) {
+      var s = S === 'Left' ? 1 : -1, fx = L.omuzX * (o.ayakAcik || 0.92);
+      var ayakY = o.ayakY === undefined ? L.ayakY : o.ayakY;
+      var ayakZ = kZ + uyluk * 0.96;
+      P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+        V(s * fx, ayakY, ayakZ),
+        V(s * (fx + 0.05), kY + 0.26, ayakZ + 0.55));
+      P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.10, -0.30, 0.95));
+    });
+  }
+
+  /* Sırtüstü sehpada: baş −Z, ayaklar yerde +Z */
+  function yat(P, L, o) {
+    o = o || {};
+    var h = o.pedY === undefined ? 0.50 : o.pedY;
+    var a = (o.egimDeg || 0) * D2R;                 /* 0 = düz, 30 = eğimli */
+    var kZ = o.kalcaZ === undefined ? 0.10 : o.kalcaZ;
+    P.root(0, h + 0.10 + Math.sin(a) * 0.06, kZ);
+    /* omurga: baş −Z yönüne, eğime göre yukarı */
+    P.spineAim(V(0, Math.sin(a) + 0.04, -Math.cos(a)), V(0, Math.sin(a) + 0.55, -Math.cos(a) * 0.7));
+    ['Left', 'Right'].forEach(function (S) {
+      var s = S === 'Left' ? 1 : -1, fx = L.omuzX * 1.25;
+      P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+        V(s * fx, L.ayakY, kZ + L.bacak * 0.62),
+        V(s * (fx + 0.12), h + 0.30, kZ + L.bacak * 0.30));
+      P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.16, -0.36, 0.92));
+    });
+  }
+
+  /* Yüzüstü (lying leg curl, hyper extension) */
+  function yuzustu(P, L, o) {
+    o = o || {};
+    var h = o.pedY === undefined ? 0.52 : o.pedY, kZ = o.kalcaZ || 0;
+    P.root(0, h + 0.09, kZ);
+    P.spineAim(V(0, o.govdeY === undefined ? 0.02 : o.govdeY, 1), V(0, 0.30, 1));
+    ['Left', 'Right'].forEach(function (S) {
+      var s = S === 'Left' ? 1 : -1;
+      var hedef = o.ayak ? o.ayak(s) : V(s * L.omuzX * 0.8, h + 0.04, kZ - L.bacak * 0.94);
+      P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot', hedef,
+        V(s * L.omuzX * 0.8, h - 0.55, kZ - L.bacak * 0.5));
+      P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.55, -0.84));
+    });
+  }
+
+  /* Diz üstü (cable crunch) */
+  function dizUstu(P, L, o) {
+    o = o || {};
+    var kY = L.ayakY + L.bacak * 0.50;
+    P.root(0, kY, o.kalcaZ || 0);
+    P.lean(o.egim || 20, (o.egim || 20) * 0.5);
+    ['Left', 'Right'].forEach(function (S) {
+      var s = S === 'Left' ? 1 : -1;
+      P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+        V(s * L.omuzX * 0.85, L.ayakY + 0.06, (o.kalcaZ || 0) - L.bacak * 0.46),
+        V(s * L.omuzX * 0.85, kY + 0.30, (o.kalcaZ || 0) + 0.45));
+      P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.25, -0.97));
+    });
+  }
+
+  /* Sırtüstü yerde (crunch, leg raise, dead bug) */
+  function yerde(P, L, o) {
+    o = o || {};
+    var kZ = o.kalcaZ || 0, kY = o.kalcaY === undefined ? 0.12 : o.kalcaY;
+    P.root(0, kY, kZ);
+    P.spineAim(V(0, o.govde === undefined ? 0.10 : o.govde, -1), V(0, 0.45, -0.85));
+    ['Left', 'Right'].forEach(function (S) {
+      var s = S === 'Left' ? 1 : -1;
+      var hedef = o.ayak ? o.ayak(s) : V(s * L.omuzX * 0.9, 0.08, kZ + L.bacak * 0.60);
+      var kutup = o.diz ? o.diz(s) : V(s * L.omuzX * 1.1, kY + 0.42, kZ + L.bacak * 0.28);
+      P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot', hedef, kutup);
+      P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.12, -0.30, 0.94));
+    });
+  }
+
+  /* Her iki kolu hedefe götür */
+  function kol(P, hedef, kutup, kavra) {
+    ['Left', 'Right'].forEach(function (S) {
+      var s = S === 'Left' ? 1 : -1;
+      P.twoBone(S + 'Arm', S + 'ForeArm', S + 'Hand', hedef(s), kutup(s));
+      if (kavra !== 0) P.grip(S, kavra === undefined ? 1 : kavra);
+    });
+  }
+  /* Ekipmanı iki elin ortasına koy */
+  function elArasi(P, nesne, yOfs, dondur) {
+    if (!nesne) return;
+    var a = P.pos('LeftHand', V()), b = P.pos('RightHand', V());
+    nesne.position.copy(a).add(b).multiplyScalar(0.5);
+    if (yOfs) nesne.position.y += yOfs;
+    if (dondur) nesne.quaternion.setFromUnitVectors(V(1, 0, 0), new T.Vector3().subVectors(a, b).normalize());
+  }
+  function eleKoy(P, nesne, S, ileri) {
+    if (!nesne) return;
+    var h = P.pos(S + 'Hand', V()), f = P.pos(S + 'HandIndex1', V());
+    var d = new T.Vector3().subVectors(f, h).normalize();
+    nesne.position.copy(h).addScaledVector(d, ileri || 0.03);
+  }
+
+  /* ═════════ KALIP FABRİKALARI ═════════ */
+
+  /* 1 — Yatarak / eğimli pres */
+  function presYatar(ad, tr, kas, not, o) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: o.tempo || [2, 1, 1],
+      kamera: { r: 3.4, th: o.th === undefined ? 62 : o.th, ph: 14, ty: 0.80 },
+      kur: function (c) {
+        c.sehpa = G.bench(c.mats, o.egim || 0, 0); c.scene.add(c.sehpa);
+        if (o.alet === 'bar') { c.bar = G.barbell(c.mats, 80); c.scene.add(c.bar); }
+        else if (o.alet === 'db') { c.d1 = G.dumbbell(c.mats); c.d2 = G.dumbbell(c.mats); c.scene.add(c.d1); c.scene.add(c.d2); }
+      },
+      poz: function (P, u, c) {
+        var L = P.L, a = (o.egim || 0) * D2R;
+        yat(P, L, { pedY: 0.50, egimDeg: o.egim || 0 });
+        var om = P.pos('LeftArm', V());
+        var ustY = om.y + L.kol * 0.92, altY = om.y + L.kol * 0.16;
+        var y = lerp(ustY, altY, u);
+        var z = om.z + Math.sin(a) * (y - om.y) * 0.9 + (o.zOfs || 0);
+        var gen = o.alet === 'db' ? (L.omuzX + L.kol * (0.42 + 0.26 * u)) : (L.omuzX + L.kol * 0.60);
+        kol(P, function (s) { return V(s * gen, y, z); },
+               function (s) { return V(s * (gen + L.kol * 0.75), y - L.kol * 0.55, z - L.kol * 0.30); });
+        if (c.bar) { elArasi(P, c.bar, 0, false); c.bar.rotation.set(0, 0, 0); }
+        if (c.d1) { eleKoy(P, c.d1, 'Left', 0.02); eleKoy(P, c.d2, 'Right', 0.02); }
+      }
+    };
+  }
+
+  /* 2 — Makine fly (göğüs veya arka omuz) */
+  function flyMakine(ad, tr, kas, not, ters) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.3, th: ters ? 20 : 34, ph: 12, ty: 0.95 },
+      kur: function (c) { c.mak = G.flyMachine(c.mats); c.scene.add(c.mak); },
+      poz: function (P, u, c) {
+        var L = P.L;
+        otur(P, L, { koltukY: 0.46, egim: ters ? 16 : 5, kalcaZ: -0.04 });
+        var om = P.pos('LeftArm', V());
+        var acik = lerp(ters ? 0.42 : 1.05, ters ? 1.05 : 0.30, u);
+        var z = ters ? lerp(0.42, -0.26, u) : lerp(-0.18, 0.44, u);
+        kol(P, function (s) { return V(s * (L.omuzX + L.kol * acik), om.y - 0.04, z); },
+               function (s) { return V(s * (L.omuzX + L.kol * (acik + 0.5)), om.y - L.kol * 0.5, z - 0.1); });
+        if (c.mak && c.mak.userData.kol) c.mak.userData.kol.rotation.y = (ters ? -1 : 1) * lerp(0.42, -0.10, u);
+      }
+    };
+  }
+
+  /* 3 — Ayakta kablo fly / crossover */
+  function kabloFly(ad, tr, kas, not, yukari) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.9, th: 26, ph: 10, ty: 1.05 },
+      kur: function (c) {
+        c.kule = G.tower(c.mats, true, yukari ? 0.55 : 2.05); c.scene.add(c.kule);
+        c.k1 = G.cable(c.mats); c.k2 = G.cable(c.mats); c.scene.add(c.k1); c.scene.add(c.k2);
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        ayakta(P, L, { egim: yukari ? 6 : 12, ayakZ: 0.12, ayakAcik: 1.15 });
+        var om = P.pos('LeftArm', V());
+        var yUst = yukari ? om.y - L.kol * 0.55 : om.y + L.kol * 0.30;
+        var yAlt = yukari ? om.y + L.kol * 0.35 : om.y - L.kol * 0.55;
+        var y = lerp(yUst, yAlt, u);
+        var gen = lerp(L.omuzX + L.kol * 1.05, L.omuzX + L.kol * 0.16, u);
+        var z = lerp(-0.05, 0.34, u);
+        kol(P, function (s) { return V(s * gen, y, z); },
+               function (s) { return V(s * (gen + L.kol * 0.5), y - L.kol * 0.45, z - 0.22); });
+        var my = yukari ? 0.55 : 2.05;
+        G.cableSet(c.k1, V(-0.95, my, -0.47), P.pos('LeftHand', V()));
+        G.cableSet(c.k2, V(0.95, my, -0.47), P.pos('RightHand', V()));
+      }
+    };
+  }
+
+  /* 4 — Omuz presi (oturarak) */
+  function omuzPres(ad, tr, kas, not, alet) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.5, th: 30, ph: 10, ty: 1.15 },
+      kur: function (c) {
+        c.koltuk = G.seat(c.mats, 12, 0.46); c.scene.add(c.koltuk);
+        if (alet === 'db') { c.d1 = G.dumbbell(c.mats); c.d2 = G.dumbbell(c.mats); c.scene.add(c.d1); c.scene.add(c.d2); }
+        else { c.h1 = G.handle(c.mats, 'single'); c.h2 = G.handle(c.mats, 'single'); c.scene.add(c.h1); c.scene.add(c.h2); }
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        otur(P, L, { koltukY: 0.46, egim: 6 });
+        var om = P.pos('LeftArm', V());
+        var y = lerp(om.y + L.kol * 0.95, om.y + L.kol * 0.04, u);
+        var gen = lerp(L.omuzX + L.kol * 0.26, L.omuzX + L.kol * 0.72, u);
+        kol(P, function (s) { return V(s * gen, y, 0.02); },
+               function (s) { return V(s * (gen + L.kol * 0.8), y - L.kol * 0.7, -0.18); });
+        if (c.d1) { eleKoy(P, c.d1, 'Left', 0.02); eleKoy(P, c.d2, 'Right', 0.02); }
+        if (c.h1) { eleKoy(P, c.h1, 'Left', 0.0); eleKoy(P, c.h2, 'Right', 0.0); }
+      }
+    };
+  }
+
+  /* 5 — Yan kaldırış */
+  function yanKaldiris(ad, tr, kas, not, kablo) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 2],
+      kamera: { r: 3.7, th: 18, ph: 8, ty: 1.10 },
+      kur: function (c) {
+        if (kablo) { c.kule = G.tower(c.mats, false, 0.28); c.scene.add(c.kule); c.k1 = G.cable(c.mats); c.scene.add(c.k1); }
+        c.d1 = G.dumbbell(c.mats); c.scene.add(c.d1);
+        if (!kablo) { c.d2 = G.dumbbell(c.mats); c.scene.add(c.d2); }
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        ayakta(P, L, { egim: 6 });
+        var om = P.pos('LeftArm', V());
+        var a = lerp(8, 88, u) * D2R;
+        kol(P, function (s) { return V(s * (L.omuzX + L.kol * Math.sin(a) * 0.98), om.y - L.kol * Math.cos(a) * 0.95, 0.06); },
+               function (s) { return V(s * (L.omuzX + L.kol * 1.6), om.y - L.kol * 0.2, -0.45); }, 1);
+        if (c.d1) eleKoy(P, c.d1, 'Left', 0.02);
+        if (c.d2) eleKoy(P, c.d2, 'Right', 0.02);
+        if (c.k1) G.cableSet(c.k1, V(0, 0.28, -0.47), P.pos('LeftHand', V()));
+      }
+    };
+  }
+
+  /* 6 — Arka omuz (eğik dumbbell veya face pull) */
+  function arkaOmuz(ad, tr, kas, not, tip) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 2],
+      kamera: { r: 3.6, th: 24, ph: 14, ty: tip === 'face' ? 1.15 : 0.90 },
+      kur: function (c) {
+        if (tip === 'face') {
+          c.kule = G.tower(c.mats, false, 1.65); c.scene.add(c.kule);
+          c.tut = G.handle(c.mats, 'rope'); c.scene.add(c.tut);
+          c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+        } else { c.d1 = G.dumbbell(c.mats); c.d2 = G.dumbbell(c.mats); c.scene.add(c.d1); c.scene.add(c.d2); }
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        if (tip === 'face') {
+          ayakta(P, L, { egim: 4, ayakZ: 0.30 });
+          var om = P.pos('LeftArm', V());
+          var z = lerp(0.46, -0.06, u), gen = lerp(L.omuzX + L.kol * 0.30, L.omuzX + L.kol * 0.95, u);
+          kol(P, function (s) { return V(s * gen, om.y + 0.10, z); },
+                 function (s) { return V(s * (gen + L.kol * 0.6), om.y + 0.26, z + 0.30); });
+          if (c.tut) { elArasi(P, c.tut, 0, false); }
+          G.cableSet(c.k1, V(0, 1.65, -0.47), P.pos('LeftHand', V()));
+        } else {
+          ayakta(P, L, { egim: 64, bas: 24, kalcaZ: -0.14 });
+          var om2 = P.pos('LeftArm', V());
+          var a = lerp(6, 76, u) * D2R;
+          kol(P, function (s) { return V(s * (L.omuzX + L.kol * Math.sin(a) * 0.98), om2.y - L.kol * Math.cos(a) * 0.92, om2.z + L.kol * 0.12); },
+                 function (s) { return V(s * (L.omuzX + L.kol * 1.5), om2.y + 0.1, om2.z - 0.5); });
+          if (c.d1) { eleKoy(P, c.d1, 'Left', 0.02); eleKoy(P, c.d2, 'Right', 0.02); }
+        }
+      }
+    };
+  }
+
+  /* 7 — Lat pulldown */
+  function pulldown(ad, tr, kas, not, tutus) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.9, th: 26, ph: 10, ty: 1.20 },
+      kur: function (c) {
+        c.ist = G.pulldown(c.mats); c.scene.add(c.ist);
+        c.tut = G.handle(c.mats, tutus === 'wide' ? 'wide' : 'vbar'); c.scene.add(c.tut);
+        c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        otur(P, L, { koltukY: 0.50, egim: lerp(6, 16, u) });
+        var om = P.pos('LeftArm', V());
+        var gen = tutus === 'wide' ? (L.omuzX + L.kol * 0.90) : (L.omuzX + L.kol * 0.12);
+        var y = lerp(om.y + L.kol * 0.95, om.y - L.kol * 0.22, u);
+        var z = lerp(0.10, 0.20, u);
+        kol(P, function (s) { return V(s * gen, y, z); },
+               function (s) { return V(s * (gen + L.kol * 0.9), y - L.kol * 0.5, z - L.kol * 0.5); });
+        if (c.tut) { elArasi(P, c.tut, 0, false); }
+        G.cableSet(c.k1, V(0, 2.14, 0.06), P.pos('LeftHand', V()).lerp(P.pos('RightHand', V()), 0.5));
+      }
+    };
+  }
+
+  /* 8 — Oturarak kürek */
+  function oturKurek(ad, tr, kas, not, genis) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.9, th: 70, ph: 10, ty: 0.95 },
+      kur: function (c) {
+        c.koltuk = G.seat(c.mats, 2, 0.40); c.scene.add(c.koltuk);
+        c.kule = G.tower(c.mats, false, 0.42); c.kule.rotation.y = Math.PI; c.kule.position.z = 1.35; c.scene.add(c.kule);
+        c.tut = G.handle(c.mats, genis ? 'bar' : 'vbar'); c.scene.add(c.tut);
+        c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        otur(P, L, { koltukY: 0.40, egim: lerp(18, -4, u), ayakY: L.ayakY + 0.18 });
+        var om = P.pos('LeftArm', V());
+        var z = lerp(om.z + L.kol * 1.35, om.z + L.kol * 0.10, u);
+        var gen = genis ? (L.omuzX + L.kol * 0.55) : (L.omuzX + L.kol * 0.10);
+        var y = lerp(om.y - 0.10, om.y - 0.02, u);
+        kol(P, function (s) { return V(s * gen, y, z); },
+               function (s) { return V(s * (gen + L.kol * (genis ? 1.0 : 0.35)), y - L.kol * 0.35, z - L.kol * 0.8); });
+        if (c.tut) elArasi(P, c.tut, 0, false);
+        G.cableSet(c.k1, V(0, 0.42, 1.82), P.pos('LeftHand', V()).lerp(P.pos('RightHand', V()), 0.5));
+      }
+    };
+  }
+
+  /* 9 — Eğik kürek (barbell / tek kol) */
+  function egikKurek(ad, tr, kas, not, tek) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.7, th: 58, ph: 14, ty: 0.85 },
+      kur: function (c) {
+        if (tek) { c.sehpa = G.bench(c.mats, 0, 0.10); c.scene.add(c.sehpa); c.d1 = G.dumbbell(c.mats); c.scene.add(c.d1); }
+        else { c.bar = G.barbell(c.mats, 60); c.scene.add(c.bar); }
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        ayakta(P, L, { egim: 68, bas: 26, kalcaZ: -0.16, ayakAcik: 0.9 });
+        var om = P.pos('LeftArm', V());
+        var y = lerp(om.y - L.kol * 0.95, om.y - L.kol * 0.30, u);
+        var z = lerp(om.z + L.kol * 0.30, om.z - L.kol * 0.10, u);
+        var gen = L.omuzX + L.kol * (tek ? 0.05 : 0.30);
+        kol(P, function (s) { return V(s * gen, y, z); },
+               function (s) { return V(s * (gen + L.kol * 0.45), y + L.kol * 0.35, z - L.kol * 0.75); });
+        if (c.bar) { elArasi(P, c.bar, 0, false); c.bar.rotation.set(0, 0, 0); }
+        if (c.d1) eleKoy(P, c.d1, 'Left', 0.02);
+      }
+    };
+  }
+
+  /* 10 — Barfiks */
+  EX['Pull-Up'] = {
+    ad: 'Pull-Up', tr: 'Barfiks', kas: 'Kanat · Biceps',
+    not: 'Göğsü bara doğru götür, omuzları aşağı çek.', tempo: [2, 1, 1],
+    kamera: { r: 4.1, th: 28, ph: 6, ty: 1.55 },
+    kur: function (c) { c.bar = G.pullupBar(c.mats); c.scene.add(c.bar); },
+    poz: function (P, u, c) {
+      var L = P.L, barY = 2.25, gen = L.omuzX + L.kol * 0.80;
+      var omY = lerp(barY - L.kol * 1.02, barY - L.kol * 0.34, u);
+      var kalcaY = omY - L.govde;
+      P.root(0, kalcaY, -0.06);
+      P.lean(lerp(-6, -14, u), 0);
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var ul = P.pos(S + 'UpLeg', V());
+        P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+          V(s * L.omuzX * 0.8, ul.y - L.bacak * 0.80, ul.z - L.bacak * 0.38),
+          V(s * L.omuzX * 0.9, ul.y - L.bacak * 0.5, ul.z + 0.5));
+        P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.86, -0.50));
+      });
+      kol(P, function (s) { return V(s * gen, barY, 0); },
+             function (s) { return V(s * (gen + L.kol * 0.9), barY - L.kol * 1.1, -0.1); });
+    }
+  };
+
+  /* 11 — Curl */
+  function curl(ad, tr, kas, not, o) {
+    o = o || {};
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.1, th: 30, ph: 8, ty: o.duruş === 'preacher' ? 0.95 : 1.05 },
+      kur: function (c) {
+        if (o.duruş === 'preacher') { c.p = G.preacher(c.mats); c.scene.add(c.p); }
+        if (o.duruş === 'incline') { c.sehpa = G.bench(c.mats, 55, 0); c.scene.add(c.sehpa); }
+        if (o.alet === 'bar') { c.tut = G.handle(c.mats, 'bar'); c.scene.add(c.tut); }
+        else if (o.alet === 'tek') { c.tut = G.handle(c.mats, 'single'); c.scene.add(c.tut); }
+        else { c.d1 = G.dumbbell(c.mats); c.scene.add(c.d1); if (!o.tekKol) { c.d2 = G.dumbbell(c.mats); c.scene.add(c.d2); } }
+        if (o.kablo) { c.kule = G.tower(c.mats, false, 0.26); c.scene.add(c.kule); c.k1 = G.cable(c.mats); c.scene.add(c.k1); }
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        if (o.duruş === 'preacher') otur(P, L, { koltukY: 0.52, egim: 22, kalcaZ: -0.34 });
+        else if (o.duruş === 'incline') yat(P, L, { pedY: 0.50, egimDeg: 55, kalcaZ: 0.02 });
+        else ayakta(P, L, { egim: 3 + 2 * u });
+        var om = P.pos('LeftArm', V());
+        var dirsekY = om.y - L.kol * (o.duruş === 'preacher' ? 0.30 : 0.52);
+        var dirsekZ = o.duruş === 'preacher' ? 0.16 : (o.duruş === 'incline' ? om.z - 0.06 : -0.04);
+        ['Left', 'Right'].forEach(function (S) {
+          var s = S === 'Left' ? 1 : -1;
+          var omz = P.pos(S + 'Arm', V());
+          var dirsek = V(s * L.omuzX * 0.97, dirsekY, dirsekZ);
+          P.aim(S + 'Arm', S + 'ForeArm', new T.Vector3().subVectors(dirsek, omz));
+          var fl = lerp(o.alt === undefined ? 14 : o.alt, o.ust === undefined ? 146 : o.ust, u) * D2R;
+          var yon = V(s * (o.hammer ? 0.06 : 0.18), -Math.cos(fl), Math.sin(fl)).normalize();
+          P.aim(S + 'ForeArm', S + 'Hand', yon);
+          P.grip(S, 1);
+        });
+        if (c.d1) eleKoy(P, c.d1, 'Left', 0.02);
+        if (c.d2) eleKoy(P, c.d2, 'Right', 0.02);
+        if (c.tut) elArasi(P, c.tut, 0, false);
+        if (c.k1) G.cableSet(c.k1, V(0, 0.26, -0.47), P.pos('LeftHand', V()));
+      }
+    };
+  }
+
+  /* 12 — Triceps pushdown */
+  function pushdown(ad, tr, kas, not, tip) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.3, th: 30, ph: 8, ty: 1.10 },
+      kur: function (c) {
+        c.kule = G.tower(c.mats, false, 2.05); c.scene.add(c.kule);
+        c.tut = G.handle(c.mats, tip === 'rope' ? 'rope' : (tip === 'tek' ? 'single' : 'bar')); c.scene.add(c.tut);
+        c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        ayakta(P, L, { egim: 10, ayakZ: 0.16 });
+        var om = P.pos('LeftArm', V());
+        var dirsekY = om.y - L.kol * 0.50;
+        ['Left', 'Right'].forEach(function (S) {
+          var s = S === 'Left' ? 1 : -1;
+          var omz = P.pos(S + 'Arm', V());
+          P.aim(S + 'Arm', S + 'ForeArm', new T.Vector3().subVectors(V(s * L.omuzX * 0.95, dirsekY, -0.03), omz));
+          var fl = lerp(96, 10, u) * D2R;
+          P.aim(S + 'ForeArm', S + 'Hand', V(s * 0.10, -Math.cos(fl * 0.5) - 0.2, Math.sin(fl) * 0.55).normalize());
+          P.grip(S, 1);
+        });
+        if (c.tut) elArasi(P, c.tut, 0, false);
+        G.cableSet(c.k1, V(0, 2.05, -0.47), P.pos('LeftHand', V()).lerp(P.pos('RightHand', V()), 0.5));
+      }
+    };
+  }
+
+  /* 13 — Baş üstü triceps */
+  EX['Overhead Cable Triceps Extension'] = {
+    ad: 'Overhead Cable Triceps Extension', tr: 'Baş Üstü Kablo Triceps',
+    kas: 'Triceps uzun baş', not: 'Dirsek sabit, ense arkasına derin in.', tempo: [2, 1, 1],
+    kamera: { r: 3.5, th: 54, ph: 10, ty: 1.15 },
+    kur: function (c) {
+      c.kule = G.tower(c.mats, false, 0.42); c.kule.rotation.y = Math.PI; c.kule.position.z = 1.1; c.scene.add(c.kule);
+      c.tut = G.handle(c.mats, 'rope'); c.scene.add(c.tut); c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+    },
+    poz: function (P, u, c) {
+      var L = P.L;
+      ayakta(P, L, { egim: 16, bas: 4, ayakZ: 0.10 });
+      var om = P.pos('LeftArm', V());
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var omz = P.pos(S + 'Arm', V());
+        P.aim(S + 'Arm', S + 'ForeArm', new T.Vector3().subVectors(V(s * L.omuzX * 0.9, omz.y + L.kol * 0.62, omz.z + 0.22), omz));
+        var fl = lerp(150, 14, u) * D2R;
+        P.aim(S + 'ForeArm', S + 'Hand', V(s * 0.08, Math.cos(fl * 0.9) * 0.6 + 0.35, Math.sin(fl) * 0.9).normalize());
+        P.grip(S, 1);
+      });
+      if (c.tut) elArasi(P, c.tut, 0, false);
+      G.cableSet(c.k1, V(0, 0.42, 1.57), P.pos('LeftHand', V()).lerp(P.pos('RightHand', V()), 0.5));
+    }
+  };
+
+  /* 14 — Skullcrusher */
+  EX['Dumbbell Skullcrusher'] = {
+    ad: 'Dumbbell Skullcrusher', tr: 'Dambıl Skullcrusher', kas: 'Triceps uzun baş',
+    not: 'Dirsek sabit kalsın, sadece önkol hareket etsin.', tempo: [2, 1, 1],
+    kamera: { r: 3.2, th: 66, ph: 14, ty: 0.80 },
+    kur: function (c) {
+      c.sehpa = G.bench(c.mats, 0, 0); c.scene.add(c.sehpa);
+      c.d1 = G.dumbbell(c.mats); c.d2 = G.dumbbell(c.mats); c.scene.add(c.d1); c.scene.add(c.d2);
+    },
+    poz: function (P, u, c) {
+      var L = P.L;
+      yat(P, L, { pedY: 0.50 });
+      var om = P.pos('LeftArm', V());
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var omz = P.pos(S + 'Arm', V());
+        P.aim(S + 'Arm', S + 'ForeArm', new T.Vector3().subVectors(V(s * L.omuzX * 0.92, omz.y + L.kol * 0.88, omz.z - 0.02), omz));
+        var fl = lerp(12, 128, u) * D2R;
+        P.aim(S + 'ForeArm', S + 'Hand', V(s * 0.05, -Math.cos(fl), -Math.sin(fl)).normalize());
+        P.grip(S, 1);
+      });
+      eleKoy(P, c.d1, 'Left', 0.02); eleKoy(P, c.d2, 'Right', 0.02);
+    }
+  };
+
+  /* 15 — Shrug */
+  EX['Dumbbell Shrug'] = {
+    ad: 'Dumbbell Shrug', tr: 'Dambıl Shrug', kas: 'Üst trapez',
+    not: 'Dambıllar yanda, omuzları kulağa doğru kaldır. Öne eğilme yok.', tempo: [2, 1, 2],
+    kamera: { r: 3.5, th: 24, ph: 8, ty: 1.15 },
+    kur: function (c) { c.d1 = G.dumbbell(c.mats); c.d2 = G.dumbbell(c.mats); c.scene.add(c.d1); c.scene.add(c.d2); },
+    poz: function (P, u, c) {
+      var L = P.L;
+      ayakta(P, L, { egim: 2, kalcaY: L.kalcaY + 0.012 * u });
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var sh = P.rig.bones[S + 'Shoulder'];
+        if (sh) sh.rotation.z += s * lerp(0, 0.17, u);
+        var omz = P.pos(S + 'Arm', V());
+        P.aim(S + 'Arm', S + 'ForeArm', V(s * 0.09, -1, 0.02));
+        P.aim(S + 'ForeArm', S + 'Hand', V(s * 0.04, -1, 0.02));
+        P.grip(S, 1);
+      });
+      eleKoy(P, c.d1, 'Left', 0.03); eleKoy(P, c.d2, 'Right', 0.03);
+    }
+  };
+
+  /* 16 — Hack squat / leg press */
+  function bacakPres(ad, tr, kas, not, tip) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.8, th: tip === 'press' ? 66 : 38, ph: 12, ty: 0.90 },
+      kur: function (c) {
+        c.mak = (tip === 'press') ? G.legPress(c.mats) : G.hackSled(c.mats);
+        c.scene.add(c.mak);
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        if (tip === 'press') {
+          var kY = 0.50, kZ = -0.28;
+          P.root(0, kY, kZ);
+          P.spineAim(V(0, 0.46, -0.89), V(0, 0.86, -0.51));
+          var uz = lerp(0.95, 0.52, u);
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            var ul = P.pos(S + 'UpLeg', V());
+            P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+              V(s * L.omuzX * 1.0, ul.y + L.bacak * uz * 0.42, ul.z + L.bacak * uz * 0.90),
+              V(s * (L.omuzX * 1.3), ul.y + L.bacak * 0.75, ul.z + L.bacak * 0.30));
+            P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.1, 0.55, 0.83));
+          });
+          kol(P, function (s) { return V(s * (L.omuzX + 0.16), kY + 0.14, kZ + 0.10); },
+                 function (s) { return V(s * (L.omuzX + 0.50), kY - 0.10, kZ + 0.05); }, 0.6);
+        } else {
+          var ust = L.kalcaY * 0.92, dip = L.ayakY + (ust - L.ayakY) * 0.48;
+          var hY = lerp(ust, dip, u), hZ = lerp(-0.18, -0.30, u);
+          P.root(0, hY, hZ);
+          P.lean(lerp(16, 30, u), 8);
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+              V(s * L.omuzX * 1.05, L.ayakY + 0.03, 0.22),
+              V(s * (L.omuzX * 1.3), L.ayakY + L.bacak * 0.55, 0.80));
+            P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.2, -0.30, 0.93));
+          });
+          var om = P.pos('LeftArm', V());
+          kol(P, function (s) { return V(s * (L.omuzX + L.kol * 0.45), om.y - 0.06, om.z - 0.22); },
+                 function (s) { return V(s * (L.omuzX + L.kol * 1.0), om.y - L.kol * 0.6, om.z - 0.4); }, 0.8);
+        }
+      }
+    };
+  }
+
+  /* 17 — Bacak makinesi (ekstansiyon / curl) */
+  function bacakMakine(ad, tr, kas, not, tip) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 2],
+      kamera: { r: 3.5, th: 62, ph: 12, ty: 0.80 },
+      kur: function (c) {
+        c.mak = (tip === 'lying') ? G.bench(c.mats, 0, 0) : G.legMachine(c.mats, tip === 'ext' ? 'ext' : 'curl');
+        c.scene.add(c.mak);
+        c.rulo = new T.Mesh(new T.CylinderGeometry(0.055, 0.055, 0.34, 14), c.mats.pad);
+        c.rulo.rotation.z = Math.PI / 2; c.rulo.castShadow = true; c.scene.add(c.rulo);
+      },
+      poz: function (P, u, c) {
+        var L = P.L, diz, ayak;
+        if (tip === 'lying') {
+          yuzustu(P, L, { pedY: 0.52, kalcaZ: 0.12 });
+          var fl = lerp(6, 108, u) * D2R;
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            var ul = P.pos(S + 'UpLeg', V());
+            var dizP = V(s * L.omuzX * 0.8, ul.y, ul.z - L.bacak * 0.50);
+            P.aim(S + 'UpLeg', S + 'Leg', new T.Vector3().subVectors(dizP, ul));
+            P.aim(S + 'Leg', S + 'Foot', V(0, Math.sin(fl), -Math.cos(fl)));
+            P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.3, -0.95));
+          });
+          ayak = P.pos('LeftFoot', V());
+          c.rulo.position.set(0, ayak.y + 0.07, ayak.z - 0.02);
+        } else {
+          var ext = tip === 'ext';
+          otur(P, L, { koltukY: 0.46, egim: ext ? 14 : 10 });
+          var a = ext ? lerp(78, 4, u) * D2R : lerp(6, 92, u) * D2R;
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            var ul2 = P.pos(S + 'UpLeg', V());
+            P.aim(S + 'UpLeg', S + 'Leg', V(s * 0.05, -0.10, 1));
+            P.aim(S + 'Leg', S + 'Foot', V(s * 0.03, -Math.cos(a), Math.sin(a) * (ext ? 1 : -1)));
+            P.aim(S + 'Foot', S + 'ToeBase', V(0, ext ? 0.1 : -0.3, ext ? 1 : -0.9));
+          });
+          var ay = P.pos('LeftFoot', V());
+          c.rulo.position.set(0, ay.y + 0.03, ay.z + (ext ? 0.05 : -0.05));
+        }
+        var om = P.pos('LeftArm', V());
+        kol(P, function (s) { return V(s * (L.omuzX + 0.14), om.y - L.kol * 0.70, om.z - 0.10); },
+               function (s) { return V(s * (L.omuzX + 0.46), om.y - L.kol * 0.45, om.z - 0.30); }, 0.7);
+      }
+    };
+  }
+
+  /* 18 — Hip hinge: RDL / hyper extension / hip thrust */
+  function hinge(ad, tr, kas, not, tip) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 1],
+      kamera: { r: 3.7, th: 62, ph: 12, ty: 0.90 },
+      kur: function (c) {
+        if (tip === 'rdl') { c.d1 = G.dumbbell(c.mats); c.d2 = G.dumbbell(c.mats); c.scene.add(c.d1); c.scene.add(c.d2); }
+        if (tip === 'hyper') { c.mak = G.hyper(c.mats); c.scene.add(c.mak); }
+        if (tip === 'thrust') { c.mak = G.hipMachine(c.mats, 'thrust'); c.scene.add(c.mak); c.bar = G.barbell(c.mats, 60); c.scene.add(c.bar); }
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        if (tip === 'rdl') {
+          var egim = lerp(6, 72, u);
+          ayakta(P, L, { egim: egim, bas: egim * 0.4, kalcaZ: -0.05 - 0.14 * u, kalcaY: L.kalcaY - 0.03 * u });
+          var om = P.pos('LeftArm', V());
+          kol(P, function (s) { return V(s * (L.omuzX + L.kol * 0.10), om.y - L.kol * 0.96, om.z + L.kol * 0.10); },
+                 function (s) { return V(s * (L.omuzX + L.kol * 0.6), om.y - L.kol * 0.5, om.z - 0.3); });
+          eleKoy(P, c.d1, 'Left', 0.03); eleKoy(P, c.d2, 'Right', 0.03);
+        } else if (tip === 'hyper') {
+          /* kalça yastıkta sabit; gövde dipte öne sarkar, tepede gövde çizgisinde */
+          var ac = lerp(62, -4, u) * D2R;        // dipte +62° öne
+          var kY = 0.86, kZ = -0.04;
+          P.root(0, kY, kZ);
+          P.spineAim(V(0, -Math.sin(ac) + Math.cos(ac) * 0.02, -Math.cos(ac) * 0.55 - 0.45).normalize(),
+                     V(0, -Math.sin(ac) * 0.6 + 0.35, -1));
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            var ul = P.pos(S + 'UpLeg', V());
+            P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+              V(s * L.omuzX * 0.72, 0.30, ul.z + L.bacak * 0.86),
+              V(s * L.omuzX * 0.72, ul.y + 0.30, ul.z + L.bacak * 0.45));
+            P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.55, 0.84));
+          });
+          var om2 = P.pos('LeftArm', V());
+          kol(P, function (s) { return V(s * (L.omuzX + 0.12), om2.y + 0.14, om2.z + 0.18); },
+                 function (s) { return V(s * (L.omuzX + 0.46), om2.y - 0.12, om2.z - 0.18); }, 0.5);
+        } else {
+          var kY = lerp(0.36, 0.56, u);
+          P.root(0, kY, 0.0);
+          P.spineAim(V(0, lerp(0.80, 0.16, u), -0.6), V(0, 0.4, -0.9));
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+              V(s * L.omuzX * 1.0, L.ayakY, 0.52),
+              V(s * L.omuzX * 1.2, kY + 0.30, 0.70));
+            P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.1, -0.30, 0.95));
+          });
+          var om3 = P.pos('LeftArm', V());
+          kol(P, function (s) { return V(s * (L.omuzX + 0.22), kY + 0.12, 0.06); },
+                 function (s) { return V(s * (L.omuzX + 0.56), kY - 0.05, -0.12); }, 0.8);
+          if (c.bar) { elArasi(P, c.bar, 0.02, false); c.bar.rotation.set(0, 0, 0); }
+        }
+      }
+    };
+  }
+
+  /* 19 — Hip abduction */
+  EX['Hip Abduction Machine'] = {
+    ad: 'Hip Abduction Machine', tr: 'Kalça Açma Makinesi', kas: 'Gluteus medius',
+    not: 'Gövde sabit, dizleri kontrollü aç ve kapat.', tempo: [2, 1, 2],
+    kamera: { r: 3.3, th: 10, ph: 14, ty: 0.85 },
+    kur: function (c) { c.mak = G.hipMachine(c.mats, 'abd'); c.scene.add(c.mak); },
+    poz: function (P, u, c) {
+      var L = P.L;
+      otur(P, L, { koltukY: 0.46, egim: 10 });
+      var ac = lerp(0.85, 1.95, u);
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+          V(s * L.omuzX * ac, L.ayakY + 0.06, L.bacak * 0.44),
+          V(s * L.omuzX * (ac + 0.6), 0.62, L.bacak * 0.75));
+        P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.3, -0.26, 0.92));
+      });
+      var om = P.pos('LeftArm', V());
+      kol(P, function (s) { return V(s * (L.omuzX + 0.20), om.y - L.kol * 0.62, om.z - 0.08); },
+             function (s) { return V(s * (L.omuzX + 0.52), om.y - L.kol * 0.4, om.z - 0.3); }, 0.7);
+    }
+  };
+
+  /* 20 — Calf */
+  function calf(ad, tr, kas, not, otururken) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: [2, 1, 2],
+      kamera: { r: 3.2, th: 58, ph: 10, ty: 0.75 },
+      kur: function (c) { c.mak = otururken ? G.calfSeat(c.mats) : G.legPress(c.mats); c.scene.add(c.mak); },
+      poz: function (P, u, c) {
+        var L = P.L;
+        if (otururken) {
+          otur(P, L, { koltukY: 0.46, egim: 8 });
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.06, lerp(-0.55, 0.12, u), lerp(0.84, 0.99, u)));
+          });
+        } else {
+          var kY = 0.52, kZ = -0.34;
+          P.root(0, kY, kZ);
+          P.spineAim(V(0, 0.52, -0.86), V(0, 0.92, -0.38));
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            var ul = P.pos(S + 'UpLeg', V());
+            P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+              V(s * L.omuzX, ul.y + L.bacak * 0.40, ul.z + L.bacak * 0.86),
+              V(s * L.omuzX * 1.3, ul.y + L.bacak * 0.72, ul.z + L.bacak * 0.28));
+            P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.08, lerp(0.20, 0.80, u), lerp(0.98, 0.60, u)));
+          });
+        }
+        var om = P.pos('LeftArm', V());
+        kol(P, function (s) { return V(s * (L.omuzX + 0.18), om.y - L.kol * 0.64, om.z - 0.06); },
+               function (s) { return V(s * (L.omuzX + 0.50), om.y - L.kol * 0.42, om.z - 0.28); }, 0.7);
+      }
+    };
+  }
+
+  /* 21 — Karın */
+  function karin(ad, tr, kas, not, tip) {
+    EX[ad] = {
+      ad: ad, tr: tr, kas: kas, not: not, tempo: tip === 'plank' ? [3, 0, 1] : [2, 1, 1],
+      kamera: { r: 3.0, th: tip === 'cable' ? 36 : 70, ph: tip === 'cable' ? 10 : 18, ty: tip === 'cable' ? 0.85 : 0.40 },
+      kur: function (c) {
+        if (tip === 'cable') {
+          c.kule = G.tower(c.mats, false, 2.05); c.scene.add(c.kule);
+          c.tut = G.handle(c.mats, 'rope'); c.scene.add(c.tut); c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+        }
+        if (tip === 'plate') { c.pl = G.plate(c.mats, 0.17); c.scene.add(c.pl); }
+        if (tip === 'pallof') {
+          c.kule = G.tower(c.mats, false, 1.10);
+          c.kule.rotation.y = Math.PI / 2; c.kule.position.set(-1.05, 0, 0); c.scene.add(c.kule);
+          c.tut = G.handle(c.mats, 'single'); c.scene.add(c.tut);
+          c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+        }
+        if (tip === 'chair') {
+          c.mak = new T.Group();
+          var dik = new T.Mesh(new T.BoxGeometry(0.14, 2.0, 0.14), c.mats.dark);
+          dik.position.set(0, 1.0, -0.42); dik.castShadow = true; c.mak.add(dik);
+          [-1, 1].forEach(function (s2) {
+            var ped = new T.Mesh(new T.BoxGeometry(0.13, 0.10, 0.46), c.mats.pad);
+            ped.position.set(s2 * 0.26, 1.22, -0.18); ped.castShadow = true; c.mak.add(ped);
+            var tut = new T.Mesh(new T.CylinderGeometry(0.018, 0.018, 0.22, 12), c.mats.steel);
+            tut.rotation.x = Math.PI / 2; tut.position.set(s2 * 0.26, 1.30, 0.10); c.mak.add(tut);
+          });
+          var sirt = new T.Mesh(new T.BoxGeometry(0.40, 0.52, 0.09), c.mats.pad);
+          sirt.position.set(0, 1.46, -0.34); sirt.castShadow = true; c.mak.add(sirt);
+          var taban = new T.Mesh(new T.BoxGeometry(0.70, 0.08, 0.70), c.mats.dark);
+          taban.position.set(0, 0.04, -0.22); c.mak.add(taban);
+          c.scene.add(c.mak);
+        }
+      },
+      poz: function (P, u, c) {
+        var L = P.L;
+        if (tip === 'cable') {
+          dizUstu(P, L, { egim: lerp(14, 62, u) });
+          var om = P.pos('LeftArm', V());
+          kol(P, function (s) { return V(s * (L.omuzX * 0.5), om.y + 0.16, om.z + 0.10); },
+                 function (s) { return V(s * (L.omuzX + 0.40), om.y + 0.30, om.z - 0.26); });
+          if (c.tut) elArasi(P, c.tut, 0.04, false);
+          G.cableSet(c.k1, V(0, 2.05, -0.47), P.pos('LeftHand', V()).lerp(P.pos('RightHand', V()), 0.5));
+        } else if (tip === 'plate' || tip === 'crunch') {
+          var govde = lerp(0.06, 0.52, u);
+          yerde(P, L, { kalcaY: 0.14, govde: govde,
+            ayak: function (s) { return V(s * L.omuzX * 0.95, 0.07, L.bacak * 0.56); },
+            diz: function (s) { return V(s * L.omuzX * 1.15, 0.55, L.bacak * 0.24); } });
+          var om2 = P.pos('LeftArm', V());
+          kol(P, function (s) { return V(s * L.omuzX * 0.72, om2.y + 0.06, om2.z + 0.14); },
+                 function (s) { return V(s * (L.omuzX + 0.34), om2.y - 0.18, om2.z + 0.30); }, 0.8);
+          if (c.pl) elArasi(P, c.pl, 0.02, false);
+        } else if (tip === 'legraise' || tip === 'reverse') {
+          var a = lerp(4, tip === 'reverse' ? 104 : 86, u) * D2R;
+          yerde(P, L, { kalcaY: 0.13, govde: 0.02,
+            ayak: function (s) { return V(s * L.omuzX * 0.75, 0.12 + Math.sin(a) * L.bacak * 0.95, 0.06 + Math.cos(a) * L.bacak * 0.95); },
+            diz: function (s) { return V(s * L.omuzX * 0.9, 0.12 + Math.sin(a) * L.bacak * 0.5 - 0.3, 0.06 + Math.cos(a) * L.bacak * 0.5); } });
+          var om3 = P.pos('LeftArm', V());
+          kol(P, function (s) { return V(s * (L.omuzX + 0.10), 0.07, om3.z - 0.10); },
+                 function (s) { return V(s * (L.omuzX + 0.40), 0.30, om3.z - 0.26); }, 0.4);
+        } else if (tip === 'deadbug') {
+          var a2 = lerp(80, 30, u) * D2R;
+          yerde(P, L, { kalcaY: 0.13, govde: 0.02,
+            ayak: function (s) { var k = s > 0 ? a2 : (110 * D2R - a2); return V(s * L.omuzX * 0.8, 0.12 + Math.sin(k) * L.bacak * 0.72, 0.06 + Math.cos(k) * L.bacak * 0.6); },
+            diz: function (s) { return V(s * L.omuzX * 1.0, 0.55, 0.30); } });
+          var om4 = P.pos('LeftArm', V());
+          kol(P, function (s) { var k = s > 0 ? (1 - u) : u; return V(s * L.omuzX * 0.9, om4.y + 0.30 + k * 0.18, om4.z - 0.30 + k * 0.1); },
+                 function (s) { return V(s * (L.omuzX + 0.45), om4.y + 0.10, om4.z - 0.5); }, 0.3);
+        } else if (tip === 'chair') {
+          var a3 = lerp(4, 86, u) * D2R;
+          /* dirsekler 1,22 m'deki pedlerde → omuz onun biraz üstünde */
+          var omY = 1.22 + L.kol * 0.46;
+          P.root(0, omY - L.govde, -0.14);
+          P.lean(-3, 0);
+          ['Left', 'Right'].forEach(function (S) {
+            var s = S === 'Left' ? 1 : -1;
+            var ul = P.pos(S + 'UpLeg', V());
+            P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
+              V(s * L.omuzX * 0.78, ul.y - Math.cos(a3) * L.bacak * 0.80, ul.z + Math.sin(a3) * L.bacak * 0.80),
+              V(s * L.omuzX * 0.9, ul.y - L.bacak * 0.35, ul.z + L.bacak * 0.70));
+            P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.72, 0.70));
+            /* üst kol aşağı, önkol pedde yatay */
+            var omz = P.pos(S + 'Arm', V());
+            P.aim(S + 'Arm', S + 'ForeArm', new T.Vector3().subVectors(V(s * 0.26, 1.24, -0.18), omz));
+            P.aim(S + 'ForeArm', S + 'Hand', V(0, 0.06, 1));
+            P.grip(S, 0.9);
+          });
+        } else if (tip === 'pallof') {
+          ayakta(P, L, { egim: 3, ayakAcik: 1.15 });
+          var om6 = P.pos('LeftArm', V());
+          var z = lerp(0.10, 0.44, u);
+          kol(P, function (s) { return V(s * L.omuzX * 0.30, om6.y - 0.10, z); },
+                 function (s) { return V(s * (L.omuzX + 0.42), om6.y - L.kol * 0.5, z - 0.28); });
+          if (c.tut) elArasi(P, c.tut, 0, false);
+          if (c.k1) G.cableSet(c.k1, V(-0.58, 1.10, 0), P.pos('LeftHand', V()).lerp(P.pos('RightHand', V()), 0.5));
+        }
+      }
+    };
+  }
+
+  /* ═════════ HAREKETLERİ BAĞLA ═════════ */
+  presYatar('Flat Barbell Bench Press', 'Düz Barbell Bench', 'Orta göğüs · Triceps', 'Dirsek ~45°, kontrollü iniş, köprü yok.', { alet: 'bar', egim: 0 });
+  presYatar('Flat Dumbbell Press', 'Düz Dambıl Pres', 'Orta göğüs · Triceps', 'Göğüste derin gerinme, üstte kilitleme yok.', { alet: 'db', egim: 0 });
+  presYatar('Incline Dumbbell Press', 'Eğimli Dambıl Pres', 'Üst göğüs', '30° eğim, derin iniş, üstte kilitleme yok.', { alet: 'db', egim: 30, th: 56 });
+
+  flyMakine('Chest Fly Machine', 'Göğüs Açma Makinesi', 'Göğüs gerinme', 'Açılışta göğsü tam ger, kapanışta orta hattı geç.', false);
+  flyMakine('Pec Deck', 'Pec Deck', 'Göğüs gerinme', 'Maksimum gerinme, dirsek sabit açıda.', false);
+  flyMakine('Rear Deltoid Fly Machine', 'Arka Omuz Makinesi', 'Arka omuz', 'Tepede 1 sn tut, dirsek sabit.', true);
+
+  kabloFly('High Cable Crossover', 'Yüksek Kablo Çapraz', 'Alt-orta göğüs', 'Yukarıdan aşağı, alt göğüste sık.', false);
+  kabloFly('Low-to-High Cable Fly', 'Alçaktan Yükseğe Kablo', 'Üst göğüs gerinme', 'Aşağıdan yukarı, üst göğüste sık.', true);
+
+  omuzPres('Dumbbell Shoulder Press', 'Dambıl Omuz Pres', 'Ön omuz · Triceps', 'Bel kavisini koru, dirsek hafif önde.', 'db');
+  omuzPres('Shoulder Press Machine', 'Omuz Pres Makinesi', 'Ön omuz', 'Sırt yastığa yapışık, kontrollü iniş.', 'mak');
+
+  yanKaldiris('Dumbbell Lateral Raise', 'Dambıl Yan Kaldırış', 'Yan omuz', 'Negatifler yavaş. Momentum yok, trapeze kaydırma.', false);
+  yanKaldiris('Cable Lateral Raise', 'Kablo Yan Kaldırış', 'Yan omuz', 'Sabit gerilim, tepede 1 sn.', true);
+
+  arkaOmuz('Bent Over Dumbbell Rear Delt Fly', 'Eğik Dambıl Arka Omuz', 'Arka omuz', 'Gövde paralel, dirsek hafif bükülü sabit.', 'bent');
+  arkaOmuz('Face Pull', 'Face Pull', 'Arka omuz · Alt trapez', 'Halatı alnına çek, dirsek omuz hizasında.', 'face');
+
+  pulldown('Wide Grip Lat Pulldown', 'Geniş Tutuş Lat Pulldown', 'Kanat genişlik', 'Göğse çek, üstte kolu tam uzat.', 'wide');
+  pulldown('Close Grip Lat Pulldown', 'Dar Tutuş Lat Pulldown', 'Kanat kalınlık', 'Dirsek gövdeye yakın, kürek aşağı.', 'close');
+
+  oturKurek('Seated Cable Row', 'Oturarak Kablo Kürek', 'Orta sırt', 'Kürek kemiklerini sık, gövde sabit.', false);
+  oturKurek('Seated Cable Row (Wide Grip)', 'Geniş Tutuş Kablo Kürek', 'Üst sırt', 'Dirsek dışa, üst sırta çek.', true);
+  oturKurek('Chest Supported Row', 'Göğüs Destekli Kürek', 'Orta sırt', 'Göğüs yastıkta, sadece kollar çalışsın.', false);
+
+  egikKurek('Barbell Row (Overhand Grip)', 'Barbell Kürek', 'Orta sırt', '⚠ Bel yükü var — gövde çok eğilmesin, karın sıkı.', false);
+  egikKurek('One-Arm Dumbbell Row', 'Tek Kol Dambıl Kürek', 'Kanat kalınlık', 'Gövde paralel, dirsek kalçaya doğru çek.', true);
+
+  curl('Dumbbell Alternate Curl', 'Dambıl Curl', 'Biceps', 'Ayakta gövdeyi sabitleyip yapılacak — sallanma yok.', {});
+  curl('Dumbbell Hammer Curl', 'Çekiç Curl', 'Brachialis · Önkol', 'Avuç içi karşıya bakar, dirsek sabit.', { hammer: true });
+  curl('Cable Barbell Curl', 'Kablo Barbell Curl', 'Biceps', 'Sabit gerilim, tepede sık.', { alet: 'bar', kablo: true });
+  curl('Cable One Arm Biceps Curl', 'Tek Kol Kablo Curl', 'Biceps', 'Tek kol, tam gerinme.', { alet: 'tek', kablo: true });
+  curl('Incline Bench Biceps Curl', 'Eğimli Sehpa Curl', 'Biceps uzun baş', 'Kol gövdenin gerisinde sarkar — uzun baş gerilir.', { duruş: 'incline', alt: 4, ust: 132 });
+  curl('Dumbbell Preacher Curl', 'Preacher Curl', 'Biceps kısa baş', 'Kol yastıkta sabit, altta tam uzat.', { duruş: 'preacher', alt: 10, ust: 138 });
+
+  pushdown('Cable Triceps Push Down', 'Kablo Triceps Push Down', 'Triceps yan baş', 'Dirsek gövdede sabit.', 'bar');
+  pushdown('Rope Push Down', 'Halat Push Down', 'Triceps yan baş', 'Altta halatı ayır, tam kilitle.', 'rope');
+  pushdown('Cable Overhand One Arm Triceps Push Down', 'Tek Kol Push Down', 'Triceps yan baş', 'Tek kol, tam ekstansiyon.', 'tek');
+
+  bacakPres('Hack Squat', 'Hack Squat', 'Quadriceps', 'Sırt yastığa tam yapışık; bel kalkarsa derinliği azalt.', 'hack');
+  bacakPres('Leg Press', 'Leg Press', 'Quadriceps · Kalça', 'Altta kalça yastıktan kalkmasın, bel yuvarlanmasın.', 'press');
+
+  bacakMakine('Leg Extension', 'Leg Extension', 'Quadriceps', 'Tepede 1 sn, yavaş iniş.', 'ext');
+  bacakMakine('Seated Leg Curl', 'Oturarak Leg Curl', 'Hamstring', 'Tam gerinme, kontrollü dönüş.', 'seated');
+  bacakMakine('Lying Leg Curl', 'Yatarak Leg Curl', 'Hamstring', 'Yavaş eksantrik, kalça yastıkta kalsın.', 'lying');
+
+  hinge('Dumbbell RDL', 'Dambıl RDL', 'Hamstring · Kalça', '⚠ Bel yükü var — sırt düz, hamstring gerilene kadar in.', 'rdl');
+  hinge('Hyper Extension', 'Hyper Extension', 'Bel · Kalça', '⚠ Bel hassasiyetin varsa atla veya ROM\'u yarıya indir.', 'hyper');
+  hinge('Hip Thrust Machine', 'Hip Thrust Makinesi', 'Gluteus maximus', 'Tepede kalçayı sık, beli kavislendirme.', 'thrust');
+
+  calf('Leg Press Calf Raise', 'Leg Press Baldır', 'Baldır (gastroc)', 'Tam gerinme, tepede 1 sn.', false);
+  calf('Seated Calf Raise', 'Oturarak Baldır', 'Baldır (soleus)', 'Diz bükülü — soleus hedefte.', true);
+
+  karin('Plate Crunch', 'Plakalı Crunch', 'Üst karın', 'Plaka göğüste, karnı kısalt — boyundan çekme.', 'plate');
+  karin('Cable Crunch', 'Kablo Crunch', 'Üst karın', 'Karnı kısalt, kalçadan bükme.', 'cable');
+  karin('Reverse Crunch', 'Ters Crunch', 'Alt karın', 'Kalçayı yukarı kıvır — bacak sallamak değil.', 'reverse');
+  karin('Lying Leg Raise', 'Yatarak Bacak Kaldırma', 'Alt karın', '⚠ Bel yere tam yapışık kalsın.', 'legraise');
+  karin("Captain's Chair Knee Raise", 'Captain\'s Chair Diz Çekme', 'Alt karın', 'Kalçayı kıvır, sallanma yok.', 'chair');
+  karin('Dead Bug', 'Dead Bug', 'Kor stabilite', 'Bel yere yapışık, çapraz kol-bacak.', 'deadbug');
+  karin('Pallof Press', 'Pallof Press', 'Kor · Anti-rotasyon', 'Gövde dönmesin, kolları öne uzat.', 'pallof');
+
+  /* Plank / Side Plank — önkol üstünde */
+  EX['Plank'] = {
+    ad: 'Plank', tr: 'Plank', kas: 'Kor stabilite', not: '60 sn hedef — kalça düşmesin, gövde tek çizgi.',
+    tempo: [3, 0, 1], sure: true,
+    kamera: { r: 2.9, th: 30, ph: 16, ty: 0.38 },
+    kur: function () {},
+    poz: function (P, u, c) {
+      var L = P.L;
+      var a = lerp(12, 10.5, u) * D2R;
+      var dir = V(0, Math.sin(a), Math.cos(a));
+      var bilek = V(0, 0.10, -(L.bacak + L.govde) * 0.70);
+      var kalca = bilek.clone().addScaledVector(dir, L.bacak * 0.99);
+      var omuz = kalca.clone().addScaledVector(dir, L.govde);
+      P.root(0, kalca.y, kalca.z);
+      P.spineAim(dir, V(0, -0.10, 1));
+      var geri = dir.clone().negate();
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var ul = P.pos(S + 'UpLeg', V());
+        var ayak = ul.clone().addScaledVector(geri, L.bacak * 0.985);
+        var diz = ul.clone().addScaledVector(geri, L.bacak * 0.5); diz.y -= L.bacak * 0.9;
+        P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot', ayak, diz);
+        P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.82, -0.57));
+        /* önkol yerde: dirsek omuzun altında */
+        var omz = P.pos(S + 'Arm', V());
+        P.aim(S + 'Arm', S + 'ForeArm', new T.Vector3().subVectors(V(s * L.omuzX, 0.055, omz.z - 0.02), omz));
+        P.aim(S + 'ForeArm', S + 'Hand', V(-s * 0.18, 0, 1));
+        P.grip(S, 0.35);
+      });
+    }
+  };
+  EX['Side Plank'] = {
+    ad: 'Side Plank', tr: 'Yan Plank', kas: 'Oblik · Kor', not: 'Her iki taraf 30 sn. Kalça düşmesin.',
+    tempo: [3, 0, 1], sure: true,
+    kamera: { r: 3.0, th: 68, ph: 16, ty: 0.42 },
+    kur: function () {},
+    poz: function (P, u, c) {
+      var L = P.L;
+      var a = lerp(13, 11, u) * D2R;
+      var dir = V(0, Math.sin(a), Math.cos(a));
+      var bilek = V(0.10, 0.10, -(L.bacak + L.govde) * 0.70);
+      var kalca = bilek.clone().addScaledVector(dir, L.bacak * 0.99);
+      var omuz = kalca.clone().addScaledVector(dir, L.govde);
+      P.root(0, kalca.y, kalca.z);
+      /* gövde yana döner */
+      P.spineAim(dir, V(0, 0.2, 1));
+      /* tüm gövdeyi yana çevir: kök kemiğin dünya rotasyonuna 90° roll ekle */
+      var hips = P.rig.bones.Hips;
+      hips.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(V(0, 0, 1), -1.48));
+      var geri = dir.clone().negate();
+      ['Left', 'Right'].forEach(function (S) {
+        var s = S === 'Left' ? 1 : -1;
+        var ul = P.pos(S + 'UpLeg', V());
+        var ayak = ul.clone().addScaledVector(geri, L.bacak * 0.985);
+        ayak.x = s * 0.02; ayak.y = 0.06 + (s > 0 ? 0.0 : 0.10);
+        P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot', ayak,
+          ul.clone().addScaledVector(geri, L.bacak * 0.5).add(V(s * 0.4, 0, 0)));
+        P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.6, -0.4, -0.65));
+      });
+      /* alt kol yerde, üst kol kalçada */
+      var omzL = P.pos('LeftArm', V());
+      P.aim('LeftArm', 'LeftForeArm', new T.Vector3().subVectors(V(0.02, 0.06, omzL.z - 0.02), omzL));
+      P.aim('LeftForeArm', 'LeftHand', V(0, 0, 1));
+      P.grip('Left', 0.35);
+      var omzR = P.pos('RightArm', V());
+      P.aim('RightArm', 'RightForeArm', new T.Vector3().subVectors(V(0.05, omzR.y + 0.30, omzR.z - 0.04), omzR));
+      P.aim('RightForeArm', 'RightHand', V(0, -0.2, -1));
+      P.grip('Right', 0.5);
+    }
+  };
+
+  /* Straight Arm Pulldown — ayakta, kollar düz, yukarıdan uyluğa */
+  EX['Straight Arm Pulldown'] = {
+    ad: 'Straight Arm Pulldown', tr: 'Düz Kol Pulldown', kas: 'Kanat izolasyon',
+    not: 'Dirsek neredeyse düz, negatifler çok kontrollü.', tempo: [2, 1, 2],
+    kamera: { r: 3.6, th: 56, ph: 10, ty: 1.05 },
+    kur: function (c) {
+      c.kule = G.tower(c.mats, false, 2.05); c.scene.add(c.kule);
+      c.tut = G.handle(c.mats, 'rope'); c.scene.add(c.tut);
+      c.k1 = G.cable(c.mats); c.scene.add(c.k1);
+    },
+    poz: function (P, u, c) {
+      var L = P.L;
+      ayakta(P, L, { egim: lerp(16, 22, u), bas: 6, ayakZ: 0.22 });
+      var om = P.pos('LeftArm', V());
+      var a = lerp(56, -6, u) * D2R;                 /* omuzdan ölçülen kol açısı */
+      kol(P, function (s) {
+        return V(s * (L.omuzX + L.kol * 0.22),
+                 om.y + Math.sin(a) * L.kol * 0.96,
+                 om.z + Math.cos(a) * L.kol * 0.96);
+      }, function (s) {
+        return V(s * (L.omuzX + L.kol * 1.2), om.y + Math.sin(a) * L.kol * 0.5 + 0.1, om.z + Math.cos(a) * L.kol * 0.5);
+      });
+      if (c.tut) elArasi(P, c.tut, 0, false);
+      if (c.k1) G.cableSet(c.k1, V(0, 2.05, -0.47), P.pos('LeftHand', V()).lerp(P.pos('RightHand', V()), 0.5));
+    }
+  };
+
+  E.hazır = true;
+})(window);
+
+/* ───── embed.js ───── */
+/* ═══════════════════════════════════════════════════════════════════
+   BOYKA — UYGULAMA İÇİ 3B OYNATICI
+   Kartta küçük durağan kare, dokununca tam ekran canlı animasyon.
+   Aynı anda tek 3B sahne çalışır; three.js ve modeller ilk ihtiyaçta yüklenir.
+   ═══════════════════════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+
+  var T = null, E = null, R = null;
+  var durum = 'bos';            // bos | yukleniyor | hazir | hata
+  var hataMetni = '';
+  var bekleyen = [];
+  var renderer = null, env = null, mats = null;
+  var modelCache = {}, rigCache = {};
+  var kapak = {};               // exName||cins -> dataURL
+  var cins = 'male';
+  try { cins = localStorage.getItem('boyka_cins') || 'male'; } catch (e) {}
+
+  var DOSYA = {
+    three: ['three.min.js', 'https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js'],
+    gltf:  ['GLTFLoader.js', 'https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js'],
+    sku:   ['SkeletonUtils.js', 'https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/utils/SkeletonUtils.js']
+  };
+  var MODEL = { male: 'male.glb', female: 'female.glb' };
+
+  /* ── betiği sırayla dene (önce yerel, sonra CDN) ── */
+  function betik(liste, cb) {
+    var i = 0;
+    function dene() {
+      if (i >= liste.length) { cb(new Error('yüklenemedi')); return; }
+      var s = document.createElement('script');
+      s.src = liste[i++]; s.async = false;
+      s.onload = function () { cb(null); };
+      s.onerror = function () { s.remove(); dene(); };
+      document.head.appendChild(s);
+    }
+    dene();
+  }
+  function kutuphaneYukle(cb) {
+    if (durum === 'hazir') { cb(null); return; }
+    if (durum === 'hata') { cb(new Error(hataMetni)); return; }
+    if (!global.THREE || !global.THREE.GLTFLoader) {
+      durum = 'hata'; hataMetni = '3B kütüphanesi bulunamadı — three.min.js, GLTFLoader.js ve SkeletonUtils.js dosyaları index.html ile aynı klasörde olmalı.';
+      cb(new Error(hataMetni)); return;
+    }
+    T = global.THREE; E = global.BoykaEngine; R = global.BoykaRig;
+    if (!E || !R) { durum = 'hata'; hataMetni = 'Animasyon motoru bulunamadı'; cb(new Error(hataMetni)); return; }
+    try { kurRenderer(); } catch (err) {
+      durum = 'hata'; hataMetni = '3B başlatılamadı: ' + err.message; cb(new Error(hataMetni)); return;
+    }
+    durum = 'hazir'; cb(null);
+  }
+
+  /* ── renderer + ortam ── */
+  function kurRenderer() {
+    renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    var mob = Math.min(global.innerWidth, global.innerHeight) < 820;
+    renderer.setPixelRatio(Math.min(global.devicePixelRatio || 1, mob ? 1.6 : 2));
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+    renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+    if (renderer.outputColorSpace !== undefined) renderer.outputColorSpace = T.SRGBColorSpace;
+    else if (renderer.outputEncoding !== undefined) renderer.outputEncoding = T.sRGBEncoding;
+    /* prosedürel stüdyo ortamı */
+    var es = new T.Scene();
+    es.add(new T.Mesh(new T.SphereGeometry(14, 20, 14), new T.MeshBasicMaterial({ color: 0x0c1016, side: T.BackSide })));
+    function pan(w, h, x, y, z, renk, g) {
+      var m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(renk).multiplyScalar(g), side: T.DoubleSide }));
+      m.position.set(x, y, z); m.lookAt(0, y, 0); es.add(m);
+    }
+    pan(9, 5, 0, 5.2, -4.4, 0xffffff, 2.3);
+    pan(6, 4, -5, 2.6, 1.6, 0xbfd4ff, 0.65);
+    pan(6, 4, 5, 2.6, 1.6, 0xffd9ae, 0.55);
+    var pm = new T.PMREMGenerator(renderer); pm.compileEquirectangularShader();
+    env = pm.fromScene(es, 0.04).texture; pm.dispose();
+    mats = malzeme();
+  }
+  function malzeme() {
+    function s(o) { o.envMap = env; o.envMapIntensity = 0.8; return new T.MeshStandardMaterial(o); }
+    return {
+      skin: s({ color: 0xd9a183, roughness: 0.62 }), shirt: s({ color: 0x191d24, roughness: 0.92 }),
+      short: s({ color: 0x0b0d11, roughness: 0.9 }), shoe: s({ color: 0xe9eaec, roughness: 0.6 }),
+      hair: s({ color: 0x201a15, roughness: 0.7 }),
+      steel: s({ color: 0xb9bec6, roughness: 0.32, metalness: 0.92 }),
+      dark: s({ color: 0x24262b, roughness: 0.55, metalness: 0.35 }),
+      plateA: s({ color: 0xb3342a, roughness: 0.62 }), plateB: s({ color: 0x2a4f8f, roughness: 0.62 }),
+      pad: s({ color: 0x1b1e24, roughness: 0.92 })
+    };
+  }
+
+  /* ── model ── */
+  function modelYukle(g, cb) {
+    if (modelCache[g]) { cb(null, modelCache[g]); return; }
+    fetch(MODEL[g]).then(function (r) {
+      if (!r.ok) throw new Error('model bulunamadı (' + r.status + ')');
+      return r.arrayBuffer();
+    }).then(function (buf) {
+      var cib = global.createImageBitmap;
+      try { global.createImageBitmap = undefined; } catch (e) {}
+      try {
+        new T.GLTFLoader().parse(buf, '', function (gl) { modelCache[g] = gl; cb(null, gl); },
+          function () { cb(new Error('model çözümlenemedi')); });
+      } finally { try { global.createImageBitmap = cib; } catch (e) {} }
+    }).catch(function (e) { cb(e); });
+  }
+  function sporKiyafet(m) {
+    m.traverse(function (o) {
+      if (!o.isMesh && !o.isSkinnedMesh) return;
+      o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
+      var ms = Array.isArray(o.material) ? o.material : [o.material];
+      ms.forEach(function (mt) {
+        if (!mt) return;
+        var n = (mt.name || '') + ' ' + (o.name || '');
+        if (/Headwear|Hat/i.test(n)) { o.visible = false; return; }
+        if (/Outfit_Top|Shirt|Jacket/i.test(n)) { mt.map = null; mt.color.set(0x191d24); mt.roughness = 0.94; }
+        else if (/Outfit_Bottom|Pants|Trouser/i.test(n)) { mt.map = null; mt.color.set(0x0b0d11); mt.roughness = 0.88; }
+        else if (/Footwear|Shoe/i.test(n)) { mt.map = null; mt.color.set(0xe9eaec); mt.roughness = 0.6; }
+        mt.envMap = env; mt.envMapIntensity = 0.75; mt.needsUpdate = true;
+      });
+    });
+  }
+
+  /* ── sahne (her hareket için) ── */
+  function sahneKur(exAd, g, cb) {
+    var ex = E.EX[exAd];
+    if (!ex) { cb(new Error('Bu hareketin animasyonu henüz yok')); return; }
+    modelYukle(g, function (err, gl) {
+      if (err) { cb(err); return; }
+      try {
+        var sc = new T.Scene();
+        sc.background = new T.Color(0x0b0d10);
+        sc.fog = new T.Fog(0x0b0d10, 7, 18);
+        sc.environment = env;
+        var key = new T.DirectionalLight(0xfff2de, 2.5);
+        key.position.set(2.6, 4.2, 3.0); key.castShadow = true;
+        var mob = Math.min(global.innerWidth, global.innerHeight) < 820;
+        key.shadow.mapSize.set(mob ? 1024 : 2048, mob ? 1024 : 2048);
+        key.shadow.camera.near = 0.5; key.shadow.camera.far = 14;
+        key.shadow.camera.left = -2.8; key.shadow.camera.right = 2.8;
+        key.shadow.camera.top = 3.6; key.shadow.camera.bottom = -0.5;
+        key.shadow.bias = -0.0012; key.shadow.normalBias = 0.022; key.shadow.radius = 2.4;
+        sc.add(key);
+        var r1 = new T.DirectionalLight(0x8fb6ff, 1.5); r1.position.set(-3.6, 2.4, -2.4); sc.add(r1);
+        var r2 = new T.DirectionalLight(0xffb773, 1.1); r2.position.set(3.2, 1.9, -3.0); sc.add(r2);
+        sc.add(new T.AmbientLight(0x3a4150, 0.35));
+        var zem = new T.Mesh(new T.BoxGeometry(4.6, 0.09, 3.6),
+          new T.MeshStandardMaterial({ color: 0x1b1f26, roughness: 0.93, metalness: 0.02, envMapIntensity: 0.2 }));
+        zem.position.y = -0.045; zem.receiveShadow = true; sc.add(zem);
+
+        var model = (T.SkeletonUtils && T.SkeletonUtils.clone) ? T.SkeletonUtils.clone(gl.scene) : gl.scene;
+        sporKiyafet(model);
+        var rig = R.fromGLB(model, g);
+        if (!rig) { cb(new Error('İskelet tanınamadı')); return; }
+        var holder = new T.Group();
+        holder.scale.setScalar(rig.scale); holder.add(model); sc.add(holder);
+        var P = new E.Poser(rig, holder);
+        var ctx = { mats: mats, container: holder, parcalar: [] };
+        var _a = holder.add.bind(holder);
+        ctx.scene = { add: function (o) { _a(o); ctx.parcalar.push(o); } };
+        if (ex.kur) ex.kur(ctx);
+        cb(null, { sc: sc, P: P, ctx: ctx, ex: ex, cyc: E.cycle(ex.tempo) });
+      } catch (e) { cb(e); }
+    });
+  }
+  function kamera(sahne, mod, ekDonus, zaman, azalt, en) {
+    var k = sahne.ex.kamera, th = k.th, ph = k.ph, r = k.r, ty = k.ty;
+    /* dikey ekranda yatay görüş daralır → mesafeyi arttırıp konuyu kadraja sığdır */
+    if (en && en < 1) r *= Math.min(1.95, Math.max(1, 0.66 / en));
+    if (mod === 'yan') { th = 88; ph = 6; r = k.r * 1.02; }
+    else if (mod === 'on') { th = 2; ph = 6; r = k.r * 1.02; }
+    th += ekDonus || 0;
+    if (!azalt && zaman) { th += Math.sin(zaman * 0.26) * 3.0; ph += Math.sin(zaman * 0.19 + 1) * 1.5; }
+    var a = th * Math.PI / 180, b = ph * Math.PI / 180;
+    var cam = sahne.cam || (sahne.cam = new T.PerspectiveCamera(34, 1, 0.1, 60));
+    cam.position.set(Math.sin(a) * Math.cos(b) * r, ty + Math.sin(b) * r, Math.cos(a) * Math.cos(b) * r);
+    cam.lookAt(0, ty, 0);
+    return cam;
+  }
+  function ciz(sahne, u, w, h, mod, ekDonus, zaman, azalt) {
+    sahne.P.begin(); sahne.P.reset();
+    sahne.ex.poz(sahne.P, u, sahne.ctx);
+    var cam = kamera(sahne, mod, ekDonus, zaman, azalt, w / h);
+    if (cam.aspect !== w / h) { cam.aspect = w / h; cam.updateProjectionMatrix(); }
+    renderer.setSize(w, h, false);
+    renderer.render(sahne.sc, cam);
+  }
+
+  /* ═════════ KAPAK (küçük durağan kare) ═════════ */
+  function kapakUret(exAd, cb) {
+    var anahtar = exAd + '||' + cins;
+    if (kapak[anahtar]) { cb(null, kapak[anahtar]); return; }
+    kutuphaneYukle(function (err) {
+      if (err) { cb(err); return; }
+      sahneKur(exAd, cins, function (e2, sahne) {
+        if (e2) { cb(e2); return; }
+        try {
+          ciz(sahne, 0.62, 190, 190, 'uc', 0, 0, true);
+          var url = renderer.domElement.toDataURL('image/jpeg', 0.82);
+          kapak[anahtar] = url;
+          cb(null, url);
+        } catch (e3) { cb(e3); }
+      });
+    });
+  }
+  /* Kartlardaki kapakları sırayla doldur (aynı anda tek render) */
+  var kuyruk = [], kuyrukCalisiyor = false;
+  function kapakIste(exAd, el) {
+    kuyruk.push([exAd, el]);
+    if (!kuyrukCalisiyor) kuyrukSur();
+  }
+  function kuyrukSur() {
+    if (!kuyruk.length) { kuyrukCalisiyor = false; return; }
+    kuyrukCalisiyor = true;
+    var it = kuyruk.shift();
+    kapakUret(it[0], function (err, url) {
+      if (!err && url && it[1] && it[1].isConnected !== false) {
+        var img = it[1].querySelector('img.anim3d');
+        if (img) { img.src = url; img.style.opacity = '1'; }
+      }
+      setTimeout(kuyrukSur, 16);
+    });
+  }
+
+  /* ═════════ TAM EKRAN OYNATICI ═════════ */
+  var oyn = null;
+  function ac(exAd) {
+    var m = document.getElementById('animModal');
+    if (!m) return;
+    m.classList.add('show');
+    var cv = document.getElementById('animCv'),
+        bilgi = document.getElementById('animBilgi'),
+        faz = document.getElementById('animFaz'),
+        bar = document.getElementById('animBar'),
+        yuk = document.getElementById('animYuk'),
+        bas = document.getElementById('animBaslik');
+    bas.textContent = exAd;
+    yuk.style.display = 'flex'; yuk.textContent = 'Animasyon hazırlanıyor…';
+    cv.style.visibility = 'hidden';
+    oyn = { ad: exAd, t: 0, oynat: true, mod: 'uc', donus: 0, sahne: null, son: 0 };
+    document.querySelectorAll('#animModal [data-ac]').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-ac') === 'uc');
+    });
+    document.querySelectorAll('#animModal [data-ag]').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-ag') === cins);
+    });
+    kutuphaneYukle(function (err) {
+      if (err) { yuk.textContent = err.message; return; }
+      yuk.textContent = 'Model yükleniyor…';
+      sahneKur(exAd, cins, function (e2, sahne) {
+        if (e2) { yuk.textContent = e2.message; return; }
+        if (!oyn || oyn.ad !== exAd) return;
+        oyn.sahne = sahne;
+        var ex = sahne.ex;
+        bilgi.innerHTML = '<b>' + (ex.tr || ex.ad) + '</b> · ' + (ex.kas || '') +
+          '<span>💡 ' + (ex.not || '') + '</span>';
+        document.getElementById('animTempo').textContent = 'TEMPO ' + ex.tempo.join('-');
+        yuk.style.display = 'none'; cv.style.visibility = 'visible';
+        if (!oyn.raf) dongu();
+      });
+    });
+  }
+  function kapat() {
+    var m = document.getElementById('animModal');
+    if (m) m.classList.remove('show');
+    if (oyn && oyn.raf) cancelAnimationFrame(oyn.raf);
+    oyn = null;
+  }
+  function dongu() {
+    if (!oyn) return;
+    oyn.raf = requestAnimationFrame(dongu);
+    if (!oyn.sahne) return;
+    var now = performance.now() / 1000;
+    var dt = Math.min(0.05, oyn.son ? now - oyn.son : 0.016); oyn.son = now;
+    if (oyn.oynat) oyn.t += dt;
+    var f = E.phaseAt(oyn.sahne.cyc, oyn.t);
+    var cv = document.getElementById('animCv');
+    var rc = cv.getBoundingClientRect();
+    var w = Math.max(2, Math.round(rc.width)), h = Math.max(2, Math.round(rc.height));
+    var azalt = global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    ciz(oyn.sahne, f.u, w, h, oyn.mod, oyn.donus, now, azalt);
+    var g = cv.getContext('2d');
+    if (cv.width !== renderer.domElement.width || cv.height !== renderer.domElement.height) {
+      cv.width = renderer.domElement.width; cv.height = renderer.domElement.height;
+    }
+    g.drawImage(renderer.domElement, 0, 0);
+    var fe = document.getElementById('animFaz');
+    if (fe.textContent !== f.ad) fe.textContent = f.ad;
+    document.getElementById('animBar').style.width = (f.ilerleme * 100).toFixed(1) + '%';
+  }
+
+  /* ═════════ DIŞ ARAYÜZ ═════════ */
+  global.Boyka3D = {
+    varMi: function (exAd) { return !!(global.BoykaEngine && global.BoykaEngine.EX[exAd]); },
+    kapakIste: kapakIste,
+    ac: ac,
+    kapat: kapat,
+    oynatDur: function () {
+      if (!oyn) return;
+      oyn.oynat = !oyn.oynat;
+      var b = document.getElementById('animOynat');
+      if (b) { b.textContent = oyn.oynat ? '❚❚' : '▶'; b.classList.toggle('on', oyn.oynat); }
+    },
+    kameraSec: function (m) {
+      if (!oyn) return; oyn.mod = m; oyn.donus = 0;
+      document.querySelectorAll('#animModal [data-ac]').forEach(function (b) {
+        b.classList.toggle('on', b.getAttribute('data-ac') === m);
+      });
+    },
+    cinsSec: function (g) {
+      if (cins === g) return;
+      cins = g;
+      try { localStorage.setItem('boyka_cins', g); } catch (e) {}
+      kapak = {};
+      document.querySelectorAll('#animModal [data-ag]').forEach(function (b) {
+        b.classList.toggle('on', b.getAttribute('data-ag') === g);
+      });
+      if (oyn) { var a = oyn.ad; kapat(); ac(a); }
+    },
+    donustur: function (dx) { if (oyn) oyn.donus += dx * 0.5; }
+  };
+})(window);
+
+
+} /* if(window.THREE) sonu */
+
 /* ═══════════ BESLENME ═══════════ */
 function renderNut(){
   document.getElementById('nutEditWrap').style.display='none';
@@ -2089,6 +4342,16 @@ function showView(v){
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},1900);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;');}
 document.querySelectorAll('.modal-bg').forEach(function(bg){bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('show');});});
+(function(){
+  var st=document.getElementById('animStage'); if(!st) return;
+  var on=false,x0=0;
+  function px(e){return e.touches?e.touches[0].clientX:e.clientX;}
+  st.addEventListener('pointerdown',function(e){on=true;x0=px(e);});
+  window.addEventListener('pointerup',function(){on=false;});
+  window.addEventListener('pointermove',function(e){
+    if(!on||!window.Boyka3D)return; var x=px(e); Boyka3D.donustur(x-x0); x0=x;
+  });
+})();
 var lastTouch=0; document.addEventListener('touchend',function(e){var now=Date.now();if(now-lastTouch<=300){e.preventDefault();}lastTouch=now;},{passive:false});
 function isStandalone(){return (window.navigator.standalone===true)||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);}
 function dismissInstall(){document.getElementById('installHint').style.display='none';try{STORE.set('boyka_installhint','1');}catch(e){}}
