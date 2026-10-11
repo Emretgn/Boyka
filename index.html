@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0e0f12">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1946,12 +1947,13 @@ var HEATC=['#39404a','#6b4a1c','#a3690f','#d98c12','#f5a623'];
 function heatLevel(v,mx){ if(v<=0||mx<=0) return 0; var r=v/mx; return r>=.8?4:(r>=.55?3:(r>=.3?2:1)); }
 
 var kas3dKuruldu=false, kas3dDeneme=0;
-var HEAT3D=['#2b3139','#6b4a1c','#a3690f','#d98c12','#f5a623'];
+var HEAT3D=['#6e747d','#b4762c','#d4871a','#eb9c16','#ffae1c'];
 /* veri yokken de kas grupları ayrışsın: her gruba kendi taban tonu */
-var KASTON={chest:0x4a525e,delt:0x3a414c,delt_r:0x343a45,traps:0x454c58,lats:0x3d4450,
- lowback:0x333942,neck:0x414853,biceps:0x4a515d,triceps:0x363c47,forearm:0x3a414b,
- abs:0x4e5663,obliques:0x383f49,quads:0x4a515d,adductor:0x343b45,hams:0x3e4551,
- glutes:0x474e5a,calves:0x434a56,tibialis:0x353c46};
+/* veri yokken: kas grupları birbirinden ayrışsın diye hafif ton farkları */
+var KASTON={chest:0x797f88,delt:0x6e747d,delt_r:0x666c74,traps:0x747a84,lats:0x6b717a,
+ lowback:0x62686f,neck:0x737983,biceps:0x787e87,triceps:0x686e76,forearm:0x6d737c,
+ abs:0x7d838d,obliques:0x696f77,quads:0x797f89,adductor:0x666c73,hams:0x6f757d,
+ glutes:0x747a83,calves:0x717780,tibialis:0x676d74};
 function kasRenkFn(agg,mx){
   return function(gid){
     var v=musValue(agg[gid]), h=heatLevel(v,mx);
@@ -3081,12 +3083,10 @@ if(window.THREE){
   G.legMachine = function (mats, tip) {
     var g = new T.Group();
     g.add(G.seat(mats, tip === 'ext' ? 14 : 10, 0.46));
-    /* hareketli kol + rulo */
-    var kol = new T.Group();
-    kol.add(boru(0.022, 0.42, mats.steel, 'x'));
-    var rulo = boru(0.055, 0.34, mats.pad, 'x'); kol.add(rulo);
-    g.add(kol); g.userData.kol = kol;
+    /* yan gövde + mil (hareketli rulo hareketin kendisinde konumlanır) */
     g.add(kutu(0.10, 0.50, 0.10, mats.dark, 0.30, 0.25, 0.30));
+    g.add(kutu(0.10, 0.50, 0.10, mats.dark, -0.30, 0.25, 0.30));
+    g.add(kutu(0.66, 0.07, 0.07, mats.dark, 0, 0.46, 0.30));
     return g;
   };
   /* ── Hack squat kızağı ── */
@@ -3272,7 +3272,7 @@ if(window.THREE){
       var hedef = o.ayak ? o.ayak(s) : V(s * L.omuzX * 0.8, h + 0.04, kZ - L.bacak * 0.94);
       P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot', hedef,
         V(s * L.omuzX * 0.8, h - 0.55, kZ - L.bacak * 0.5));
-      P.aim(S + 'Foot', S + 'ToeBase', V(0, -0.55, -0.84));
+      P.ayakDuz(S, V(0, 0, -1), -0.95);
     });
   }
 
@@ -4283,7 +4283,8 @@ if(window.THREE){
   };
   var MODEL = { male: 'male.glb', female: 'female.glb' };
   /* kodla üretilmiş atletik gövde (erkek): kıyafetsiz, esmer ten, kısa kıvırcık saç */
-  var GOVDE = { male: 'body_male.glb' };
+  var SURUM = 'v14';
+  var GOVDE = { male: 'body_male.glb', female: 'body_female.glb' };
   var govdeCache = {};
 
   /* ── betiği sırayla dene (önce yerel, sonra CDN) ── */
@@ -4379,7 +4380,7 @@ if(window.THREE){
   /* ── model ── */
   function modelYukle(g, cb) {
     if (modelCache[g]) { cb(null, modelCache[g]); return; }
-    fetch(MODEL[g]).then(function (r) {
+    fetch(MODEL[g] + '?' + SURUM).then(function (r) {
       if (!r.ok) throw new Error('model bulunamadı (' + r.status + ')');
       return r.arrayBuffer();
     }).then(function (buf) {
@@ -4412,7 +4413,7 @@ if(window.THREE){
   function govdeYukle(g, cb) {
     if (!GOVDE[g]) { cb(null, null); return; }
     if (govdeCache[g] !== undefined) { cb(null, govdeCache[g]); return; }
-    fetch(GOVDE[g]).then(function (r) {
+    fetch(GOVDE[g] + '?' + SURUM).then(function (r) {
       if (!r.ok) throw new Error('gövde yok');
       return r.arrayBuffer();
     }).then(function (buf) {
@@ -4420,7 +4421,7 @@ if(window.THREE){
       try { global.createImageBitmap = undefined; } catch (e) {}
       try {
         new T.GLTFLoader().parse(buf, '', function (gl) {
-          var o = { ten: null, sort: null, sac: null, ust: null, sakal: null, ayk: null };
+          var o = { ten: null, sort: null, sac: null, ust: null, sakal: null, ayk: null, kafa: null };
           gl.scene.traverse(function (n) {
             if (n.geometry && !n.geometry.attributes.normal) n.geometry.computeVertexNormals();
             if (n.name === 'BoykaBody') o.ten = n.geometry;
@@ -4429,6 +4430,7 @@ if(window.THREE){
             else if (n.name === 'BoykaUst') o.ust = n.geometry;
             else if (n.name === 'BoykaSakal') o.sakal = n.geometry;
             else if (n.name === 'BoykaAyakkabi') o.ayk = n.geometry;
+            else if (n.name.indexOf('BoykaKafa__') === 0) { o.kafa = o.kafa || []; o.kafa.push(n); }
           });
           govdeCache[g] = o.ten ? o : null; cb(null, govdeCache[g]);
         }, function () { govdeCache[g] = null; cb(null, null); });
@@ -4476,12 +4478,32 @@ if(window.THREE){
       var sb = new T.Mesh(G.sakal, SAKAL_MAT); sb.frustumCulled = false;
       kemik.Head.add(sb);
     }
-    /* orijinal kıyafet + gövde kütüklerini kaldır, teni esmerleştir */
+    /* çıkarılmış kafa parçaları (kadın modelde gövde tek parça olduğu için şart) */
+    var kafaMat = {};
+    model.traverse(function (o) {
+      if ((o.isMesh || o.isSkinnedMesh) && o.material) kafaMat[(o.name || '').replace(/[^A-Za-z0-9_]/g, '')] = o.material;
+    });
+    if (G.kafa && G.kafa.length) {
+      for (var ki = 0; ki < G.kafa.length; ki++) {
+        var kn = G.kafa[ki].name.substring(11);
+        var kmat = kafaMat[kn];
+        var kg = G.kafa[ki].geometry;
+        if (!kg.attributes.normal) kg.computeVertexNormals();
+        var km = kmat ? kmat.clone() : new T.MeshStandardMaterial({ color: 0x9a6a40, roughness: 0.6 });
+        var kmesh = new T.SkinnedMesh(kg, km);
+        kmesh.castShadow = true; kmesh.receiveShadow = true; kmesh.frustumCulled = false;
+        kmesh.bind(skel, bm.clone());
+        ebeveyn.add(kmesh);
+      }
+    }
+    /* orijinal kıyafet + gövde kütüklerini kaldır */
     var sil = [];
     model.traverse(function (o) {
       if (!o.isMesh && !o.isSkinnedMesh) return;
+      if (o === src) { sil.push(o); return; }
       var n = (o.name || '') + ' ' + ((o.material && o.material.name) || '');
       if (/Outfit|Headwear|Wolf3D_Body|Beard/i.test(n)) sil.push(o);
+      else if (G.kafa && G.kafa.length && /Ch03|^Mesh$/i.test(o.name || '')) sil.push(o);
       else if (/Wolf3D_Skin/i.test(n) && o.material) {
         o.material = o.material.clone();
         o.material.color.setHex(0x9a6a40);
@@ -4674,7 +4696,7 @@ if(window.THREE){
   };
   function kasYukle(g, cb) {
     if (kasCache[g] !== undefined) { cb(kasCache[g]); return; }
-    fetch(KAS_DOSYA[g] || KAS_DOSYA.male).then(function (r) {
+    fetch((KAS_DOSYA[g] || KAS_DOSYA.male) + '?' + SURUM).then(function (r) {
       if (!r.ok) throw new Error('yok'); return r.arrayBuffer();
     }).then(function (buf) {
       var cib = global.createImageBitmap;
@@ -4708,9 +4730,11 @@ if(window.THREE){
         var sc = new T.Scene();
         sc.background = null;
         sc.environment = env;
-        var key = new T.DirectionalLight(0xfff4e6, 1.15); key.position.set(1.8, 3.4, 3.2); sc.add(key);
-        var r1 = new T.DirectionalLight(0x9fc2ff, 0.40); r1.position.set(-3.0, 1.6, -2.0); sc.add(r1);
-        sc.add(new T.AmbientLight(0x3b4350, 0.30));
+        var key = new T.DirectionalLight(0xfff6ea, 1.45); key.position.set(1.6, 3.2, 3.4); sc.add(key);
+        var dolgu = new T.DirectionalLight(0xbcd4ff, 0.55); dolgu.position.set(-3.2, 1.4, 2.0); sc.add(dolgu);
+        var kenar = new T.DirectionalLight(0xffc98a, 0.95); kenar.position.set(-1.2, 2.2, -3.6); sc.add(kenar);
+        var kenar2 = new T.DirectionalLight(0x8fd0ff, 0.70); kenar2.position.set(2.6, 1.6, -3.0); sc.add(kenar2);
+        sc.add(new T.AmbientLight(0x6a7280, 0.38));
         var kok = new T.Group(); sc.add(kok);
         var mdl = kaynak.clone(true);
         /* kafa/diş/sakal malzemesini avatardan al */
@@ -4734,23 +4758,22 @@ if(window.THREE){
               vgrup[i] = Math.round(ca.getY(i) * 255);
             }
             if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
-            o.material = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.82,
-              metalness: 0.0, vertexColors: true });
-            o.material.envMapIntensity = 0.10;
+            /* Kas haritası ışıktan bağımsız olsun: renkler tam yazıldığı gibi çıksın,
+               biçimi modele pişirilmiş AO versin. */
+            o.material = new T.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, toneMapped: false });
           } else if (o.name.indexOf('kafa_') === 0) {
             var kn = o.name.substring(5), mt = null;
             for (var k in avMat) if (k.replace(/[^A-Za-z0-9_]/g, '') === kn) { mt = avMat[k]; break; }
-            o.material = mt ? mt.clone() : new T.MeshStandardMaterial({ color: 0x9b6b46, roughness: 0.6 });
-            if (o.material.color) o.material.color.setHex(0x9a6a40);
-            o.material.envMapIntensity = 0.35;
+            var bm2 = new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
+            if (mt && mt.map) { bm2.map = mt.map; bm2.color.setHex(0x9fa3a8); }
+            else bm2.color.setHex(0x9a6a40);
+            o.material = bm2;
             if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
           } else if (o.name === 'sac') {
-            o.material = new T.MeshStandardMaterial({ color: 0x14100c, roughness: 0.84 });
-            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
+            o.material = new T.MeshBasicMaterial({ color: 0x1d1813, toneMapped: false });
           } else if (o.name === 'sakal') {
-            o.material = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95,
+            o.material = new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false,
               vertexColors: !!o.geometry.attributes.color });
-            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
           }
         });
         /* ölçek + ortala: kemiksiz olduğundan kutudan hesapla */
@@ -4776,16 +4799,24 @@ if(window.THREE){
         });
         cv.addEventListener('pointercancel', function () { bas = null; });
         var ray = new T.Raycaster(), nd = new T.Vector2();
+        /* Parmakla dokunma affedici olsun: tam isabet yoksa çevresinde de ara */
+        var ARA = [[0,0],[0,-1],[0,1],[-1,0],[1,0],[-1,-1],[1,-1],[-1,1],[1,1],
+                   [0,-2],[0,2],[-2,0],[2,0],[-2,-2],[2,-2],[-2,2],[2,2]];
         function sec(e) {
           if (!govde) return;
           var rc = cv.getBoundingClientRect();
-          nd.x = ((e.clientX - rc.left) / rc.width) * 2 - 1;
-          nd.y = -((e.clientY - rc.top) / rc.height) * 2 + 1;
-          ray.setFromCamera(nd, cam);
-          var h = ray.intersectObject(govde, false);
-          if (!h.length || !h[0].face) return;
-          var gid = KAS_ES[KAS_AD[vgrup[h[0].face.a]]];
-          if (gid && opt.sec) opt.sec(gid);
+          var bx = (e.clientX - rc.left) / rc.width, by = (e.clientY - rc.top) / rc.height;
+          var ad = 0.022;
+          for (var i = 0; i < ARA.length; i++) {
+            nd.x = (bx + ARA[i][0] * ad) * 2 - 1;
+            nd.y = -(by + ARA[i][1] * ad) * 2 + 1;
+            ray.setFromCamera(nd, cam);
+            var h = ray.intersectObject(govde, false);
+            if (h.length && h[0].face) {
+              var gid = KAS_ES[KAS_AD[vgrup[h[0].face.a]]];
+              if (gid) { if (opt.sec) opt.sec(gid); return; }
+            }
+          }
         }
         function boya() {
           if (!govde || !vgrup) return;
@@ -4817,11 +4848,11 @@ if(window.THREE){
           kok.rotation.y = durum.aci;
           var w = Math.round(rc.width), h2 = Math.round(rc.height);
           cam.aspect = w / h2; cam.fov = h2 > w * 1.35 ? 26 : 31; cam.updateProjectionMatrix();
-          cam.position.set(0, 0.98, 4.55); cam.lookAt(0, 0.88, 0);
+          cam.position.set(0, 0.96, 4.15); cam.lookAt(0, 0.90, 0);
           renderer.setSize(w, h2, false);
           renderer.setClearColor(0x000000, 0);
           var eskiPoz = renderer.toneMappingExposure;
-          renderer.toneMappingExposure = 0.92;
+          renderer.toneMappingExposure = 1.0;
           renderer.render(sc, cam);
           renderer.toneMappingExposure = eskiPoz;
           if (cv.width !== renderer.domElement.width || cv.height !== renderer.domElement.height) {
