@@ -1947,13 +1947,13 @@ var HEATC=['#39404a','#6b4a1c','#a3690f','#d98c12','#f5a623'];
 function heatLevel(v,mx){ if(v<=0||mx<=0) return 0; var r=v/mx; return r>=.8?4:(r>=.55?3:(r>=.3?2:1)); }
 
 var kas3dKuruldu=false, kas3dDeneme=0;
-var HEAT3D=['#6e747d','#b4762c','#d4871a','#eb9c16','#ffae1c'];
+var HEAT3D=['#8a4036','#b4702c','#d4871a','#eb9c16','#ffae1c'];
 /* veri yokken de kas grupları ayrışsın: her gruba kendi taban tonu */
 /* veri yokken: kas grupları birbirinden ayrışsın diye hafif ton farkları */
-var KASTON={chest:0x797f88,delt:0x6e747d,delt_r:0x666c74,traps:0x747a84,lats:0x6b717a,
- lowback:0x62686f,neck:0x737983,biceps:0x787e87,triceps:0x686e76,forearm:0x6d737c,
- abs:0x7d838d,obliques:0x696f77,quads:0x797f89,adductor:0x666c73,hams:0x6f757d,
- glutes:0x747a83,calves:0x717780,tibialis:0x676d74};
+var KASTON={chest:0x95463a,delt:0x8a5a2a,delt_r:0x7a4f26,traps:0x7d4030,lats:0x8a4036,
+ lowback:0x6d3328,neck:0x8a4a3c,biceps:0x92413a,triceps:0x7e392f,forearm:0x8a4436,
+ abs:0x95463a,obliques:0x823c31,quads:0x8f4337,adductor:0x79382e,hams:0x813a30,
+ glutes:0x8a3f34,calves:0x863d32,tibialis:0x74362c};
 function kasRenkFn(agg,mx){
   return function(gid){
     var v=musValue(agg[gid]), h=heatLevel(v,mx);
@@ -2983,25 +2983,51 @@ if(window.THREE){
   G.bench = function (mats, egimDeg, z0) {
     var g = new T.Group(), a = (egimDeg || 0) * Math.PI / 180, Z = z0 || 0;
     var PY = 0.46, kal = 0.09;
+    var nokta, yon, normal;
     if (a < 0.02) {
-      var ped = kutu(0.31, kal, 1.34, mats.pad, 0, PY - kal / 2, Z - 0.06);
-      g.add(ped);
+      g.add(kutu(0.31, kal, 1.34, mats.pad, 0, PY - kal / 2, Z - 0.06));
+      nokta = [0, PY, Z + 0.14];
+      yon = [0, 0, -1];
+      normal = [0, 1, 0];
     } else {
-      g.add(kutu(0.31, kal, 0.52, mats.pad, 0, PY - kal / 2, Z + 0.30));
-      var L = 0.70, hz = Z + 0.13;                       /* menteşe */
+      /* oturak + menteşeden kalkan sırtlık */
+      g.add(kutu(0.31, kal, 0.50, mats.pad, 0, PY - kal / 2, Z + 0.32));
+      var L = 0.95, hz = Z + 0.11;
       var sirt = kutu(0.31, kal, L, mats.pad, 0, 0, 0);
       sirt.position.set(0, PY - kal / 2 + Math.sin(a) * L / 2, hz - Math.cos(a) * L / 2);
       sirt.rotation.x = -a; g.add(sirt);
-      /* sırtlık desteği */
-      g.add(kutu(0.09, 0.40, 0.09, mats.dark, 0, PY * 0.6, hz - Math.cos(a) * L * 0.72));
+      g.add(kutu(0.09, 0.42, 0.09, mats.dark, 0, PY * 0.55, hz - Math.cos(a) * L * 0.80));
+      nokta = [0, PY, hz];
+      yon = [0, Math.sin(a), -Math.cos(a)];
+      normal = [0, Math.cos(a), Math.sin(a)];
     }
     [-0.46, 0.44].forEach(function (z) {
       g.add(kutu(0.40, PY - kal, 0.07, mats.dark, 0, (PY - kal) / 2, Z + z));
       g.add(kutu(0.46, 0.05, 0.22, mats.dark, 0, 0.025, Z + z));
     });
     g.add(kutu(0.09, 0.06, 0.92, mats.dark, 0, PY - kal - 0.03, Z));
+    /* Gövdenin yaslanacağı yüzey: pozlama bunu okuyup kendini yerleştirir */
+    g.userData.ped = { nokta: nokta, yon: yon, normal: normal };
     return g;
   };
+  /* Grubun dönüş/ötelemesi uygulanmış ped bilgisi (dünya uzayında) */
+  G.ped = function (grup) {
+    if (!grup) return null;
+    var tasiyici = null;
+    grup.traverse(function (o) { if (!tasiyici && o.userData && o.userData.ped) tasiyici = o; });
+    if (!tasiyici) return null;
+    var d = tasiyici.userData.ped;
+    /* taşıyıcıdan grup köküne kadar matrisleri birleştir */
+    var m = new T.Matrix4(), zincir = [], o2 = tasiyici;
+    while (o2 && o2 !== grup.parent) { zincir.push(o2); o2 = o2.parent; }
+    for (var i = zincir.length - 1; i >= 0; i--) { zincir[i].updateMatrix(); m.multiply(zincir[i].matrix); }
+    var p = new T.Vector3(d.nokta[0], d.nokta[1], d.nokta[2]).applyMatrix4(m);
+    var nm = new T.Matrix3().getNormalMatrix(m);
+    var y = new T.Vector3(d.yon[0], d.yon[1], d.yon[2]).applyMatrix3(nm).normalize();
+    var n = new T.Vector3(d.normal[0], d.normal[1], d.normal[2]).applyMatrix3(nm).normalize();
+    return { nokta: p, yon: y, normal: n };
+  };
+
   /* Bar standı (bench press için) */
   G.rack = function (mats, yukseklik, z) {
     var g = new T.Group(), h = yukseklik === undefined ? 1.02 : yukseklik;
@@ -3016,10 +3042,21 @@ if(window.THREE){
   /* ── Makine koltuğu: oturak + sırt yastığı ── */
   G.seat = function (mats, sirtEgim, yukseklik) {
     var g = new T.Group(), h = yukseklik === undefined ? 0.46 : yukseklik;
-    g.add(kutu(0.42, 0.09, 0.42, mats.pad, 0, h, -0.02));
-    var sirt = kutu(0.40, 0.62, 0.09, mats.pad, 0, h + 0.33, -0.24);
-    sirt.rotation.x = (sirtEgim || 8) * Math.PI / 180; g.add(sirt);
-    g.add(kutu(0.34, h - 0.06, 0.34, mats.dark, 0, (h - 0.06) / 2, -0.10));
+    var a = (sirtEgim === undefined ? 8 : sirtEgim) * Math.PI / 180;
+    g.add(kutu(0.42, 0.09, 0.46, mats.pad, 0, h, 0.00));
+    /* sırtlık: oturağın arka kenarından yukarı, açı kadar geriye yatık */
+    var SL = 0.56, hz = -0.21;
+    var sirt = kutu(0.36, 0.085, SL, mats.pad, 0, 0, 0);
+    sirt.position.set(0, h + 0.045 + Math.cos(a) * SL / 2, hz - Math.sin(a) * SL / 2);
+    sirt.rotation.x = Math.PI / 2 - a;
+    g.add(sirt);
+    g.add(kutu(0.34, h - 0.06, 0.34, mats.dark, 0, (h - 0.06) / 2, -0.06));
+    g.add(kutu(0.46, 0.05, 0.40, mats.dark, 0, 0.025, -0.06));
+    g.userData.ped = {
+      nokta: [0, h + 0.045, 0.02],                      /* oturma yüzeyi */
+      yon: [0, Math.cos(a), -Math.sin(a)],              /* sırtlık yönü (yukarı-geri) */
+      normal: [0, Math.sin(a), Math.cos(a)]             /* sırtlıktan öne bakan normal */
+    };
     return g;
   };
   /* ── Kablo kulesi (tek veya çift) ── */
@@ -3220,44 +3257,61 @@ if(window.THREE){
     });
   }
 
-  /* Oturarak: kalça koltukta, uyluk yatay, baldır aşağı */
+  /* Oturarak: kalça koltuk yüzeyinde, gövde sırtlığın açısında */
   function otur(P, L, o) {
     o = o || {};
+    var ped = o.ped;
     var koltuk = o.koltukY === undefined ? 0.46 : o.koltukY;
-    var kY = koltuk + 0.11, kZ = o.kalcaZ === undefined ? -0.04 : o.kalcaZ;
+    var kY, kZ, yon;
+    if (ped) {
+      var kok = ped.nokta.clone().addScaledVector(ped.yon, o.kalcaKay === undefined ? 0.095 : o.kalcaKay)
+                                 .addScaledVector(ped.normal, o.kalcaOn === undefined ? 0.085 : o.kalcaOn);
+      kY = kok.y; kZ = kok.z; yon = ped.yon.clone();
+    } else {
+      kY = koltuk + 0.11; kZ = o.kalcaZ === undefined ? -0.04 : o.kalcaZ;
+      var e = (o.egim === undefined ? 8 : o.egim) * D2R;
+      yon = V(0, Math.cos(e), -Math.sin(e));
+    }
     P.root(0, kY, kZ);
-    P.lean(o.egim === undefined ? 8 : o.egim, o.bas);
-    var uyluk = L.bacak * 0.50, baldir = L.bacak * 0.50;
+    var basA = (o.bas === undefined ? 0 : o.bas) * D2R;
+    P.spineAim(yon, V(0, Math.cos(basA), Math.sin(basA) + 0.10));
+    var uyluk = L.bacak * 0.50;
     ['Left', 'Right'].forEach(function (S) {
       var s = S === 'Left' ? 1 : -1, fx = L.omuzX * (o.ayakAcik || 0.92);
       var ayakY = o.ayakY === undefined ? L.ayakY : o.ayakY;
-      var ayakZ = kZ + uyluk * 0.96;
+      var ayakZ = kZ + uyluk * 0.94;
       P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
         V(s * fx, ayakY, ayakZ),
-        V(s * (fx + 0.05), kY + 0.26, ayakZ + 0.55));
-      P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.10, -0.30, 0.95));
+        V(s * (fx + 0.05), kY + 0.22, ayakZ + 0.55));
+      P.ayakDuz(S, V(s * 0.10, 0, 1), -0.16);
     });
   }
 
   /* Sırtüstü sehpada: baş −Z, ayaklar yerde +Z */
   function yat(P, L, o) {
     o = o || {};
-    var h = o.pedY === undefined ? 0.46 : o.pedY;   /* oturak pedinin üst yüzeyi */
-    var a = (o.egimDeg || 0) * D2R;                 /* 0 = düz, 30 = eğimli */
-    var kZ = o.kalcaZ === undefined ? 0.16 : o.kalcaZ;
-    var t = 0.115;                                   /* gövde yarı kalınlığı */
-    P.root(0, h + t, kZ);
-    /* omurga −Z'ye, eğim kadar yukarı; baş yastıkta, yukarı bakar */
-    P.spineAim(V(0, Math.sin(a), -Math.cos(a)),
-               V(0, Math.cos(a) * 0.92, Math.sin(a) * 0.9 + 0.18));
-    var ayZ = kZ + (o.ayakZ === undefined ? L.bacak * 0.54 : o.ayakZ);
-    var dizZ = kZ + L.bacak * 0.40;
+    /* Sehpanın kendi bildirdiği yüzeye yaslan: hangi açıda olursa olsun
+       gövde pedin üstünde kalır, hiçbir kameradan içinden geçmez.        */
+    var ped = o.ped || { nokta: new T.Vector3(0, 0.46, 0.14),
+                         yon: V(0, 0, -1), normal: V(0, 1, 0) };
+    var kal = o.kalinlik === undefined ? 0.125 : o.kalinlik;   /* gövde yarı kalınlığı */
+    var kok = ped.nokta.clone().addScaledVector(ped.normal, kal)
+                               .addScaledVector(ped.yon, o.kayma === undefined ? 0.02 : o.kayma);
+    P.root(0, kok.y, kok.z);
+    /* omurga pedin yönünde; baş pedin normaline doğru bakar */
+    var bas = ped.normal.clone().multiplyScalar(0.92).addScaledVector(ped.yon, 0.26);
+    P.spineAim(ped.yon.clone(), bas);
+    /* bacaklar: kalçadan öne-aşağı, ayaklar yerde */
+    var ileri = new T.Vector3(ped.yon.x, 0, ped.yon.z).normalize().multiplyScalar(-1);
+    if (!isFinite(ileri.z) || ileri.lengthSq() < 0.1) ileri.set(0, 0, 1);
+    var ayZ = kok.z + ileri.z * (o.ayakZ === undefined ? L.bacak * 0.56 : o.ayakZ);
+    var dizZ = kok.z + ileri.z * L.bacak * 0.42;
     ['Left', 'Right'].forEach(function (S) {
       var s = S === 'Left' ? 1 : -1, fx = L.omuzX * (o.ayakAcik || 1.08);
       P.twoBone(S + 'UpLeg', S + 'Leg', S + 'Foot',
         V(s * fx, L.ayakY, ayZ),
-        V(s * (fx + 0.05), h + 0.07, dizZ + 0.60));
-      P.ayakDuz(S, V(s * 0.16, 0, 1), -0.16);
+        V(s * (fx + 0.05), kok.y - 0.18, dizZ + ileri.z * 0.55));
+      P.ayakDuz(S, V(s * 0.16, 0, ileri.z), -0.16);
     });
   }
 
@@ -3356,7 +3410,7 @@ if(window.THREE){
       },
       poz: function (P, u, c) {
         var L = P.L, a = (o.egim || 0) * D2R;
-        yat(P, L, { egimDeg: o.egim || 0 });
+        yat(P, L, { ped: G.ped(c.sehpa) });
         var om = P.pos('LeftArm', V());
         /* bar/dambıl yolu: omuzdan dik yukarı, eğimde biraz −Z'ye kayar */
         var ustY = om.y + L.kol * 0.90, altY = om.y + L.kol * 0.085;
@@ -3383,7 +3437,7 @@ if(window.THREE){
       kur: function (c) { c.mak = G.flyMachine(c.mats); c.scene.add(c.mak); },
       poz: function (P, u, c) {
         var L = P.L;
-        otur(P, L, { koltukY: 0.46, egim: ters ? 16 : 5, kalcaZ: -0.04 });
+        otur(P, L, { ped: G.ped(c.mak) || undefined, koltukY: 0.46, egim: ters ? 16 : 5, kalcaZ: -0.04 });
         var om = P.pos('LeftArm', V());
         var acik = lerp(ters ? 0.42 : 1.05, ters ? 1.05 : 0.30, u);
         var z = ters ? lerp(0.42, -0.26, u) : lerp(-0.18, 0.44, u);
@@ -3433,7 +3487,7 @@ if(window.THREE){
       },
       poz: function (P, u, c) {
         var L = P.L;
-        otur(P, L, { koltukY: 0.46, egim: 6 });
+        otur(P, L, { ped: G.ped(c.koltuk), koltukY: 0.46, egim: 6 });
         var om = P.pos('LeftArm', V());
         var y = lerp(om.y + L.kol * 0.95, om.y + L.kol * 0.04, u);
         var gen = lerp(L.omuzX + L.kol * 0.26, L.omuzX + L.kol * 0.72, u);
@@ -3515,7 +3569,7 @@ if(window.THREE){
       },
       poz: function (P, u, c) {
         var L = P.L;
-        otur(P, L, { koltukY: 0.50, egim: lerp(6, 16, u) });
+        otur(P, L, { ped: G.ped(c.ist), koltukY: 0.50, egim: lerp(6, 16, u) });
         var om = P.pos('LeftArm', V());
         var gen = tutus === 'wide' ? (L.omuzX + L.kol * 0.90) : (L.omuzX + L.kol * 0.12);
         var y = lerp(om.y + L.kol * 0.95, om.y - L.kol * 0.22, u);
@@ -3541,7 +3595,7 @@ if(window.THREE){
       },
       poz: function (P, u, c) {
         var L = P.L;
-        otur(P, L, { koltukY: 0.40, egim: lerp(18, -4, u), ayakY: L.ayakY + 0.18 });
+        otur(P, L, { ped: G.ped(c.koltuk), koltukY: 0.40, egim: lerp(18, -4, u), ayakY: L.ayakY + 0.18 });
         var om = P.pos('LeftArm', V());
         var z = lerp(om.z + L.kol * 1.35, om.z + L.kol * 0.10, u);
         var gen = genis ? (L.omuzX + L.kol * 0.55) : (L.omuzX + L.kol * 0.10);
@@ -3658,7 +3712,7 @@ if(window.THREE){
       },
       poz: function (P, u, c) {
         var L = P.L;
-        if (o.duruş === 'preacher') otur(P, L, { koltukY: 0.52, egim: 22, kalcaZ: -0.34 });
+        if (o.duruş === 'preacher') otur(P, L, { ped: G.ped(c.p), koltukY: 0.52, egim: 22, kalcaZ: -0.34 });
         else if (o.duruş === 'incline') yat(P, L, { pedY: 0.50, egimDeg: 55, kalcaZ: 0.02 });
         else ayakta(P, L, { egim: 3 + 2 * u });
         var om = P.pos('LeftArm', V());
@@ -3858,7 +3912,7 @@ if(window.THREE){
           c.rulo.position.set(0, ayak.y + 0.07, ayak.z - 0.02);
         } else {
           var ext = tip === 'ext';
-          otur(P, L, { koltukY: 0.46, egim: ext ? 14 : 10 });
+          otur(P, L, { ped: G.ped(c.mak), koltukY: 0.46, egim: ext ? 14 : 10 });
           var a = ext ? lerp(78, 4, u) * D2R : lerp(6, 92, u) * D2R;
           ['Left', 'Right'].forEach(function (S) {
             var s = S === 'Left' ? 1 : -1;
@@ -3942,7 +3996,7 @@ if(window.THREE){
     kur: function (c) { c.mak = G.hipMachine(c.mats, 'abd'); c.scene.add(c.mak); },
     poz: function (P, u, c) {
       var L = P.L;
-      otur(P, L, { koltukY: 0.46, egim: 10 });
+      otur(P, L, { ped: G.ped(c.mak), koltukY: 0.46, egim: 10 });
       var ac = lerp(0.85, 1.95, u);
       ['Left', 'Right'].forEach(function (S) {
         var s = S === 'Left' ? 1 : -1;
@@ -3966,7 +4020,7 @@ if(window.THREE){
       poz: function (P, u, c) {
         var L = P.L;
         if (otururken) {
-          otur(P, L, { koltukY: 0.46, egim: 8 });
+          otur(P, L, { ped: G.ped(c.mak), koltukY: 0.46, egim: 8 });
           ['Left', 'Right'].forEach(function (S) {
             var s = S === 'Left' ? 1 : -1;
             P.aim(S + 'Foot', S + 'ToeBase', V(s * 0.06, lerp(-0.55, 0.12, u), lerp(0.84, 0.99, u)));
@@ -4283,7 +4337,7 @@ if(window.THREE){
   };
   var MODEL = { male: 'male.glb', female: 'female.glb' };
   /* kodla üretilmiş atletik gövde (erkek): kıyafetsiz, esmer ten, kısa kıvırcık saç */
-  var SURUM = 'v14';
+  var SURUM = 'v16';
   var GOVDE = { male: 'body_male.glb', female: 'body_female.glb' };
   var govdeCache = {};
 
@@ -4742,38 +4796,29 @@ if(window.THREE){
         if (avatar) avatar.scene.traverse(function (o) {
           if ((o.isMesh || o.isSkinnedMesh) && o.material) avMat[o.name] = o.material;
         });
-        var KAS_AD = ['chest','lats','traps','lowerback','delts','rdelts','biceps','triceps',
-          'forearm','abs','obliques','glutes','quads','hamstring','adductor','calves','tibialis',
-          'neck','hand','foot'];
-        var govde = null, vgrup = null, vao = null;
+        var kasMesh = [], govdeMesh = null;
         mdl.traverse(function (o) {
           if (!o.isMesh) return;
           o.frustumCulled = false;
-          if (o.name === 'BoykaKasGovde') {
-            govde = o;
-            var ca = o.geometry.attributes.color, n = ca.count;
-            vgrup = new Uint8Array(n); vao = new Float32Array(n);
-            for (var i = 0; i < n; i++) {
-              vao[i] = ca.getX(i);
-              vgrup[i] = Math.round(ca.getY(i) * 255);
-            }
-            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
-            /* Kas haritası ışıktan bağımsız olsun: renkler tam yazıldığı gibi çıksın,
-               biçimi modele pişirilmiş AO versin. */
-            o.material = new T.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, toneMapped: false });
+          var vc = !!o.geometry.attributes.color;
+          if (o.name === 'kasgovde') {
+            govdeMesh = o;
+            o.material = new T.MeshBasicMaterial({ color: 0x3c414b, vertexColors: vc, toneMapped: false });
+          } else if (o.name.indexOf('kas__') === 0) {
+            o.userData.gid = o.name.split('__')[1];
+            o.material = new T.MeshBasicMaterial({ color: 0xffffff, vertexColors: vc, toneMapped: false });
+            kasMesh.push(o);
           } else if (o.name.indexOf('kafa_') === 0) {
             var kn = o.name.substring(5), mt = null;
             for (var k in avMat) if (k.replace(/[^A-Za-z0-9_]/g, '') === kn) { mt = avMat[k]; break; }
             var bm2 = new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
-            if (mt && mt.map) { bm2.map = mt.map; bm2.color.setHex(0x9fa3a8); }
+            if (mt && mt.map) { bm2.map = mt.map; bm2.color.setHex(0xa8acb2); }
             else bm2.color.setHex(0x9a6a40);
             o.material = bm2;
-            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
           } else if (o.name === 'sac') {
             o.material = new T.MeshBasicMaterial({ color: 0x1d1813, toneMapped: false });
           } else if (o.name === 'sakal') {
-            o.material = new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false,
-              vertexColors: !!o.geometry.attributes.color });
+            o.material = new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false, vertexColors: vc });
           }
         });
         /* ölçek + ortala: kemiksiz olduğundan kutudan hesapla */
@@ -4799,43 +4844,31 @@ if(window.THREE){
         });
         cv.addEventListener('pointercancel', function () { bas = null; });
         var ray = new T.Raycaster(), nd = new T.Vector2();
-        /* Parmakla dokunma affedici olsun: tam isabet yoksa çevresinde de ara */
         var ARA = [[0,0],[0,-1],[0,1],[-1,0],[1,0],[-1,-1],[1,-1],[-1,1],[1,1],
                    [0,-2],[0,2],[-2,0],[2,0],[-2,-2],[2,-2],[-2,2],[2,2]];
         function sec(e) {
-          if (!govde) return;
+          if (!kasMesh.length) return;
           var rc = cv.getBoundingClientRect();
           var bx = (e.clientX - rc.left) / rc.width, by = (e.clientY - rc.top) / rc.height;
-          var ad = 0.022;
+          var ad = 0.020;
           for (var i = 0; i < ARA.length; i++) {
             nd.x = (bx + ARA[i][0] * ad) * 2 - 1;
             nd.y = -(by + ARA[i][1] * ad) * 2 + 1;
             ray.setFromCamera(nd, cam);
-            var h = ray.intersectObject(govde, false);
-            if (h.length && h[0].face) {
-              var gid = KAS_ES[KAS_AD[vgrup[h[0].face.a]]];
-              if (gid) { if (opt.sec) opt.sec(gid); return; }
+            var h = ray.intersectObjects(kasMesh, false);
+            if (h.length && h[0].object.userData.gid) {
+              if (opt.sec) opt.sec(h[0].object.userData.gid);
+              return;
             }
           }
         }
         function boya() {
-          if (!govde || !vgrup) return;
-          var ca = govde.geometry.attributes.color, n = ca.count;
-          var onbellek = {}, c = new T.Color();
-          for (var i = 0; i < n; i++) {
-            var ad = KAS_AD[vgrup[i]], gid = KAS_ES[ad];
-            var anahtar = gid || '-';
-            var rgb = onbellek[anahtar];
-            if (!rgb) {
-              var hex = gid ? durum.renk(gid) : 0x2b3139;
-              if (gid && gid === durum.sec) hex = 0xffb43a;
-              c.setHex(hex);
-              rgb = onbellek[anahtar] = [c.r, c.g, c.b];
-            }
-            var a = vao[i];
-            ca.setXYZ(i, rgb[0] * a, rgb[1] * a, rgb[2] * a);
+          for (var i = 0; i < kasMesh.length; i++) {
+            var o = kasMesh[i], gid = o.userData.gid;
+            var hex = durum.renk(gid);
+            if (gid === durum.sec) hex = 0xffb02a;
+            o.material.color.setHex(hex);
           }
-          ca.needsUpdate = true;
         }
         durum.boya = boya; boya();
         function dongu() {
