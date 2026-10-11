@@ -1946,11 +1946,17 @@ var HEATC=['#39404a','#6b4a1c','#a3690f','#d98c12','#f5a623'];
 function heatLevel(v,mx){ if(v<=0||mx<=0) return 0; var r=v/mx; return r>=.8?4:(r>=.55?3:(r>=.3?2:1)); }
 
 var kas3dKuruldu=false, kas3dDeneme=0;
-var HEAT3D=['#232830','#6b4a1c','#a3690f','#d98c12','#f5a623'];
+var HEAT3D=['#2b3139','#6b4a1c','#a3690f','#d98c12','#f5a623'];
+/* veri yokken de kas grupları ayrışsın: her gruba kendi taban tonu */
+var KASTON={chest:0x4a525e,delt:0x3a414c,delt_r:0x343a45,traps:0x454c58,lats:0x3d4450,
+ lowback:0x333942,neck:0x414853,biceps:0x4a515d,triceps:0x363c47,forearm:0x3a414b,
+ abs:0x4e5663,obliques:0x383f49,quads:0x4a515d,adductor:0x343b45,hams:0x3e4551,
+ glutes:0x474e5a,calves:0x434a56,tibialis:0x353c46};
 function kasRenkFn(agg,mx){
   return function(gid){
-    var v=musValue(agg[gid]);
-    return parseInt(HEAT3D[heatLevel(v,mx)].replace('#',''),16);
+    var v=musValue(agg[gid]), h=heatLevel(v,mx);
+    if(h===0) return KASTON[gid]!==undefined?KASTON[gid]:0x2b3139;
+    return parseInt(HEAT3D[h].replace('#',''),16);
   };
 }
 function kasCinsSec(g){
@@ -4414,19 +4420,22 @@ if(window.THREE){
       try { global.createImageBitmap = undefined; } catch (e) {}
       try {
         new T.GLTFLoader().parse(buf, '', function (gl) {
-          var o = { ten: null, sort: null, sac: null };
+          var o = { ten: null, sort: null, sac: null, ust: null, sakal: null, ayk: null };
           gl.scene.traverse(function (n) {
             if (n.geometry && !n.geometry.attributes.normal) n.geometry.computeVertexNormals();
             if (n.name === 'BoykaBody') o.ten = n.geometry;
             else if (n.name === 'BoykaSort') o.sort = n.geometry;
             else if (n.name === 'BoykaSac') o.sac = n.geometry;
+            else if (n.name === 'BoykaUst') o.ust = n.geometry;
+            else if (n.name === 'BoykaSakal') o.sakal = n.geometry;
+            else if (n.name === 'BoykaAyakkabi') o.ayk = n.geometry;
           });
           govdeCache[g] = o.ten ? o : null; cb(null, govdeCache[g]);
         }, function () { govdeCache[g] = null; cb(null, null); });
       } finally { try { global.createImageBitmap = cib; } catch (e) {} }
     }).catch(function () { govdeCache[g] = null; cb(null, null); });
   }
-  var TEN_MAT = null, SORT_MAT = null, SAC_MAT = null;
+  var TEN_MAT = null, SORT_MAT = null, SAC_MAT = null, UST_MAT = null, AYK_MAT = null, SAKAL_MAT = null;
   function govdeTak(model, G) {
     if (!G || !G.ten) return;
     var src = null, kemik = {};
@@ -4441,24 +4450,38 @@ if(window.THREE){
       TEN_MAT = new T.MeshStandardMaterial({ color: 0x8a5a33, roughness: 0.50, metalness: 0.02 });
       SORT_MAT = new T.MeshStandardMaterial({ color: 0x2b3038, roughness: 0.9, metalness: 0.0 });
       SAC_MAT = new T.MeshStandardMaterial({ color: 0x14100c, roughness: 0.82, metalness: 0.0 });
+      UST_MAT = new T.MeshStandardMaterial({ color: 0x20242c, roughness: 0.92, metalness: 0.0 });
+      AYK_MAT = new T.MeshStandardMaterial({ color: 0xdfe2e6, roughness: 0.68, metalness: 0.0 });
+      SAKAL_MAT = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.96, metalness: 0.0, vertexColors: true });
     }
     function ekle(geo, mat) {
-      var m = new T.SkinnedMesh(geo, mat);
+      if (!geo) return null;
+      if (!geo.attributes.normal) geo.computeVertexNormals();
+      var mm = mat.clone(); mm.vertexColors = !!geo.attributes.color;
+      var m = new T.SkinnedMesh(geo, mm);
       m.castShadow = true; m.receiveShadow = true; m.frustumCulled = false;
       m.bind(skel, bm.clone()); ebeveyn.add(m); return m;
     }
     ekle(G.ten, TEN_MAT);
-    if (G.sort) ekle(G.sort, SORT_MAT);
+    ekle(G.sort, SORT_MAT);
+    ekle(G.ust, UST_MAT);
+    ekle(G.ayk, AYK_MAT);
     if (G.sac && kemik.Head) {
+      if (!G.sac.attributes.normal) G.sac.computeVertexNormals();
       var h = new T.Mesh(G.sac, SAC_MAT); h.castShadow = true; h.frustumCulled = false;
       kemik.Head.add(h);
+    }
+    if (G.sakal && kemik.Head) {
+      if (!G.sakal.attributes.normal) G.sakal.computeVertexNormals();
+      var sb = new T.Mesh(G.sakal, SAKAL_MAT); sb.frustumCulled = false;
+      kemik.Head.add(sb);
     }
     /* orijinal kıyafet + gövde kütüklerini kaldır, teni esmerleştir */
     var sil = [];
     model.traverse(function (o) {
       if (!o.isMesh && !o.isSkinnedMesh) return;
       var n = (o.name || '') + ' ' + ((o.material && o.material.name) || '');
-      if (/Outfit|Headwear|Wolf3D_Body/i.test(n)) sil.push(o);
+      if (/Outfit|Headwear|Wolf3D_Body|Beard/i.test(n)) sil.push(o);
       else if (/Wolf3D_Skin/i.test(n) && o.material) {
         o.material = o.material.clone();
         o.material.color.setHex(0x9a6a40);
@@ -4685,7 +4708,7 @@ if(window.THREE){
         var sc = new T.Scene();
         sc.background = null;
         sc.environment = env;
-        var key = new T.DirectionalLight(0xfff4e6, 0.85); key.position.set(1.8, 3.4, 3.2); sc.add(key);
+        var key = new T.DirectionalLight(0xfff4e6, 1.15); key.position.set(1.8, 3.4, 3.2); sc.add(key);
         var r1 = new T.DirectionalLight(0x9fc2ff, 0.40); r1.position.set(-3.0, 1.6, -2.0); sc.add(r1);
         sc.add(new T.AmbientLight(0x3b4350, 0.30));
         var kok = new T.Group(); sc.add(kok);
@@ -4695,26 +4718,39 @@ if(window.THREE){
         if (avatar) avatar.scene.traverse(function (o) {
           if ((o.isMesh || o.isSkinnedMesh) && o.material) avMat[o.name] = o.material;
         });
-        var gruplar = [], hedefler = [];
+        var KAS_AD = ['chest','lats','traps','lowerback','delts','rdelts','biceps','triceps',
+          'forearm','abs','obliques','glutes','quads','hamstring','adductor','calves','tibialis',
+          'neck','hand','foot'];
+        var govde = null, vgrup = null, vao = null;
         mdl.traverse(function (o) {
           if (!o.isMesh) return;
           o.frustumCulled = false;
-          if (o.geometry && !o.geometry.attributes.normal) o.geometry.computeVertexNormals();
-          if (o.name.indexOf('kas_') === 0) {
-            var gid = KAS_ES[o.name.substring(4)];
-            o.userData.gid = gid || null;
-            o.material = new T.MeshStandardMaterial({ color: 0x39404b, roughness: 0.82, metalness: 0.0 });
+          if (o.name === 'BoykaKasGovde') {
+            govde = o;
+            var ca = o.geometry.attributes.color, n = ca.count;
+            vgrup = new Uint8Array(n); vao = new Float32Array(n);
+            for (var i = 0; i < n; i++) {
+              vao[i] = ca.getX(i);
+              vgrup[i] = Math.round(ca.getY(i) * 255);
+            }
+            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
+            o.material = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.82,
+              metalness: 0.0, vertexColors: true });
             o.material.envMapIntensity = 0.10;
-            gruplar.push(o); if (gid) hedefler.push(o);
           } else if (o.name.indexOf('kafa_') === 0) {
-            var kn = o.name.substring(5);
-            var mt = null;
+            var kn = o.name.substring(5), mt = null;
             for (var k in avMat) if (k.replace(/[^A-Za-z0-9_]/g, '') === kn) { mt = avMat[k]; break; }
             o.material = mt ? mt.clone() : new T.MeshStandardMaterial({ color: 0x9b6b46, roughness: 0.6 });
-            if (mt && o.material.color) o.material.color.multiplyScalar(0.92);
-            o.material.envMapIntensity = 0.6;
+            if (o.material.color) o.material.color.setHex(0x9a6a40);
+            o.material.envMapIntensity = 0.35;
+            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
           } else if (o.name === 'sac') {
-            o.material = new T.MeshStandardMaterial({ color: 0x14100c, roughness: 0.82 });
+            o.material = new T.MeshStandardMaterial({ color: 0x14100c, roughness: 0.84 });
+            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
+          } else if (o.name === 'sakal') {
+            o.material = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95,
+              vertexColors: !!o.geometry.attributes.color });
+            if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
           }
         });
         /* ölçek + ortala: kemiksiz olduğundan kutudan hesapla */
@@ -4725,7 +4761,7 @@ if(window.THREE){
         kok.add(mdl);
         var cam = new T.PerspectiveCamera(26, 1, 0.1, 40);
         var durum = { aci: 0, hedefAci: 0, canli: true, raf: 0, host: host, cv: cv, sc: sc, cam: cam,
-          kok: kok, gruplar: gruplar, hedefler: hedefler, sec: null, renk: opt.renk || function () { return 0x39404b; } };
+          kok: kok, sec: null, renk: opt.renk || function () { return 0x39404b; } };
         kasGor = durum;
         /* sürükle + dokun */
         var bas = null, kaydi = 0;
@@ -4741,23 +4777,34 @@ if(window.THREE){
         cv.addEventListener('pointercancel', function () { bas = null; });
         var ray = new T.Raycaster(), nd = new T.Vector2();
         function sec(e) {
+          if (!govde) return;
           var rc = cv.getBoundingClientRect();
           nd.x = ((e.clientX - rc.left) / rc.width) * 2 - 1;
           nd.y = -((e.clientY - rc.top) / rc.height) * 2 + 1;
           ray.setFromCamera(nd, cam);
-          var h = ray.intersectObjects(durum.hedefler, false);
-          if (h.length && h[0].object.userData.gid) {
-            if (opt.sec) opt.sec(h[0].object.userData.gid);
-          }
+          var h = ray.intersectObject(govde, false);
+          if (!h.length || !h[0].face) return;
+          var gid = KAS_ES[KAS_AD[vgrup[h[0].face.a]]];
+          if (gid && opt.sec) opt.sec(gid);
         }
         function boya() {
-          for (var i = 0; i < gruplar.length; i++) {
-            var o = gruplar[i], gid = o.userData.gid;
-            var c = gid ? durum.renk(gid) : 0x3a414c;
-            o.material.color.setHex(c);
-            var se = gid && gid === durum.sec;
-            o.material.emissive.setHex(se ? 0x6a4206 : 0x000000);
+          if (!govde || !vgrup) return;
+          var ca = govde.geometry.attributes.color, n = ca.count;
+          var onbellek = {}, c = new T.Color();
+          for (var i = 0; i < n; i++) {
+            var ad = KAS_AD[vgrup[i]], gid = KAS_ES[ad];
+            var anahtar = gid || '-';
+            var rgb = onbellek[anahtar];
+            if (!rgb) {
+              var hex = gid ? durum.renk(gid) : 0x2b3139;
+              if (gid && gid === durum.sec) hex = 0xffb43a;
+              c.setHex(hex);
+              rgb = onbellek[anahtar] = [c.r, c.g, c.b];
+            }
+            var a = vao[i];
+            ca.setXYZ(i, rgb[0] * a, rgb[1] * a, rgb[2] * a);
           }
+          ca.needsUpdate = true;
         }
         durum.boya = boya; boya();
         function dongu() {
@@ -4774,7 +4821,7 @@ if(window.THREE){
           renderer.setSize(w, h2, false);
           renderer.setClearColor(0x000000, 0);
           var eskiPoz = renderer.toneMappingExposure;
-          renderer.toneMappingExposure = 0.68;
+          renderer.toneMappingExposure = 0.92;
           renderer.render(sc, cam);
           renderer.toneMappingExposure = eskiPoz;
           if (cv.width !== renderer.domElement.width || cv.height !== renderer.domElement.height) {
